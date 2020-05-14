@@ -3,7 +3,7 @@
 
 #include <QObject>
 #include <QVector>
-
+#include <QThread>
 
 #include </opt/include/mediaclient.h>
 #include <fcntl.h>  //for O_RDWR
@@ -17,15 +17,20 @@ public:
     explicit Scan(QObject *parent = nullptr);
     //dab_frequency_list[200];
 
+    int media_scan_dabfrequencies(char *device, int devfd, int console, int running);
+
+    int media_scan_dabservices(char *device);
+
+    void dab_scan_wrapped();
 
 
 signals:
 
+    void progress_scan_dab(int prog_bar_dab);
+
 public slots:
 
-    int media_scan_dabfrequencies(char *device, int devfd, int console, int running);
 
-    int media_scan_dabservices(char *device);
 
 /*public:
 
@@ -39,8 +44,12 @@ private:
     QVector<QString> dab_sid_vec;
     Tune mTune;
 
+
+    //mStop_dac_scan = false;
+
 public:
     QVector<QVector<QString>> dab_vec_vec;
+    bool mStop_dab_scan;
 };
 
 #endif // SCAN_H

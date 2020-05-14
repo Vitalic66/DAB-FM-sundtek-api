@@ -46,6 +46,21 @@ void Dialog::rds_stream(QString radio_program)
     ui->label->setText(radio_program);
 }
 
+void Dialog::prog_bar_dab_valueChanged(int prog_bar_value)
+{
+    ui->prog_bar_dab->setValue(prog_bar_value);
+}
+
+void Dialog::fill_dab_list(){
+
+    ui->list_dab->clear();
+
+    for(int i = 0; i < mScan.dab_vec_vec.size(); i++){
+
+        ui->list_dab->addItem(mScan.dab_vec_vec[i][0]);
+    }
+}
+
 void Dialog::on_btnMute_clicked()
 {
     fd = net_open("/dev/radio0", O_RDWR); // open device node
@@ -105,12 +120,11 @@ void Dialog::on_btnTune_clicked()
 void Dialog::on_btnDabTune_clicked()
 {
     fd = net_open("/dev/dab0", O_RDWR);
-    //int frequency = (ui->ln_freq->text()).toInt();
-    int marked_row = (ui->list_dab->currentRow());
+
+    int marked_row = (ui->list_dab->currentRow()); //marked row from dab list
 
     int frequency = (mScan.dab_vec_vec[marked_row][1]).toInt();
 
-    //QString sid_string = ui->ln_sid->text();
     QString sid_string = mScan.dab_vec_vec[marked_row][2];
     bool ok;
     int sid = sid_string.toInt(&ok, 16);
@@ -127,19 +141,12 @@ void Dialog::on_btnDabTune_clicked()
 
 void Dialog::on_btnDabScanFreq_clicked()
 {
+    mScan.mStop_dab_scan = false; //for new scan set false
 
-    int devfd = -1;
-    int console = -1;
-    int running = -1;
+    connect(&mScan,&Scan::progress_scan_dab,this,&Dialog::prog_bar_dab_valueChanged); //feedback from scan to progressbar
+    connect(&mScan,&Scan::progress_scan_dab,this,&Dialog::fill_dab_list); //feedback from scan to dab list
 
-    mScan.media_scan_dabfrequencies("/dev/dab0",devfd,console,running);
-
-    ui->list_dab->clear();
-
-    for(int i = 0; i < mScan.dab_vec_vec.size(); i++){
-
-        ui->list_dab->addItem(mScan.dab_vec_vec[i][0]);
-    }
-
-
+    QFuture<void> scan_dab = QtConcurrent::run(&this->mScan,&Scan::dab_scan_wrapped); //create new thread for scan
 }
+
+

@@ -45,11 +45,17 @@ private slots:
 
     void on_btnDabScanFreq_clicked();
 
+
+
 public slots:
 
     //void newNumber(QString name, int number);
 
     void rds_stream(QString radio_program);
+
+    void prog_bar_dab_valueChanged(int prog_bar_value);
+
+    void fill_dab_list();
 
 private:
     Ui::Dialog *ui;
