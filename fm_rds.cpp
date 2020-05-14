@@ -1,6 +1,6 @@
-#include "myjob.h"
+#include "fm_rds.h"
 
-MyJob::MyJob(QObject *parent) : QObject(parent)
+FM_rds::FM_rds(QObject *parent) : QObject(parent)
 {
     mStop = false;
 }
@@ -18,13 +18,13 @@ MyJob::MyJob(QObject *parent) : QObject(parent)
 //    }
 //}
 
-void MyJob::stop()
+void FM_rds::stop()
 {
    mStop = true;
 }
 
 //int MyJob::rds(const char *device){
-int MyJob::rds(){
+int FM_rds::rds(){
 
     mStop = false;
 

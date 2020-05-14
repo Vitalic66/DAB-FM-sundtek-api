@@ -8,7 +8,7 @@ QT       += core gui concurrent
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
-TARGET = myThreadedApp
+TARGET = DAB_FM_sundtek
 TEMPLATE = app
 
 # The following define makes your compiler emit warnings if you use
@@ -27,15 +27,17 @@ CONFIG += c++11
 SOURCES += \
         main.cpp \
         dialog.cpp \
-    myjob.cpp \
     tune.cpp \
-    scan.cpp
+    scan.cpp \
+    mute.cpp \
+    fm_rds.cpp
 
 HEADERS += \
         dialog.h \
-    myjob.h \
     tune.h \
-    scan.h
+    scan.h \
+    mute.h \
+    fm_rds.h
 
 FORMS += \
         dialog.ui

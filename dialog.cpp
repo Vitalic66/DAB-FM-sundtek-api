@@ -21,13 +21,13 @@ void Dialog::on_btnStart_clicked()
     //connect(&mJob,&MyJob::on_number,this,&Dialog::newNumber); //signal on_number (in other h) , slot newNumber (in this cpp)
     //connect(this,&Dialog::on_Stop, &mJob, &MyJob::stop); //signal on_stop (in this h) , slo stop (in other cpp)
 
-    connect(&rds,&MyJob::rds_out,this,&Dialog::rds_stream);
-    connect(this,&Dialog::on_Stop,&rds,&MyJob::stop);
+    connect(&mRds,&FM_rds::rds_out,this,&Dialog::rds_stream);
+    connect(this,&Dialog::on_Stop,&mRds,&FM_rds::stop);
 
 
     //QFuture<void> test = QtConcurrent::run(&this->mJob,&MyJob::start,QString("katzen"));
 
-    QFuture<void> test_rds = QtConcurrent::run(&this->rds,&MyJob::rds);
+    QFuture<void> test_rds = QtConcurrent::run(&this->mRds,&FM_rds::rds);
 }
 
 void Dialog::on_btnStop_clicked()
@@ -61,44 +61,59 @@ void Dialog::fill_dab_list(){
     }
 }
 
-void Dialog::on_btnMute_clicked()
-{
-    fd = net_open("/dev/radio0", O_RDWR); // open device node
+//void Dialog::disable_btn(){
 
-    Dialog::set_mute(fd, "on");
+//    ui->btnDabScanFreq->setEnabled(false);
+//}
+
+void Dialog::enable_disable_btn(bool btn_state){
+
+    ui->btnDabScanFreq->setEnabled(btn_state);
+    ui->btnDabTune->setEnabled(btn_state);
+    ui->btnTune->setEnabled(btn_state);
 }
 
-void Dialog::on_btnUnmute_clicked()
-{
-    fd = net_open("/dev/radio0", O_RDWR); // open device node
+//void Dialog::on_btnMute_clicked()
+//{
+//    fd = net_open("/dev/radio0", O_RDWR); // open device node
 
-    Dialog::set_mute(fd, "off");
-}
+//    Dialog::set_mute(fd, "on");
+//}
 
-int Dialog::set_mute(int fd, const char *arg) {
-        //int type = 0;
-        struct v4l2_control control;
-        if (strcmp(arg, "off") == 0) {
-                control.id = V4L2_CID_AUDIO_MUTE;
-                control.value = 0;
-                fprintf(stdout, "Enabling audiostream\n");
-                net_ioctl(fd, VIDIOC_S_CTRL, &control);
-        } else if (strcmp(arg, "on") == 0) {
-                fprintf(stdout, "Disabling audiostream\n");
-                control.id = V4L2_CID_AUDIO_MUTE;
-                control.value = 1;
-                net_ioctl(fd, VIDIOC_S_CTRL, &control);
-        } else
-                fprintf(stdout, "Wrong argument [%s] choose between on|off\n", arg);
+//void Dialog::on_btnUnmute_clicked()
+//{
+//    fd = net_open("/dev/radio0", O_RDWR); // open device node
 
-        return 0;
-}
+//    Dialog::set_mute(fd, "off");
+//}
+
+//int Dialog::set_mute(int fd, const char *arg) {
+//        //int type = 0;
+//        struct v4l2_control control;
+//        if (strcmp(arg, "off") == 0) {
+//                control.id = V4L2_CID_AUDIO_MUTE;
+//                control.value = 0;
+//                fprintf(stdout, "Enabling audiostream\n");
+//                net_ioctl(fd, VIDIOC_S_CTRL, &control);
+//        } else if (strcmp(arg, "on") == 0) {
+//                fprintf(stdout, "Disabling audiostream\n");
+//                control.id = V4L2_CID_AUDIO_MUTE;
+//                control.value = 1;
+//                net_ioctl(fd, VIDIOC_S_CTRL, &control);
+//        } else
+//                fprintf(stdout, "Wrong argument [%s] choose between on|off\n", arg);
+
+//        return 0;
+//}
 
 void Dialog::on_btnTune_clicked()
 {
     ui->label->clear();
 
     fd = net_open("/dev/radio0", O_RDWR);
+
+    mMute.set_mute(fd,"off");
+
     int frequency;
     frequency = (ui->ln_freq->text()).toInt();
     //frequency = 94800000;
@@ -120,31 +135,39 @@ void Dialog::on_btnTune_clicked()
 void Dialog::on_btnDabTune_clicked()
 {
     fd = net_open("/dev/dab0", O_RDWR);
+    //tuner_state = "DAB";
+
+    mMute.set_mute(fd,"off");
 
     int marked_row = (ui->list_dab->currentRow()); //marked row from dab list
 
-    int frequency = (mScan.dab_vec_vec[marked_row][1]).toInt();
+    uint frequency = (mScan.dab_vec_vec[marked_row][1]).toUInt();
 
     QString sid_string = mScan.dab_vec_vec[marked_row][2];
     bool ok;
-    int sid = sid_string.toInt(&ok, 16);
+    uint sid = sid_string.toUInt(&ok, 16);
     //qDebug() << "als int:" << sid;
 
-    int sid_set = 1;
-    int comp = 1;
+    uint8_t sid_set = 1;
+    uint8_t comp = 1;
+    uint8_t comp_set = 1;
 
-    int comp_set;
     mTune.set_dab_channel(fd,frequency,sid,sid_set,comp,comp_set);
     //QThread::msleep(200);
-    Dialog::set_mute(fd, "off");
+    //Dialog::set_mute(fd, "off");
 }
 
 void Dialog::on_btnDabScanFreq_clicked()
 {
     mScan.mStop_dab_scan = false; //for new scan set false
 
+    //Dialog::disable_btn();
+
+    //ui->btnDabScanFreq->setEnabled(false);
+
     connect(&mScan,&Scan::progress_scan_dab,this,&Dialog::prog_bar_dab_valueChanged); //feedback from scan to progressbar
     connect(&mScan,&Scan::progress_scan_dab,this,&Dialog::fill_dab_list); //feedback from scan to dab list
+    connect(&mScan,&Scan::enable_buttons,this,&Dialog::enable_disable_btn);
 
     QFuture<void> scan_dab = QtConcurrent::run(&this->mScan,&Scan::dab_scan_wrapped); //create new thread for scan
 }

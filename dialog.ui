@@ -11,7 +11,7 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Dialog</string>
+   <string>DAB FM for sundtek dongles</string>
   </property>
   <widget class="QLineEdit" name="ln_freq">
    <property name="geometry">

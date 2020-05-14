@@ -213,7 +213,12 @@ int prog_bar_dab = 0;
                             qDebug() << "prog bar value: " << prog_bar_dab;
 
                             emit progress_scan_dab(prog_bar_dab);
+                            emit enable_buttons(false);
 
+                            //while(prog_bar_dab != 100){
+                            //if(prog_bar_dab == )
+
+                            //}
 
 
                             if (console>=0 && running == 0)
@@ -227,6 +232,7 @@ int prog_bar_dab = 0;
 
 
             if(prog_bar_dab == 100){
+                emit enable_buttons(true);
                 mStop_dab_scan = true;
             }
             qDebug() <<"mStop_scan_dab: " << mStop_dab_scan;

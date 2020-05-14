@@ -10,11 +10,11 @@
 #include <fcntl.h>  //for O_RDWR
 #include <unistd.h> //for usleep
 
-class MyJob : public QObject
+class FM_rds : public QObject
 {
     Q_OBJECT
 public:
-    explicit MyJob(QObject *parent = nullptr);
+    explicit FM_rds(QObject *parent = nullptr);
 
     //void start(QString name);
 

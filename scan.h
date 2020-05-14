@@ -14,8 +14,7 @@ class Scan : public QObject
 {
     Q_OBJECT
 public:
-    explicit Scan(QObject *parent = nullptr);
-    //dab_frequency_list[200];
+    explicit Scan(QObject *parent = nullptr);    
 
     int media_scan_dabfrequencies(char *device, int devfd, int console, int running);
 
@@ -27,14 +26,9 @@ public:
 signals:
 
     void progress_scan_dab(int prog_bar_dab);
+    void enable_buttons(bool btn_st);
 
 public slots:
-
-
-
-/*public:
-
-    uint32_t dab_frequency_list[]*/
 
 private:
     //QVector<QVector<uint32_t>> dab_vec_vec;

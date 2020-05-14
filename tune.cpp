@@ -1,4 +1,6 @@
 #include "tune.h"
+//#include "mute.h"
+
 #include <QDebug>
 
 Tune::Tune(QObject *parent) : QObject(parent)

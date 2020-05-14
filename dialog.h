@@ -6,9 +6,10 @@
 #include <QtConcurrent>
 
 
-#include <myjob.h>
+#include <fm_rds.h>
 #include <scan.h>
 #include <tune.h>
+#include <mute.h>
 #include </opt/include/mediaclient.h>
 
 namespace Ui {
@@ -24,6 +25,7 @@ public:
     ~Dialog();
 
 
+
 signals:
     void on_Stop();
     //void on_btnTune_clicked();
@@ -33,11 +35,11 @@ private slots:
 
     void on_btnStop_clicked();
 
-    void on_btnMute_clicked();
+    //void on_btnMute_clicked();
 
-    void on_btnUnmute_clicked();
+    //void on_btnUnmute_clicked();
 
-    int set_mute(int fd, const char *arg);
+    //int set_mute(int fd, const char *arg);
 
     void on_btnTune_clicked();
 
@@ -45,7 +47,7 @@ private slots:
 
     void on_btnDabScanFreq_clicked();
 
-
+    //void disable_btn();
 
 public slots:
 
@@ -57,13 +59,18 @@ public slots:
 
     void fill_dab_list();
 
+    void enable_disable_btn(bool btn_state);
+
 private:
     Ui::Dialog *ui;
     //MyJob mJob;
-    MyJob rds;
+    FM_rds mRds;
     Scan mScan;
     Tune mTune;
+    Mute mMute;
+
     int fd;
+    QString tuner_state = ""; //dab or fm
 
 
 
