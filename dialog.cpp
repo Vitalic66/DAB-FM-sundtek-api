@@ -11,6 +11,7 @@ Dialog::Dialog(QWidget *parent) :
 Dialog::~Dialog()
 {
     emit on_Stop();
+    emit on_StopScan();
     delete ui;
 }
 
@@ -33,6 +34,7 @@ void Dialog::on_btnStart_clicked()
 void Dialog::on_btnStop_clicked()
 {
     emit on_Stop();
+    emit on_StopScan();
 }
 
 //void Dialog::newNumber(QString name, int number)
@@ -55,9 +57,14 @@ void Dialog::fill_dab_list(){
 
     ui->list_dab->clear();
 
-    for(int i = 0; i < mScan.dab_vec_vec.size(); i++){
+//    for(int i = 0; i < mScan.dab_vec_vec.size(); i++){
 
-        ui->list_dab->addItem(mScan.dab_vec_vec[i][0]);
+//        ui->list_dab->addItem(mScan.dab_vec_vec[i][0]);
+//    }
+
+    for(int i = 0; i < g_dab_vec_vec.size(); i++){
+
+        ui->list_dab->addItem(g_dab_vec_vec[i][0]);
     }
 }
 
@@ -137,13 +144,18 @@ void Dialog::on_btnDabTune_clicked()
     fd = net_open("/dev/dab0", O_RDWR);
     //tuner_state = "DAB";
 
-    mMute.set_mute(fd,"off");
+    mMute.set_mute(fd, "off");
+    qDebug() << "set mute: " << mMute.set_mute(fd, "off");
 
     int marked_row = (ui->list_dab->currentRow()); //marked row from dab list
 
     uint frequency = (mScan.dab_vec_vec[marked_row][1]).toUInt();
 
     QString sid_string = mScan.dab_vec_vec[marked_row][2];
+
+//    uint frequency = (g_dab_vec_vec[marked_row][1]).toUInt();
+
+//    QString sid_string = g_dab_vec_vec[marked_row][2];
     bool ok;
     uint sid = sid_string.toUInt(&ok, 16);
     //qDebug() << "als int:" << sid;
@@ -164,12 +176,33 @@ void Dialog::on_btnDabScanFreq_clicked()
     //Dialog::disable_btn();
 
     //ui->btnDabScanFreq->setEnabled(false);
+    //QtConcurrent::run(&this->mScan,&Scan::dab_scan_wrapped);
 
     connect(&mScan,&Scan::progress_scan_dab,this,&Dialog::prog_bar_dab_valueChanged); //feedback from scan to progressbar
     connect(&mScan,&Scan::progress_scan_dab,this,&Dialog::fill_dab_list); //feedback from scan to dab list
     connect(&mScan,&Scan::enable_buttons,this,&Dialog::enable_disable_btn);
+    connect(&mScan,&Scan::write_to_file,&mFile,&File::dab_write_file);
 
     QFuture<void> scan_dab = QtConcurrent::run(&this->mScan,&Scan::dab_scan_wrapped); //create new thread for scan
+
+    //QFuture<void> stop_scan = QtConcurrent::
+
+    connect(this,&Dialog::on_StopScan,&mScan,&Scan::stop_scan);
+
+    //mFile.dab_write_file();
+
 }
 
 
+
+void Dialog::on_pushButton_clicked()
+{
+    //qDebug() << "dab_vev_vec: " << mScan.dab_vec_vec;
+    qDebug() << "g_dab_vev_vec: " << g_dab_vec_vec;
+}
+
+void Dialog::on_pushButton_2_clicked()
+{
+    //connect(this,&Dialog::on_pushButton_2_clicked,&mFile,&File::dab_write_file);
+    //mFile.dab_write_file();
+}

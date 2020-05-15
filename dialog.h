@@ -10,6 +10,9 @@
 #include <scan.h>
 #include <tune.h>
 #include <mute.h>
+#include <file.h>
+#include <globals.h>
+
 #include </opt/include/mediaclient.h>
 
 namespace Ui {
@@ -28,7 +31,11 @@ public:
 
 signals:
     void on_Stop();
+
+    void on_StopScan();
     //void on_btnTune_clicked();
+
+
 
 private slots:
     void on_btnStart_clicked();
@@ -49,6 +56,10 @@ private slots:
 
     //void disable_btn();
 
+    void on_pushButton_clicked();
+
+    void on_pushButton_2_clicked();
+
 public slots:
 
     //void newNumber(QString name, int number);
@@ -68,6 +79,7 @@ private:
     Scan mScan;
     Tune mTune;
     Mute mMute;
+    File mFile;
 
     int fd;
     QString tuner_state = ""; //dab or fm

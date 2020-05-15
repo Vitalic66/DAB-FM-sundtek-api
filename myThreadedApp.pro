@@ -30,14 +30,18 @@ SOURCES += \
     tune.cpp \
     scan.cpp \
     mute.cpp \
-    fm_rds.cpp
+    fm_rds.cpp \
+    file.cpp \
+    globals.cpp
 
 HEADERS += \
         dialog.h \
     tune.h \
     scan.h \
     mute.h \
-    fm_rds.h
+    fm_rds.h \
+    file.h \
+    globals.h
 
 FORMS += \
         dialog.ui

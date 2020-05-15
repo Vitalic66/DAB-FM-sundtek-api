@@ -3,18 +3,27 @@
 #include <QDebug>
 #include <QStringLiteral>
 
+QVector<QVector<QString>> g_dab_vec_vec;
+
 Scan::Scan(QObject *parent) : QObject(parent)
 {
 mStop_dab_scan = false;
+QVector<QVector<QString>> dab_vec_vec;
+
 }
 
-void Scan::dab_scan_wrapped(){
+void Scan::stop_scan()
+{
+   mStop_dab_scan = true;
+}
+
+int Scan::dab_scan_wrapped(){
 
     //mStop_dab_scan = false;
 //while(!mStop_dab_scan){
-    forever{
+    //forever{
 
-        if(mStop_dab_scan) break;
+        //if(mStop_dab_scan) return 0;
 
     //if(mStop_dab_scan){
     //    return 0;
@@ -25,12 +34,17 @@ void Scan::dab_scan_wrapped(){
 
     Scan::media_scan_dabfrequencies("/dev/dab0",devfd,console,running);
     //}
-}
+//}
 
 //return dab_vec_vec;
 }
 
 int Scan::media_scan_dabfrequencies(char *device, int devfd, int console, int running) {
+
+//    forever{
+
+//        if(mStop_dab_scan) break;
+
         int fd;
         int rv;
         int nlen;
@@ -39,6 +53,9 @@ int Scan::media_scan_dabfrequencies(char *device, int devfd, int console, int ru
         dab_vec_vec.clear();
         dab_name_vec.clear();
         dab_sid_vec.clear();
+        //dab_vec_vec.clear();
+        g_dab_vec_vec.clear();
+
 int prog_bar_dab = 0;
 
 
@@ -106,9 +123,9 @@ int prog_bar_dab = 0;
                     int dab_frequency_list_size =sizeof(dab_frequency_list)/sizeof(dab_frequency_list[0]);
                     //qDebug() << "foo: " << foo;
                     //qDebug() << "size struct" << dab_frequency_list->channel.s
-//while(!mStop_dab_scan){
-                    do {
 
+                    do {
+//while(!mStop_dab_scan){
                             net_ioctl(fd, DAB_SCAN_NEXT_FREQUENCY, &parameters);
                             if (current_scan_index != parameters.scan_index) {
                                     if (console>=0) {
@@ -126,7 +143,7 @@ int prog_bar_dab = 0;
                                     if (console>=0) {
                                             rv=write(console, "[LOCKED]\n", 9);
                                     } else {
-                                            QVector<QString> dab_vec;
+
                                             //QString freq;
                                             //char freq_char = static_cast<char>(dab_frequency_list[parameters.scan_index].freq*1000);
                                             //qDebug() << "scan_index: " << dab_frequency_list[parameters.scan_index].freq;
@@ -163,7 +180,9 @@ int prog_bar_dab = 0;
                                                 dab_vec.push_back(dab_name_vec.at(j)); //service_name
                                                 dab_vec.push_back(freq); //freq
                                                 dab_vec.push_back(dab_sid_vec.at(j)); //service_id
-                                                dab_vec_vec.push_back(dab_vec);
+                                                dab_vec.push_back(""); //placeholder for fav
+                                                //dab_vec_vec.push_back(dab_vec);
+                                                g_dab_vec_vec.push_back(dab_vec);
 
                                             }
                                             dab_name_vec.clear();
@@ -172,6 +191,7 @@ int prog_bar_dab = 0;
 
                                             qDebug() << "dab_vec_after_for" << dab_vec;
                                             qDebug() << "dab_vec_vec_after_for" << dab_vec_vec;
+                                            qDebug() << "g_dab_vec_vec_after_for" << g_dab_vec_vec;
 
 
 
@@ -224,26 +244,39 @@ int prog_bar_dab = 0;
                             if (console>=0 && running == 0)
                                     break;
 
-                    } while (parameters.status != DAB_SCAN_COMPLETE);
+                            if(prog_bar_dab == 100){
+                                emit enable_buttons(true);
+                                emit write_to_file();
+                                emit finished_scan();
+                                mStop_dab_scan = true;
+                            }
+
+
+                            qDebug() << "mStop_scan_dab: " << mStop_dab_scan;
+
 //}
+                    //} while (parameters.status != DAB_SCAN_COMPLETE);
+                    } while (parameters.status != DAB_SCAN_COMPLETE && mStop_dab_scan == false);
+//}
+                    qDebug() << "dabvecvec after scan: " << dab_vec_vec;
+                    qDebug() << "g_dabvecvec after scan: " << g_dab_vec_vec;
+
                     if (devfd == -1)
                             net_close(fd);
             }
 
 
-            if(prog_bar_dab == 100){
-                emit enable_buttons(true);
-                mStop_dab_scan = true;
-            }
-            qDebug() <<"mStop_scan_dab: " << mStop_dab_scan;
+
+
 
 //        for(int i = 0; i < dab_vec_vec.size();i++){
 //            QVector<QString> dab_trans_vec_vec {Scan::media_scan_dabservices("dev/dab0")};
 
 //        }
 
-
+// }
         return 0;
+
 }
 
 int Scan::media_scan_dabservices(char *device) {

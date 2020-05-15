@@ -4,11 +4,13 @@
 #include <QObject>
 #include <QVector>
 #include <QThread>
+//#include <QStringList>
 
 #include </opt/include/mediaclient.h>
 #include <fcntl.h>  //for O_RDWR
 #include <unistd.h> //for usleep
 #include <tune.h>
+#include <globals.h>
 
 class Scan : public QObject
 {
@@ -20,15 +22,21 @@ public:
 
     int media_scan_dabservices(char *device);
 
-    void dab_scan_wrapped();
-
+    int dab_scan_wrapped();
+    QVector<QVector<QString>> dab_vec_vec;
+    QVector<QString> dab_vec;
+    bool mStop_dab_scan;
 
 signals:
 
     void progress_scan_dab(int prog_bar_dab);
     void enable_buttons(bool btn_st);
+    void write_to_file();
+    void finished_scan();
 
 public slots:
+
+    void stop_scan();
 
 private:
     //QVector<QVector<uint32_t>> dab_vec_vec;
@@ -41,9 +49,8 @@ private:
 
     //mStop_dac_scan = false;
 
-public:
-    QVector<QVector<QString>> dab_vec_vec;
-    bool mStop_dab_scan;
+//public:
+
 };
 
 #endif // SCAN_H
