@@ -13,10 +13,6 @@ class Tune : public QObject
 public:
     explicit Tune(QObject *parent = nullptr);
 
-
-
-
-
 signals:
 
 public slots:
@@ -24,6 +20,7 @@ public slots:
     //int set_radio_channel(int fd);
 
     int set_dab_channel(int fd, uint32_t frequency, uint32_t sid, uint8_t sid_set, uint32_t comp, uint8_t comp_set);
+    //int set_dab_channel(int fd, uint32_t frequency);
 
     int set_dab_freq(int fd, uint32_t frequency);
 

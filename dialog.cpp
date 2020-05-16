@@ -204,13 +204,18 @@ void Dialog::on_btnDabTune_clicked()
 //    QString sid_string = g_dab_vec_vec[marked_row][2];
     bool ok;
     uint sid = sid_string.toUInt(&ok, 16);
-    //qDebug() << "als int:" << sid;
+    qDebug() << "als int:" << sid;
 
     uint8_t sid_set = 1;
     uint8_t comp = 1;
     uint8_t comp_set = 1;
 
+
+    //mTune.set_dab_channel_pretune(fd,frequency);
+    mTune.set_dab_freq(fd,frequency);
+    QThread::msleep(1500);
     mTune.set_dab_channel(fd,frequency,sid,sid_set,comp,comp_set);
+
     //QThread::msleep(200);
     //Dialog::set_mute(fd, "off");
 }
