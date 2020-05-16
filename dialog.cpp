@@ -6,6 +6,10 @@ Dialog::Dialog(QWidget *parent) :
     ui(new Ui::Dialog)
 {
     ui->setupUi(this);
+
+    //Dialog::dab_read_file(); //read file to dab_vec_vec
+    mFile.dab_read_file();
+    Dialog::dab_fill_list(); //dab_vec_vec to fm_list
 }
 
 Dialog::~Dialog()
@@ -52,20 +56,40 @@ void Dialog::prog_bar_dab_valueChanged(int prog_bar_value)
 {
     ui->prog_bar_dab->setValue(prog_bar_value);
 }
-
+/*
 void Dialog::fill_dab_list(){
 
     ui->list_dab->clear();
-
-//    for(int i = 0; i < mScan.dab_vec_vec.size(); i++){
-
-//        ui->list_dab->addItem(mScan.dab_vec_vec[i][0]);
-//    }
 
     for(int i = 0; i < g_dab_vec_vec.size(); i++){
 
         ui->list_dab->addItem(g_dab_vec_vec[i][0]);
     }
+
+    for(int i = 0; i < g_dab_vec_vec.size(); i++){
+
+        ui->list_dab->addItem(g_dab_vec_vec[i][0]);
+    }
+}
+*/
+void Dialog::dab_fill_list()
+{
+
+    for(int i = 0; i < g_dab_vec_vec.size(); i++){
+        //QString dab_to_list;
+
+        //dab_to_list = g_dab_vec_vec[i][0];
+
+        ui->list_dab->addItem(g_dab_vec_vec[i][0]);
+
+        //mark fav green row
+        if(g_dab_vec_vec[i][3].contains("fav")){
+            ui->list_dab->setCurrentRow(i);
+            ui->list_dab->currentItem()->setBackgroundColor(Qt::green);
+        }
+    }
+
+    ui->list_dab->setCurrentRow(-1);
 }
 
 //void Dialog::disable_btn(){
@@ -172,16 +196,16 @@ void Dialog::on_btnDabTune_clicked()
 void Dialog::on_btnDabScanFreq_clicked()
 {
     mScan.mStop_dab_scan = false; //for new scan set false
-
+    ui->list_dab->clear();
     //Dialog::disable_btn();
 
     //ui->btnDabScanFreq->setEnabled(false);
     //QtConcurrent::run(&this->mScan,&Scan::dab_scan_wrapped);
 
     connect(&mScan,&Scan::progress_scan_dab,this,&Dialog::prog_bar_dab_valueChanged); //feedback from scan to progressbar
-    connect(&mScan,&Scan::progress_scan_dab,this,&Dialog::fill_dab_list); //feedback from scan to dab list
+    //connect(&mScan,&Scan::progress_scan_dab,this,&Dialog::fill_dab_list); //feedback from scan to dab list
     connect(&mScan,&Scan::enable_buttons,this,&Dialog::enable_disable_btn);
-    connect(&mScan,&Scan::write_to_file,&mFile,&File::dab_write_file);
+    //connect(&mScan,&Scan::write_to_file,&mFile,&File::dab_write_file);
 
     QFuture<void> scan_dab = QtConcurrent::run(&this->mScan,&Scan::dab_scan_wrapped); //create new thread for scan
 
@@ -190,6 +214,8 @@ void Dialog::on_btnDabScanFreq_clicked()
     connect(this,&Dialog::on_StopScan,&mScan,&Scan::stop_scan);
 
     //mFile.dab_write_file();
+
+    connect(&mScan,&Scan::finished_scan,this,&Dialog::dab_refresh_all);
 
 }
 
@@ -205,4 +231,34 @@ void Dialog::on_pushButton_2_clicked()
 {
     //connect(this,&Dialog::on_pushButton_2_clicked,&mFile,&File::dab_write_file);
     //mFile.dab_write_file();
+}
+
+void Dialog::on_btn_add_fav_clicked()
+{
+    int marked = ui->list_dab->currentRow();
+
+    g_dab_vec_vec[marked].insert(3, "fav");
+
+    Dialog::dab_refresh_all();
+}
+
+void Dialog::on_bnt_rem_fav_clicked()
+{
+    int marked = ui->list_dab->currentRow();
+
+    g_dab_vec_vec[marked].insert(3, "");
+
+    Dialog::dab_refresh_all();
+}
+
+void Dialog::dab_refresh_all()
+{
+    //Dialog::dab_write_file(); //write vecvec to file
+    mFile.dab_write_file();
+    mFile.dab_fav_write_file();
+    ui->list_dab->clear();
+    mFile.dab_read_file();
+    Dialog::dab_fill_list(); //write file to vecvec
+    //MainWindow::dab_show_fav_btn();
+    //MainWindow::dab_disable_btn();
 }

@@ -60,6 +60,14 @@ private slots:
 
     void on_pushButton_2_clicked();
 
+    void on_btn_add_fav_clicked();
+
+    void on_bnt_rem_fav_clicked();
+
+    void dab_refresh_all();
+
+    void dab_fill_list();
+
 public slots:
 
     //void newNumber(QString name, int number);
@@ -68,7 +76,7 @@ public slots:
 
     void prog_bar_dab_valueChanged(int prog_bar_value);
 
-    void fill_dab_list();
+    //void fill_dab_list();
 
     void enable_disable_btn(bool btn_state);
 

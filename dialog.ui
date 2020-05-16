@@ -175,6 +175,34 @@
     <string>save</string>
    </property>
   </widget>
+  <widget class="QPushButton" name="btn_add_fav">
+   <property name="geometry">
+    <rect>
+     <x>340</x>
+     <y>390</y>
+     <width>90</width>
+     <height>60</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>ADD
+FAVORITE</string>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="bnt_rem_fav">
+   <property name="geometry">
+    <rect>
+     <x>440</x>
+     <y>390</y>
+     <width>90</width>
+     <height>60</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>REMOVE
+FAVORITE</string>
+   </property>
+  </widget>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
  <resources/>

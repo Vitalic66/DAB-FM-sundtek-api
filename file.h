@@ -30,6 +30,8 @@ public slots:
 
     void dab_write_file();
 
+    void dab_fav_write_file();
+
 private:
 
     QStringList sort_list(QStringList list);
