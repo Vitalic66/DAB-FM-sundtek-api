@@ -53,8 +53,16 @@ int Scan::media_scan_dabfrequencies(char *device, int devfd, int console, int ru
         dab_vec_vec.clear();
         dab_name_vec.clear();
         dab_sid_vec.clear();
-        //dab_vec_vec.clear();
+
         g_dab_vec_vec.clear();
+
+//        for(int i = 0;i < g_dab_vec_vec.size(); i++){
+
+//            if(!g_dab_vec_vec[i][3].contains("fav")){
+//                g_dab_vec_vec.remove(i);
+//            }
+
+//        }
 
 int prog_bar_dab = 0;
 

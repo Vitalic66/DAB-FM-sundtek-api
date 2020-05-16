@@ -14,14 +14,14 @@ void File::dab_read_file(){
     if(!file_dab.open(QFile::ReadOnly | QFile::Text)){
         //QMessageBox::warning(this,"..","keine datei gefunden");
         //ui->warn_no_dab_list->setVisible(true);
-        return;
+        //return;
     }
 
     QFile file_dab_fav(path_dab_fav);
     if(!file_dab_fav.open(QFile::ReadOnly | QFile::Text)){
         //QMessageBox::warning(this,"..","keine datei gefunden");
         //ui->warn_no_dab_list->setVisible(true);
-        return;
+        //return;
     }
 
     g_dab_vec_vec.clear();
@@ -158,11 +158,11 @@ void File::dab_write_file(){
 
     for(int i = 0; i < g_dab_vec_vec.size(); i++){
 
-        if(g_dab_vec_vec[i][3] != "fav"){
+        //if(g_dab_vec_vec[i][3] != "fav"){
             dab_vec_vec_to_line = g_dab_vec_vec[i][0] + "," + g_dab_vec_vec[i][1] + "," + g_dab_vec_vec[i][2] + "," + g_dab_vec_vec[i][3];
 
             unsort_list.append(dab_vec_vec_to_line);
-        }
+        //}
     }
 
     QTextStream dab_write_to_file(&file_dab);

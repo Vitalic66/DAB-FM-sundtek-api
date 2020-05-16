@@ -66,6 +66,8 @@ private slots:
 
     void dab_refresh_all();
 
+    void dab_refresh_after_scan();
+
     void dab_fill_list();
 
 public slots:

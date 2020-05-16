@@ -10,6 +10,14 @@ Dialog::Dialog(QWidget *parent) :
     //Dialog::dab_read_file(); //read file to dab_vec_vec
     mFile.dab_read_file();
     Dialog::dab_fill_list(); //dab_vec_vec to fm_list
+
+//    net_open("/dev/dab0", O_RDWR);
+//    net_close(fd);
+
+//    fd = net_open("/dev/dab0", O_RDWR);
+//    mMute.set_mute(fd, "off");
+
+
 }
 
 Dialog::~Dialog()
@@ -74,13 +82,27 @@ void Dialog::fill_dab_list(){
 */
 void Dialog::dab_fill_list()
 {
+    //clean up g_dab_vec_vec(doubles)
+
+    for(int i = 1; i < g_dab_vec_vec.size(); i++){
+        QVector<QString> tmp_0 = g_dab_vec_vec.at(i-1);
+
+        if(tmp_0[2] == g_dab_vec_vec[i][2]){  //is sid the same?
+
+            if(g_dab_vec_vec[i][3] == "fav"){
+                g_dab_vec_vec.remove(i-1);
+            }
+        }
+    }
+
+    qDebug() << "g_dab_vec_vec cleanded?: " << g_dab_vec_vec;
 
     for(int i = 0; i < g_dab_vec_vec.size(); i++){
         //QString dab_to_list;
-
-        //dab_to_list = g_dab_vec_vec[i][0];
+        //QVector<QString> tmp = g_dab_vec_vec.at(i-1); //holds -1
 
         ui->list_dab->addItem(g_dab_vec_vec[i][0]);
+              //ui->list_dab->addItem(g_dab_vec_vec[i][0]);
 
         //mark fav green row
         if(g_dab_vec_vec[i][3].contains("fav")){
@@ -144,11 +166,11 @@ void Dialog::on_btnTune_clicked()
     fd = net_open("/dev/radio0", O_RDWR);
 
     mMute.set_mute(fd,"off");
-
+    qDebug() << "set mute: " << mMute.set_mute(fd, "off");
     int frequency;
     frequency = (ui->ln_freq->text()).toInt();
     //frequency = 94800000;
-    int tuner = 1;
+    int tuner = 0;
     //tuner = 1;
 
 
@@ -173,9 +195,9 @@ void Dialog::on_btnDabTune_clicked()
 
     int marked_row = (ui->list_dab->currentRow()); //marked row from dab list
 
-    uint frequency = (mScan.dab_vec_vec[marked_row][1]).toUInt();
+    uint frequency = (g_dab_vec_vec[marked_row][1]).toUInt();
 
-    QString sid_string = mScan.dab_vec_vec[marked_row][2];
+    QString sid_string = g_dab_vec_vec[marked_row][2];
 
 //    uint frequency = (g_dab_vec_vec[marked_row][1]).toUInt();
 
@@ -197,6 +219,18 @@ void Dialog::on_btnDabScanFreq_clicked()
 {
     mScan.mStop_dab_scan = false; //for new scan set false
     ui->list_dab->clear();
+
+//    for(int i = 0;i < g_dab_vec_vec.size(); i++){
+
+//        if(!g_dab_vec_vec[i][3].contains("fav")){
+//            g_dab_vec_vec.remove(i);
+//        }
+
+//    }
+
+
+
+
     //Dialog::disable_btn();
 
     //ui->btnDabScanFreq->setEnabled(false);
@@ -215,7 +249,10 @@ void Dialog::on_btnDabScanFreq_clicked()
 
     //mFile.dab_write_file();
 
-    connect(&mScan,&Scan::finished_scan,this,&Dialog::dab_refresh_all);
+    //connect(&mScan,&Scan::finished_scan,this,&Dialog::dab_refresh_all);
+
+    connect(&mScan,&Scan::finished_scan,this,&Dialog::dab_refresh_after_scan);
+
 
 }
 
@@ -256,6 +293,18 @@ void Dialog::dab_refresh_all()
     //Dialog::dab_write_file(); //write vecvec to file
     mFile.dab_write_file();
     mFile.dab_fav_write_file();
+    ui->list_dab->clear();
+    mFile.dab_read_file();
+    Dialog::dab_fill_list(); //write file to vecvec
+    //MainWindow::dab_show_fav_btn();
+    //MainWindow::dab_disable_btn();
+}
+
+void Dialog::dab_refresh_after_scan()
+{
+    //Dialog::dab_write_file(); //write vecvec to file
+    mFile.dab_write_file();
+    //mFile.dab_fav_write_file();
     ui->list_dab->clear();
     mFile.dab_read_file();
     Dialog::dab_fill_list(); //write file to vecvec

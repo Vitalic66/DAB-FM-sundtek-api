@@ -2,6 +2,7 @@
 //#include "mute.h"
 
 #include <QDebug>
+#include <QProcess>
 
 Tune::Tune(QObject *parent) : QObject(parent)
 {
@@ -25,8 +26,12 @@ int Tune::set_dab_freq(int fd, uint32_t frequency) {
 int Tune::set_dab_channel(int fd, uint32_t frequency, uint32_t sid, uint8_t sid_set, uint32_t comp, uint8_t comp_set) {
 //int Tune::set_dab_channel(int fd, uint32_t frequency, char sid, uint8_t sid_set, uint32_t comp, uint8_t comp_set) {
 
+        QProcess::execute("/opt/bin/mediaclient -m DAB -f 178352000");
+
         struct dab_frequency dabf;
         memset(&dabf, 0x0, sizeof(struct dab_frequency));
+
+
 
         qDebug() << "sid: " << sid;
         qDebug() << "sid_set: " << sid_set;
