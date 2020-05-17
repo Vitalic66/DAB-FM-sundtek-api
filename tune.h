@@ -29,6 +29,10 @@ public slots:
 
     int set_radio_channel(int fd, int frequency, int tuner);
 
+private:
+
+    uint32_t last_tuned_freq_dab;
+
 };
 
 #endif // TUNE_H

@@ -161,6 +161,8 @@ void Dialog::enable_disable_btn(bool btn_state){
 
 void Dialog::on_btnTune_clicked()
 {
+    //g_last_state_dab_fm = "FM";
+
     ui->label->clear();
 
     fd = net_open("/dev/radio0", O_RDWR);
@@ -190,6 +192,8 @@ void Dialog::on_btnDabTune_clicked()
     fd = net_open("/dev/dab0", O_RDWR);
     //tuner_state = "DAB";
 
+    //g_last_state_dab_fm = "DAB";
+
     mMute.set_mute(fd, "off");
     qDebug() << "set mute: " << mMute.set_mute(fd, "off");
 
@@ -212,8 +216,8 @@ void Dialog::on_btnDabTune_clicked()
 
 
     //mTune.set_dab_channel_pretune(fd,frequency);
-    mTune.set_dab_freq(fd,frequency);
-    QThread::msleep(1500);
+    //mTune.set_dab_freq(fd,frequency);
+    //QThread::msleep(4000);
     mTune.set_dab_channel(fd,frequency,sid,sid_set,comp,comp_set);
 
     //QThread::msleep(200);

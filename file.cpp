@@ -159,6 +159,11 @@ void File::dab_write_file(){
     for(int i = 0; i < g_dab_vec_vec.size(); i++){
 
         //if(g_dab_vec_vec[i][3] != "fav"){
+
+//        if(g_dab_vec_vec[i][3] == "fav"){
+//            g_dab_vec_vec[i].replace(3, "");
+//        }
+
             dab_vec_vec_to_line = g_dab_vec_vec[i][0] + "," + g_dab_vec_vec[i][1] + "," + g_dab_vec_vec[i][2] + "," + g_dab_vec_vec[i][3];
 
             unsort_list.append(dab_vec_vec_to_line);

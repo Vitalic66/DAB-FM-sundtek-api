@@ -344,15 +344,22 @@ int Scan::media_scan_dabservices(char *device) {
 //                        QString dab_sid_hex = QString("0x%1").arg(service.id, 8, 16, QLatin1Char( '0' ));
 //                        qDebug()<< "dab sid hex: " << dab_sid_hex;
 
-                        QString dab_sid = QString::number(service.sid, 16); //int to hex to string
+                        QString dab_sid;
+                        //if(service.sid < 10000){
+                        dab_sid = QString::number(service.sid, 16); //int to hex to string
                         qDebug() << "dab_sid conv: " << dab_sid;
-
+                        //}
                         //uint32_t sid = service.sid;
                         //QString dab_service_name = service.service_name;
                         //dab_sid_vec.push_back(service.service_name);
+
+                        if(dab_sid.length() == 4){  //filter non radio staions
                         dab_name_vec.push_back(service_name_conv);
                         dab_sid_vec.push_back(dab_sid);
+                        }
                         qDebug() << "dab_sid_vec: " << dab_sid_vec;
+
+
                         //return sid;
                 }
                 net_close(fd);
