@@ -1,9 +1,11 @@
 #include "dialog.h"
 #include "ui_dialog.h"
 
-QString g_tuner_mode;
+QString g_tuner_mode = "FM";
 
 QString g_last_state_mute_unmute;
+
+int fd;
 
 Dialog::Dialog(QWidget *parent) :
     QDialog(parent),
@@ -76,22 +78,15 @@ void Dialog::prog_bar_dab_valueChanged(int prog_bar_value)
 {
     ui->prog_bar_dab->setValue(prog_bar_value);
 }
+
+
 /*
-void Dialog::fill_dab_list(){
-
-    ui->list_dab->clear();
-
-    for(int i = 0; i < g_dab_vec_vec.size(); i++){
-
-        ui->list_dab->addItem(g_dab_vec_vec[i][0]);
-    }
-
-    for(int i = 0; i < g_dab_vec_vec.size(); i++){
-
-        ui->list_dab->addItem(g_dab_vec_vec[i][0]);
-    }
+void Dialog::prog_bar_fm_valueChanged(int prog_bar_value)
+{
+    ui->prog_bar_fm->setValue(prog_bar_value);
 }
 */
+
 void Dialog::dab_fill_list()
 {
     //clean up g_dab_vec_vec(doubles)
@@ -107,7 +102,7 @@ void Dialog::dab_fill_list()
         }
     }
 
-    qDebug() << "g_dab_vec_vec cleanded?: " << g_dab_vec_vec;
+    qDebug() << "g_dab_vec_vec cleaned?: " << g_dab_vec_vec;
 
     for(int i = 0; i < g_dab_vec_vec.size(); i++){
         //QString dab_to_list;
@@ -124,6 +119,40 @@ void Dialog::dab_fill_list()
     }
 
     ui->list_dab->setCurrentRow(-1);
+}
+
+void Dialog::fm_fill_list()
+{
+    //clean up g_dab_vec_vec(doubles)
+
+    for(int i = 1; i < g_fm_vec_vec.size(); i++){
+        QVector<QString> tmp_0 = g_fm_vec_vec.at(i-1);
+
+        if(tmp_0[1] == g_fm_vec_vec[i][1]){  //is freq the same?
+
+            if(g_fm_vec_vec[i][2] == "fav"){
+                g_fm_vec_vec.remove(i-1);
+            }
+        }
+    }
+
+    qDebug() << "g_fm_vec_vec cleaned?: " << g_fm_vec_vec;
+
+    for(int i = 0; i < g_fm_vec_vec.size(); i++){
+        //QString dab_to_list;
+        //QVector<QString> tmp = g_dab_vec_vec.at(i-1); //holds -1
+
+        ui->list_fm->addItem(g_fm_vec_vec[i][0]);
+              //ui->list_dab->addItem(g_dab_vec_vec[i][0]);
+
+        //mark fav green row
+        if(g_fm_vec_vec[i][2].contains("fav")){
+            ui->list_fm->setCurrentRow(i);
+            ui->list_fm->currentItem()->setBackgroundColor(Qt::green);
+        }
+    }
+
+    ui->list_fm->setCurrentRow(-1);
 }
 
 //void Dialog::disable_btn(){
@@ -179,8 +208,9 @@ void Dialog::on_btnTune_clicked()
 
     fd = net_open("/dev/radio0", O_RDWR);
 
-    mMute.set_mute(fd,"off");
-    qDebug() << "set mute: " << mMute.set_mute(fd, "off");
+    //mMute.set_mute(fd,"off");
+    g_last_state_mute_unmute = "unmuted";
+    //qDebug() << "set mute: " << mMute.set_mute(fd, "off");
     int frequency;
     frequency = (ui->ln_freq->text()).toInt();
     //frequency = 94800000;
@@ -201,13 +231,15 @@ void Dialog::on_btnTune_clicked()
 
 void Dialog::on_btnDabTune_clicked()
 {
-    fd = net_open("/dev/dab0", O_RDWR);
+    //fd = net_open("/dev/dab0", O_RDWR);
     //tuner_state = "DAB";
 
     //g_last_state_dab_fm = "DAB";
 
-    mMute.set_mute(fd, "off");
-    qDebug() << "set mute: " << mMute.set_mute(fd, "off");
+    //mMute.set_mute(fd, "off");
+    g_last_state_mute_unmute = "unmuted";
+    g_tuner_mode = "DAB";
+    //qDebug() << "set mute: " << mMute.set_mute(fd, "off");
 
     int marked_row = (ui->list_dab->currentRow()); //marked row from dab list
 
@@ -238,41 +270,52 @@ void Dialog::on_btnDabTune_clicked()
 
 void Dialog::on_btnDabScanFreq_clicked()
 {
-    mScan.mStop_dab_scan = false; //for new scan set false
-    ui->list_dab->clear();
+    if(g_tuner_mode == "DAB"){
 
-//    for(int i = 0;i < g_dab_vec_vec.size(); i++){
+        mScan.mStop_dab_scan = false; //for new scan set false
+        ui->list_dab->clear();
 
-//        if(!g_dab_vec_vec[i][3].contains("fav")){
-//            g_dab_vec_vec.remove(i);
-//        }
+        connect(&mScan,&Scan::progress_scan_dab,this,&Dialog::prog_bar_dab_valueChanged); //feedback from scan to progressbar
+        //connect(&mScan,&Scan::progress_scan_dab,this,&Dialog::fill_dab_list); //feedback from scan to dab list
+        connect(&mScan,&Scan::enable_buttons,this,&Dialog::enable_disable_btn);
+        //connect(&mScan,&Scan::write_to_file,&mFile,&File::dab_write_file);
 
-//    }
+        QFuture<void> scan_dab = QtConcurrent::run(&this->mScan,&Scan::dab_scan_wrapped); //create new thread for scan
 
+        //QFuture<void> stop_scan = QtConcurrent::
 
+        connect(this,&Dialog::on_StopScan,&mScan,&Scan::stop_scan_dab);
 
+        //mFile.dab_write_file();
 
-    //Dialog::disable_btn();
+        //connect(&mScan,&Scan::finished_scan,this,&Dialog::dab_refresh_all);
 
-    //ui->btnDabScanFreq->setEnabled(false);
-    //QtConcurrent::run(&this->mScan,&Scan::dab_scan_wrapped);
+        connect(&mScan,&Scan::finished_scan,this,&Dialog::dab_refresh_after_scan);
+    }
 
-    connect(&mScan,&Scan::progress_scan_dab,this,&Dialog::prog_bar_dab_valueChanged); //feedback from scan to progressbar
-    //connect(&mScan,&Scan::progress_scan_dab,this,&Dialog::fill_dab_list); //feedback from scan to dab list
-    connect(&mScan,&Scan::enable_buttons,this,&Dialog::enable_disable_btn);
-    //connect(&mScan,&Scan::write_to_file,&mFile,&File::dab_write_file);
+    if(g_tuner_mode == "FM"){
 
-    QFuture<void> scan_dab = QtConcurrent::run(&this->mScan,&Scan::dab_scan_wrapped); //create new thread for scan
+        mScan.mStop_fm_scan = false; //for new scan set false
+        ui->list_fm->clear();
 
-    //QFuture<void> stop_scan = QtConcurrent::
+        //connect(&mScan,&Scan::progress_scan_fm,this,&Dialog::prog_bar_fm_valueChanged); //feedback from scan to progressbar
 
-    connect(this,&Dialog::on_StopScan,&mScan,&Scan::stop_scan);
+        //connect(&mScan,&Scan::progress_scan_dab,this,&Dialog::fill_dab_list); //feedback from scan to dab list
+        connect(&mScan,&Scan::enable_buttons,this,&Dialog::enable_disable_btn);
+        //connect(&mScan,&Scan::write_to_file,&mFile,&File::dab_write_file);
 
-    //mFile.dab_write_file();
+        QFuture<void> scan_fm = QtConcurrent::run(&this->mScan,&Scan::fm_scan_wrapped); //create new thread for scan
 
-    //connect(&mScan,&Scan::finished_scan,this,&Dialog::dab_refresh_all);
+        //QFuture<void> stop_scan = QtConcurrent::
 
-    connect(&mScan,&Scan::finished_scan,this,&Dialog::dab_refresh_after_scan);
+        connect(this,&Dialog::on_StopScan,&mScan,&Scan::stop_scan_fm);
+
+        //mFile.dab_write_file();
+
+        //connect(&mScan,&Scan::finished_scan,this,&Dialog::dab_refresh_all);
+
+        connect(&mScan,&Scan::finished_scan_fm,this,&Dialog::fm_refresh_after_scan);
+    }
 
 
 }
@@ -330,6 +373,30 @@ void Dialog::dab_refresh_after_scan()
     mFile.dab_read_file();
     Dialog::dab_fill_list(); //write file to vecvec
     Dialog::dab_show_fav_btn();
+    //MainWindow::dab_disable_btn();
+}
+
+void Dialog::fm_refresh_all()
+{
+    //Dialog::dab_write_file(); //write vecvec to file
+    mFile.fm_write_file();
+    mFile.fm_fav_write_file();
+    ui->list_fm->clear();
+    mFile.fm_read_file();
+    Dialog::fm_fill_list(); //write file to vecvec
+    //Dialog::fm_show_fav_btn();
+    //MainWindow::dab_disable_btn();
+}
+
+void Dialog::fm_refresh_after_scan()
+{
+    //Dialog::dab_write_file(); //write vecvec to file
+    mFile.fm_write_file();
+    //mFile.dab_fav_write_file();
+    ui->list_fm->clear();
+    mFile.fm_read_file();
+    Dialog::fm_fill_list(); //write file to vecvec
+    //Dialog::fm_show_fav_btn();
     //MainWindow::dab_disable_btn();
 }
 
@@ -550,13 +617,13 @@ void Dialog::dab_show_fav_btn()
 }
 
 void Dialog::tune_dab_wrapper(int btn_id)
-{
+{ 
     fd = net_open("/dev/dab0", O_RDWR);
 
     //g_last_state_dab_fm = "DAB";
     g_tuner_mode = "DAB";
     qDebug() << "g_tuner_mode: " << g_tuner_mode;
-    g_last_state_mute_unmute = "unmuted";
+    g_last_state_mute_unmute = "muted";
     qDebug() << "g_last_state_mute_unmute: : " << g_last_state_mute_unmute;
     uint frequency = g_dab_vec_vec[dab_found_favs.at(btn_id)][1].toUInt();
     bool ok;
@@ -565,7 +632,8 @@ void Dialog::tune_dab_wrapper(int btn_id)
     uint8_t comp = 1;
     uint8_t comp_set = 1;
 
-    mMute.set_mute(fd, "off");
+    //mMute.set_mute(fd, "off");
+    mMute.set_mute();
     mTune.set_dab_channel(fd,frequency,sid,sid_set,comp,comp_set);
 }
 
@@ -601,35 +669,29 @@ void Dialog::on_btn_dab_st06_clicked()
 
 void Dialog::on_btn_main_mute_clicked()
 {
-    QString tmp_mute_unmute_state;
+    mMute.set_mute();
+}
+
+void Dialog::on_btn_scan_mute_clicked()
+{
+    mMute.set_mute();
+}
+
+void Dialog::on_btn_tuner_mode_clicked()
+{
+    QString tmp_tuner_mode;
 
     if(g_tuner_mode == "DAB"){
-        fd = net_open("/dev/dab0", O_RDWR);
-    } else{
-        fd = net_open("/dev/radio0", O_RDWR);
+
+        tmp_tuner_mode = "FM";
     }
 
-    if(g_last_state_mute_unmute == "unmuted"){
+    if(g_tuner_mode == "FM"){
 
-        //mute DAB
-        if(g_tuner_mode == "DAB"){
-            mMute.set_mute(fd, "on");
-            //g_last_state_mute_unmute = "muted";
-        }
-
-    tmp_mute_unmute_state = "muted";
+        tmp_tuner_mode = "DAB";
     }
 
-    if(g_last_state_mute_unmute == "muted"){
+    g_tuner_mode = tmp_tuner_mode;
 
-        //unmute DAB
-        if(g_tuner_mode == "DAB"){
-            mMute.set_mute(fd, "off");
-            //g_last_state_mute_unmute = "unmuted";
-        }
-    tmp_mute_unmute_state = "unmuted";
-    }
-
-    g_last_state_mute_unmute = tmp_mute_unmute_state;
-
+    qDebug() << "g_tuner_mode: " << g_tuner_mode;
 }

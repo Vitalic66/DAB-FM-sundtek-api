@@ -181,6 +181,162 @@ void File::dab_write_file(){
     file_dab.close();
 }
 
+void File::fm_read_file(){
+
+    //read lines from fm.txt to qVectorVector
+
+    QFile file_fm(path_fm);
+    if(!file_fm.open(QFile::ReadOnly | QFile::Text)){
+        //QMessageBox::warning(this,"..","keine datei gefunden");
+        //ui->warn_no_dab_list->setVisible(true);
+        //return;
+    }
+
+    QFile file_fm_fav(path_fm_fav);
+    if(!file_fm_fav.open(QFile::ReadOnly | QFile::Text)){
+        //QMessageBox::warning(this,"..","keine datei gefunden");
+        //ui->warn_no_dab_list->setVisible(true);
+        //return;
+    }
+
+    g_fm_vec_vec.clear();
+
+    QTextStream fm_stream_in_file(&file_fm);
+    QString fm_stream_in_line;
+    QTextStream fm_fav_stream_in_file(&file_fm_fav);
+    QString fm_fav_stream_in_line;
+
+    while (!fm_stream_in_file.atEnd()) {
+
+       fm_stream_in_line = fm_stream_in_file.readLine();
+
+       QStringList split_fm_stream_in_line = fm_stream_in_line.split(",");
+
+       QVector<QString> fm_vec;
+
+       fm_vec.push_back(split_fm_stream_in_line.at(0)); //== name of station
+       fm_vec.push_back(split_fm_stream_in_line.at(1)); //== freq of station
+       fm_vec.push_back(split_fm_stream_in_line.at(2)); //== is favorit?
+       g_fm_vec_vec.push_back(fm_vec);
+    }
+
+    qDebug() << "g_fm_vec_vec before fav:" << g_fm_vec_vec;
+
+    while (!fm_fav_stream_in_file.atEnd()) {
+
+       fm_fav_stream_in_line = fm_fav_stream_in_file.readLine();
+
+       QStringList split_fm_fav_stream_in_line = fm_fav_stream_in_line.split(",");
+
+       QVector<QString> fm_vec;
+
+       fm_vec.push_back(split_fm_fav_stream_in_line.at(0)); //== name of station
+       fm_vec.push_back(split_fm_fav_stream_in_line.at(1)); //== freq of station
+       fm_vec.push_back(split_fm_fav_stream_in_line.at(3)); //== is favorit?
+       g_fm_vec_vec.push_back(fm_vec);
+    }
+
+    qDebug() << "g_fm_vec_vec after fav:" << g_fm_vec_vec;
+
+    QString fm_vec_vec_to_line;
+    QStringList unsort_list;
+
+    for(int i = 0; i < g_fm_vec_vec.size(); i++){
+
+        fm_vec_vec_to_line = g_fm_vec_vec[i][0] + "," + g_fm_vec_vec[i][1] + "," + g_fm_vec_vec[i][2];
+
+        unsort_list.append(fm_vec_vec_to_line);
+    }
+
+    g_fm_vec_vec.clear(); //clear before reread
+
+    //sort both in files together
+
+    QStringList list {File::sort_list(unsort_list)};
+
+    foreach(QString fm_line_sort, list){
+
+        QVector<QString> fm_vec;
+        QStringList split_sort_list = fm_line_sort.split(",");
+        qDebug() << "split sort list" << split_sort_list;
+        fm_vec.push_back(split_sort_list.at(0)); //== name of station
+        fm_vec.push_back(split_sort_list.at(1)); //== freq of station
+        fm_vec.push_back(split_sort_list.at(2)); //== is favorit?
+        g_fm_vec_vec.push_back(fm_vec);
+    }
+
+    file_fm.close();
+    file_fm_fav.close();
+}
+
+void File::fm_fav_write_file(){
+
+    //writes lines from qVectorVector to file
+
+    QFile file_fm_fav(path_fm_fav);
+    if(!file_fm_fav.open(QFile::WriteOnly | QFile::Text)){
+        //QMessageBox::warning(this,"..","keine datei gefunden");
+        //ui->warn_no_dab_list->setVisible(true);
+        return;
+    }
+
+    QString fm_vec_vec_to_line;
+    QStringList unsort_list;
+
+    for(int i = 0; i < g_fm_vec_vec.size(); i++){
+
+        if(g_fm_vec_vec[i][2] == "fav"){
+
+            fm_vec_vec_to_line = g_fm_vec_vec[i][0] + "," + g_fm_vec_vec[i][1] + "," + g_fm_vec_vec[i][2];
+
+            unsort_list.append(fm_vec_vec_to_line);
+        }
+    }
+
+    QTextStream fm_fav_write_to_file(&file_fm_fav);
+    QStringList list {File::sort_list(unsort_list)};
+
+    foreach(QString fm_line_sort, list){
+        fm_fav_write_to_file << fm_line_sort << "\n";
+    }
+
+    file_fm_fav.flush();
+    file_fm_fav.close();
+}
+
+void File::fm_write_file(){
+
+    //writes lines from qVectorVector to file
+
+    QFile file_fm(path_fm);
+    if(!file_fm.open(QFile::WriteOnly | QFile::Text)){
+        //QMessageBox::warning(this,"..","keine datei gefunden");
+        //ui->warn_no_dab_list->setVisible(true);
+        return;
+    }
+
+    file_fm.resize(0); //erase content in file before write
+
+    QString fm_vec_vec_to_line;
+    QStringList unsort_list;
+
+    for(int i = 0; i < g_fm_vec_vec.size(); i++){
+
+        fm_vec_vec_to_line = g_fm_vec_vec[i][0] + "," + g_fm_vec_vec[i][1] + "," + g_fm_vec_vec[i][2];
+
+        unsort_list.append(fm_vec_vec_to_line);
+    }
+
+    QTextStream fm_write_to_file(&file_fm);
+    QStringList list {File::sort_list(unsort_list)};
+
+    foreach(QString fm_line_sort, list){
+        fm_write_to_file << fm_line_sort << "\n";
+    }
+
+    file_fm.flush();
+    file_fm.close();
+}
 
 QStringList File::sort_list(QStringList list){
 

@@ -3,6 +3,8 @@
 
 #include <QObject>
 
+#include <globals.h>
+
 //#include <dialog.h>
 
 #include </opt/include/mediaclient.h>
@@ -15,7 +17,8 @@ class Mute : public QObject
 public:
     explicit Mute(QObject *parent = nullptr);
 
-    int set_mute(int fd, const char *arg);
+    //int set_mute(int fd, const char *arg);
+    int set_mute();
 
 signals:
 

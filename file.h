@@ -22,6 +22,8 @@ public:
 
     void dab_read_file();
 
+    void fm_read_file();
+
     Scan mScan;
 
 signals:
@@ -31,6 +33,10 @@ public slots:
     void dab_write_file();
 
     void dab_fav_write_file();
+
+    void fm_write_file();
+
+    void fm_fav_write_file();
 
 private:
 

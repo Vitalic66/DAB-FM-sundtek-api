@@ -4,286 +4,230 @@
 #include <QStringLiteral>
 
 QVector<QVector<QString>> g_dab_vec_vec;
+QVector<QVector<QString>> g_fm_vec_vec;
 
 Scan::Scan(QObject *parent) : QObject(parent)
 {
-mStop_dab_scan = false;
-QVector<QVector<QString>> dab_vec_vec;
+    mStop_dab_scan = false;
+    mStop_fm_scan = false;
 
 }
 
-void Scan::stop_scan()
+void Scan::stop_scan_dab()
 {
    mStop_dab_scan = true;
 }
 
+void Scan::stop_scan_fm()
+{
+   mStop_fm_scan = true;
+}
+
 int Scan::dab_scan_wrapped(){
 
-    //mStop_dab_scan = false;
-//while(!mStop_dab_scan){
-    //forever{
-
-        //if(mStop_dab_scan) return 0;
-
-    //if(mStop_dab_scan){
-    //    return 0;
-    //} else {
     int devfd = -1;
     int console = -1;
     int running = -1;
 
     Scan::media_scan_dabfrequencies("/dev/dab0",devfd,console,running);
-    //}
-//}
-
-//return dab_vec_vec;
 }
 
-int Scan::media_scan_dabfrequencies(char *device, int devfd, int console, int running) {
+int Scan::fm_scan_wrapped(){
+qDebug() << "fm scan wrapper called";
+    int devfd = -1;
+//    int console = -1;
+//    int running = -1;
 
-//    forever{
+    Scan::media_scan_fm_frequencies("/dev/radio0",devfd);
+}
 
-//        if(mStop_dab_scan) break;
+int Scan::media_scan_dabfrequencies(char *device, int devfd, int console, int running)
+{
+    int fd;
+    int rv;
+    int nlen;
+    char tmp[30];
+    dab_name_vec.clear();
+    dab_sid_vec.clear();
+    g_dab_vec_vec.clear();
 
-        int fd;
-        int rv;
-        int nlen;
-        char tmp[30];
-        //clear vectors before new scan
-        dab_vec_vec.clear();
-        dab_name_vec.clear();
-        dab_sid_vec.clear();
+    int prog_bar_dab = 0;
 
-        g_dab_vec_vec.clear();
+        if (devfd>=0)
+                fd = devfd;
+        else
+                fd = net_open(device, O_RDWR);
 
-//        for(int i = 0;i < g_dab_vec_vec.size(); i++){
+        if (fd>=0) {
+                struct dab_frequency dabf;
+                struct dab_tuner dabt;
+                int i;
+                int e;
+                int current_scan_index=-1;
+                struct dab_scan_setup setup;
+                struct dab_scan_parameters parameters;
+                memset(&parameters, 0x0, sizeof(struct dab_scan_parameters));
+                memset(&setup, 0x0, sizeof(struct dab_scan_setup));
+                net_ioctl(fd, DAB_SCAN_SETUP, &setup);
 
-//            if(!g_dab_vec_vec[i][3].contains("fav")){
-//                g_dab_vec_vec.remove(i);
-//            }
+                static struct {
+                        char channel[4];
+                        uint32_t freq;
+                } dab_frequency_list[]={
+                        {"5A", 174928},
+                        {"5B",176640},
+                        {"5C",178352},
+                        {"5D",180064},
+                        {"6A",181936},
+                        {"6B",183648},
+                        {"6C",185360},
+                        {"6D",187072},
+                        {"7A",188928},
+                        {"7B",190640},
+                        {"7C",192352},
+                        {"7D",194064},
+                        {"8A",195936},
+                        {"8B",197648},
+                        {"8C",199360},
+                        {"8D",201072},
+                        {"9A",202928},
+                        {"9B",204640},
+                        {"9C",206352},
+                        {"9D",208064},
+                        {"10A",209936},
+                        {"10B",211648},
+                        {"10C",213360},
+                        {"10D",215072},
+                        {"11A",216928},
+                        {"11B",218640},
+                        {"11C",220352},
+                        {"11D",222064},
+                        {"12A",223936},
+                        {"12B",225648},
+                        {"12C",227360},
+                        {"12D",229072},
+                        {"13A",230748},
+                        {"13B",232496},
+                        {"13C",234208},
+                        {"13D",235776},
+                        {"13E",237448},
+                        {"13F",239200}
+                };
 
-//        }
+                int dab_frequency_list_size =sizeof(dab_frequency_list)/sizeof(dab_frequency_list[0]);
+                //qDebug() << "foo: " << foo;
+                //qDebug() << "size struct" << dab_frequency_list->channel.s
 
-int prog_bar_dab = 0;
+                do {
 
-
-            if (devfd>=0)
-                    fd = devfd;
-            else
-                    fd = net_open(device, O_RDWR);
-
-            if (fd>=0) {
-                    struct dab_frequency dabf;
-                    struct dab_tuner dabt;
-                    int i;
-                    int e;
-                    int current_scan_index=-1;
-                    struct dab_scan_setup setup;
-                    struct dab_scan_parameters parameters;
-                    memset(&parameters, 0x0, sizeof(struct dab_scan_parameters));
-                    memset(&setup, 0x0, sizeof(struct dab_scan_setup));
-                    net_ioctl(fd, DAB_SCAN_SETUP, &setup);
-
-                    static struct {
-                            char channel[4];
-                            uint32_t freq;
-                    } dab_frequency_list[]={
-                            {"5A", 174928},
-                            {"5B",176640},
-                            {"5C",178352},
-                            {"5D",180064},
-                            {"6A",181936},
-                            {"6B",183648},
-                            {"6C",185360},
-                            {"6D",187072},
-                            {"7A",188928},
-                            {"7B",190640},
-                            {"7C",192352},
-                            {"7D",194064},
-                            {"8A",195936},
-                            {"8B",197648},
-                            {"8C",199360},
-                            {"8D",201072},
-                            {"9A",202928},
-                            {"9B",204640},
-                            {"9C",206352},
-                            {"9D",208064},
-                            {"10A",209936},
-                            {"10B",211648},
-                            {"10C",213360},
-                            {"10D",215072},
-                            {"11A",216928},
-                            {"11B",218640},
-                            {"11C",220352},
-                            {"11D",222064},
-                            {"12A",223936},
-                            {"12B",225648},
-                            {"12C",227360},
-                            {"12D",229072},
-                            {"13A",230748},
-                            {"13B",232496},
-                            {"13C",234208},
-                            {"13D",235776},
-                            {"13E",237448},
-                            {"13F",239200}
-                    };
-
-                    int dab_frequency_list_size =sizeof(dab_frequency_list)/sizeof(dab_frequency_list[0]);
-                    //qDebug() << "foo: " << foo;
-                    //qDebug() << "size struct" << dab_frequency_list->channel.s
-
-                    do {
-//while(!mStop_dab_scan){
-                            net_ioctl(fd, DAB_SCAN_NEXT_FREQUENCY, &parameters);
-                            if (current_scan_index != parameters.scan_index) {
-                                    if (console>=0) {
-                                            sprintf(tmp, "%s %d\n", dab_frequency_list[parameters.scan_index].channel, dab_frequency_list[parameters.scan_index].freq*1000);
-                                            rv=write(console, tmp, nlen);
-                                    } else {
-                                            fprintf(stdout, "%s %d\n", dab_frequency_list[parameters.scan_index].channel, dab_frequency_list[parameters.scan_index].freq*1000);
-                                            fflush(stdout);
-                                    }
+                    net_ioctl(fd, DAB_SCAN_NEXT_FREQUENCY, &parameters);
+                    if (current_scan_index != parameters.scan_index) {
+                            if (console>=0) {
+                                    sprintf(tmp, "%s %d\n", dab_frequency_list[parameters.scan_index].channel, dab_frequency_list[parameters.scan_index].freq*1000);
+                                    rv=write(console, tmp, nlen);
+                            } else {
+                                    fprintf(stdout, "%s %d\n", dab_frequency_list[parameters.scan_index].channel, dab_frequency_list[parameters.scan_index].freq*1000);
+                                    fflush(stdout);
                             }
+                    }
 
-                            switch(parameters.status) {
-                            case DAB_SCAN_LOCKED:
-                            {
-                                    if (console>=0) {
-                                            rv=write(console, "[LOCKED]\n", 9);
-                                    } else {
+                    switch(parameters.status) {
+                        case DAB_SCAN_LOCKED:
+                        {
+                            if (console>=0) {
+                                rv=write(console, "[LOCKED]\n", 9);
+                            } else {
+                                QString freq = QString::number(dab_frequency_list[parameters.scan_index].freq*1000);
+                                uint freq_as_int = freq.toUInt();
+                                //bool ok;
 
-                                            //QString freq;
-                                            //char freq_char = static_cast<char>(dab_frequency_list[parameters.scan_index].freq*1000);
-                                            //qDebug() << "scan_index: " << dab_frequency_list[parameters.scan_index].freq;
-                                            //qDebug() << "freq_char: " << freq_char;
-                                            //freq.append(freq_char);
-                                            //qDebug() << "freq: " << freq;
-                                            //QString freq = ;
-                                            QString freq = QString::number(dab_frequency_list[parameters.scan_index].freq*1000);
-                                            uint freq_as_int = freq.toUInt();
-                                            //bool ok;
+                                //tune to dab frequency locked
+                                mTune.set_dab_freq(fd, freq_as_int);
+                                //start scan dab services
 
-                                            //tune to dab frequency locked
-                                            mTune.set_dab_freq(fd, freq_as_int);
-                                            //start scan dab services
+                                //QString to char
+                                QString string = "/dev/dab0";
 
+                                QByteArray array = string.toLocal8Bit();
+                                char* buffer = array.data();
+                                qDebug() << "char buffer: " << buffer;
 
-                                            //QString to char
-                                            QString string = "/dev/dab0";
+                                //QVector<int> dab_sid_vec_back {Scan::media_scan_dabservices(buffer)};
 
-                                            QByteArray array = string.toLocal8Bit();
-                                            char* buffer = array.data();
-                                            qDebug() << "char buffer: " << buffer;
+                                Scan::media_scan_dabservices(buffer);
 
-                                            //QVector<int> dab_sid_vec_back {Scan::media_scan_dabservices(buffer)};
+                                for(int j = 0; j < dab_sid_vec.size(); j++){
 
-                                            Scan::media_scan_dabservices(buffer);
-//dab_vec_vec.clear();
-                                            for(int j = 0; j < dab_sid_vec.size(); j++){
+                                    //dab_vec.push_back(dab_sid_vec.at(j)); //service_name
+                                    //dab_vec.push_back(dab_frequency_list[parameters.scan_index].freq*1000); //freq
 
-                                                //dab_vec.push_back(dab_sid_vec.at(j)); //service_name
-                                                //dab_vec.push_back(dab_frequency_list[parameters.scan_index].freq*1000); //freq
+                                    dab_vec.clear();
+                                    dab_vec.push_back(dab_name_vec.at(j)); //service_name
+                                    dab_vec.push_back(freq); //freq
+                                    dab_vec.push_back(dab_sid_vec.at(j)); //service_id
+                                    dab_vec.push_back(""); //placeholder for fav
+                                    //dab_vec_vec.push_back(dab_vec);
+                                    g_dab_vec_vec.push_back(dab_vec);
 
-                                                dab_vec.clear();
-                                                dab_vec.push_back(dab_name_vec.at(j)); //service_name
-                                                dab_vec.push_back(freq); //freq
-                                                dab_vec.push_back(dab_sid_vec.at(j)); //service_id
-                                                dab_vec.push_back(""); //placeholder for fav
-                                                //dab_vec_vec.push_back(dab_vec);
-                                                g_dab_vec_vec.push_back(dab_vec);
+                                }
 
-                                            }
-                                            dab_name_vec.clear();
-                                            dab_sid_vec.clear();
+                                dab_name_vec.clear();
+                                dab_sid_vec.clear();
 
 
-                                            qDebug() << "dab_vec_after_for" << dab_vec;
-                                            qDebug() << "dab_vec_vec_after_for" << dab_vec_vec;
-                                            qDebug() << "g_dab_vec_vec_after_for" << g_dab_vec_vec;
-
-
-
-
-                                            //qDebug() << "conv: " << conv;
-                                            //dab_vec.push_back(freq);
-                                            //qDebug() << "dab_vec: " << dab_vec;
-                                            //dab_vec_vec.push_back(dab_vec);
-                                            //qDebug() << "dab_vec_vec: " << dab_vec_vec;
-                                            //fprintf(stdout, "[LOCKED]\n");
-
-
-
-
-
-                                    }
-                                    break;
+                                qDebug() << "dab_vec_after_for" << dab_vec;
+                                //qDebug() << "dab_vec_vec_after_for" << dab_vec_vec;
+                                qDebug() << "g_dab_vec_vec_after_for" << g_dab_vec_vec;
                             }
-                            case DAB_SCAN_SEARCHING:
-                                    usleep(10000);
-                                    break;
-                            case DAB_SCAN_COMPLETE:
-                            //case 8:
-                            {
-                                    if (console>=0) {
-                                            rv=write(console, "[FINISHED]\n", 11);
-                                    } else {
-                                            fprintf(stdout, "\nScan completed\n");
-                                    }
-                                    break;
-                            }
-                            }
-                            current_scan_index = parameters.scan_index;
-                            //qDebug() << "status: " << parameters.status;
-                            qDebug() << "size of dab list: " << dab_frequency_list_size;
-                            qDebug() << "scan index: " << current_scan_index;
+                            break;
+                        }
+                        case DAB_SCAN_SEARCHING:
+                                usleep(10000);
+                                break;
+                        case DAB_SCAN_COMPLETE:
 
-                            prog_bar_dab = (current_scan_index *100) / (dab_frequency_list_size -1);
-                            qDebug() << "prog bar value: " << prog_bar_dab;
+                        {
+                                if (console>=0) {
+                                        rv=write(console, "[FINISHED]\n", 11);
+                                } else {
+                                        fprintf(stdout, "\nScan completed\n");
+                                }
+                                break;
+                        }
+                    }
 
-                            emit progress_scan_dab(prog_bar_dab);
-                            emit enable_buttons(false);
+                    current_scan_index = parameters.scan_index;
+                    //qDebug() << "status: " << parameters.status;
+                    qDebug() << "size of dab list: " << dab_frequency_list_size;
+                    qDebug() << "scan index: " << current_scan_index;
 
-                            //while(prog_bar_dab != 100){
-                            //if(prog_bar_dab == )
+                    prog_bar_dab = (current_scan_index *100) / (dab_frequency_list_size -1);
+                    qDebug() << "prog bar value: " << prog_bar_dab;
 
-                            //}
+                    emit progress_scan_dab(prog_bar_dab);
+                    emit enable_buttons(false);
 
+                    if (console>=0 && running == 0)
+                            break;
 
-                            if (console>=0 && running == 0)
-                                    break;
+                    if(prog_bar_dab == 100){
+                        emit enable_buttons(true);
+                        emit write_to_file();
+                        emit finished_scan();
+                        mStop_dab_scan = true;
+                    }
 
-                            if(prog_bar_dab == 100){
-                                emit enable_buttons(true);
-                                emit write_to_file();
-                                emit finished_scan();
-                                mStop_dab_scan = true;
-                            }
+                    qDebug() << "mStop_scan_dab: " << mStop_dab_scan;
 
+                } while (parameters.status != DAB_SCAN_COMPLETE && mStop_dab_scan == false);
 
-                            qDebug() << "mStop_scan_dab: " << mStop_dab_scan;
+            qDebug() << "g_dabvecvec after scan: " << g_dab_vec_vec;
 
-//}
-                    //} while (parameters.status != DAB_SCAN_COMPLETE);
-                    } while (parameters.status != DAB_SCAN_COMPLETE && mStop_dab_scan == false);
-//}
-                    qDebug() << "dabvecvec after scan: " << dab_vec_vec;
-                    qDebug() << "g_dabvecvec after scan: " << g_dab_vec_vec;
+            if (devfd == -1)
+                    net_close(fd);
+        }
 
-                    if (devfd == -1)
-                            net_close(fd);
-            }
-
-
-
-
-
-//        for(int i = 0; i < dab_vec_vec.size();i++){
-//            QVector<QString> dab_trans_vec_vec {Scan::media_scan_dabservices("dev/dab0")};
-
-//        }
-
-// }
-        return 0;
+    return 0;
 
 }
 
@@ -367,5 +311,107 @@ int Scan::media_scan_dabservices(char *device) {
 
         //return dab_sid_vec;
 
+        return 0;
+}
+
+//int Scan::media_scan_fm_frequencies(char *device, int devfd, int console, int running) {
+int Scan::media_scan_fm_frequencies(char *device, int devfd) {
+qDebug() << "media scan fm called";
+        int fd;
+        int rv;
+        int nlen;
+        char tmp[30];
+        g_fm_vec_vec.clear();
+        if (devfd>=0)
+                fd = devfd;
+        else {
+                printf("opening device: %s\n", device);
+                fd = net_open(device, O_RDWR);
+        }
+
+        if (fd>=0) {
+                int i;
+                int e;
+                int current_scan_index=-1;
+                struct fm_scan_setup setup;
+                struct fm_scan_parameters parameters;
+                memset(&parameters, 0x0, sizeof(struct fm_scan_parameters));
+                memset(&setup, 0x0, sizeof(struct fm_scan_setup));
+                printf("SCAN SETUP\n");
+                net_ioctl(fd, FM_SCAN_SETUP, &setup);
+
+                int station = 0;
+
+                do {
+
+
+                        net_ioctl(fd, FM_SCAN_NEXT_FREQUENCY, &parameters);
+        //              printf("LOCK STAT: %x - %d - %d\n", parameters.status, parameters.VALID, parameters.READFREQ);
+
+                        switch(parameters.status) {
+                            case FM_SCAN_LOCKED:
+                            {
+                                    QString freq = QString::number(parameters.READFREQ*1000);
+                                    qDebug() << "fm freq: " << freq;
+    //                                if (console>=0) {
+    //                                        printf("FREQUENCY: %d ", parameters.READFREQ);
+    //                                        rv=write(console, "[LOCKED]\n", 9);
+    //                                } else {
+                                            fprintf(stdout, "%d [LOCKED]\n", parameters.READFREQ);
+
+                                            station++;
+                                            fm_vec.clear();
+                                            fm_vec.push_back("Station " + QString::number(station)); //Station x
+                                            fm_vec.push_back(freq); //frequency
+                                            fm_vec.push_back(""); //placeholder for fav
+
+                                            qDebug() << "fm_vec: " << fm_vec;
+
+                                            g_fm_vec_vec.push_back(fm_vec);
+                                            qDebug() << "g_fm_vec_vec: " << g_fm_vec_vec;
+
+    //                                }
+                                    break;
+                            }
+                            case FM_SCAN_SEARCHING:
+                                    usleep(10000);
+                                    break;
+                            case FM_SCAN_COMPLETE:
+                            {
+    //                                if (console>=0) {
+    //                                        rv=write(console, "[FINISHED]\n", 11);
+    //                                } else {
+                                            fprintf(stdout, "\nScan completed\n");
+
+
+                                            mStop_fm_scan = true;
+                                    //}
+                                    break;
+                            }
+
+                        //station = station + 1;
+                        qDebug() << "i in fm scan: " << station;
+
+                        }
+//                        if (console>=0 && running == 0)
+//                                break;
+
+                        emit progress_scan_fm();
+                        emit enable_buttons(false);
+
+                        qDebug() << "mStop_fm_scan: " << mStop_fm_scan;
+
+                } while (parameters.status != FM_SCAN_COMPLETE && mStop_fm_scan == false);
+
+                emit enable_buttons(true);
+                //emit write_to_file();
+                emit finished_scan_fm();
+
+
+                qDebug() << "g_fm_vec_vec: " << g_fm_vec_vec;
+
+                if (devfd == -1)
+                        net_close(fd);
+        }
         return 0;
 }

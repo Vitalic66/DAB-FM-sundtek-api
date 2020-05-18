@@ -74,6 +74,12 @@ private slots:
 
     void dab_fill_list();
 
+    void fm_refresh_all();
+
+    void fm_refresh_after_scan();
+
+    void fm_fill_list();
+
     void on_btn_main_to_scan_clicked();
 
     void on_btn_scan_to_main_clicked();
@@ -95,6 +101,10 @@ private slots:
 
     void on_btn_main_mute_clicked();
 
+    void on_btn_scan_mute_clicked();
+
+    void on_btn_tuner_mode_clicked();
+
 public slots:
 
     //void newNumber(QString name, int number);
@@ -102,6 +112,8 @@ public slots:
     void rds_stream(QString radio_program);
 
     void prog_bar_dab_valueChanged(int prog_bar_value);
+
+    //void prog_bar_fm_valueChanged(int prog_bar_value);
 
     //void fill_dab_list();
 
@@ -116,7 +128,7 @@ private:
     Mute mMute;
     File mFile;
 
-    int fd;
+
     //QString tuner_mode = ""; //dab or fm
 
     QVector<int> fm_found_favs;

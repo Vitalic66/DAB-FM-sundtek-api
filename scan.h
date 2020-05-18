@@ -23,27 +23,41 @@ public:
     int media_scan_dabservices(char *device);
 
     int dab_scan_wrapped();
-    QVector<QVector<QString>> dab_vec_vec;
+
+    int fm_scan_wrapped();
+
+    //int media_scan_fm_frequencies(char *device, int devfd, int console, int running);
+    int media_scan_fm_frequencies(char *device, int devfd);
+
     QVector<QString> dab_vec;
+    QVector<QString> fm_vec;
+
     bool mStop_dab_scan;
+    bool mStop_fm_scan;
 
 signals:
 
     void progress_scan_dab(int prog_bar_dab);
+    void progress_scan_fm();
     void enable_buttons(bool btn_st);
     void write_to_file();
     void finished_scan();
+    void finished_scan_fm();
 
 public slots:
 
-    void stop_scan();
+    void stop_scan_dab();
+    void stop_scan_fm();
 
 private:
     //QVector<QVector<uint32_t>> dab_vec_vec;
 
     //QVector<uint32_t> dab_sid_vec;
     QVector<QString> dab_name_vec;
+    QVector<QString> fm_name_vec;
     QVector<QString> dab_sid_vec;
+
+
     Tune mTune;
 
 
