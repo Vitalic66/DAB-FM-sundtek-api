@@ -6,202 +6,494 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>564</width>
-    <height>517</height>
+    <width>800</width>
+    <height>480</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>DAB FM for sundtek dongles</string>
   </property>
-  <widget class="QLineEdit" name="ln_freq">
+  <widget class="QStackedWidget" name="stackedWidget">
    <property name="geometry">
     <rect>
-     <x>220</x>
-     <y>130</y>
-     <width>131</width>
-     <height>25</height>
+     <x>0</x>
+     <y>0</y>
+     <width>800</width>
+     <height>480</height>
     </rect>
    </property>
-  </widget>
-  <widget class="QPushButton" name="btnTune">
-   <property name="geometry">
-    <rect>
-     <x>240</x>
-     <y>160</y>
-     <width>89</width>
-     <height>25</height>
-    </rect>
-   </property>
-   <property name="text">
-    <string>FM Tune</string>
-   </property>
-  </widget>
-  <widget class="QWidget" name="layoutWidget">
-   <property name="geometry">
-    <rect>
-     <x>10</x>
-     <y>10</y>
-     <width>551</width>
-     <height>83</height>
-    </rect>
-   </property>
-   <layout class="QVBoxLayout" name="verticalLayout">
-    <item>
-     <layout class="QGridLayout" name="gridLayout">
-      <item row="0" column="0">
-       <widget class="QPushButton" name="btnMute">
-        <property name="text">
-         <string>mute</string>
-        </property>
-       </widget>
-      </item>
-      <item row="0" column="1">
-       <widget class="QPushButton" name="btnUnmute">
-        <property name="text">
-         <string>unmute</string>
-        </property>
-       </widget>
-      </item>
-      <item row="1" column="0">
-       <widget class="QPushButton" name="btnStop">
-        <property name="text">
-         <string>Stop</string>
-        </property>
-       </widget>
-      </item>
-      <item row="1" column="1">
-       <widget class="QPushButton" name="btnStart">
-        <property name="text">
-         <string>Start</string>
-        </property>
-       </widget>
-      </item>
-     </layout>
-    </item>
-    <item>
-     <widget class="QLabel" name="label">
-      <property name="text">
-       <string/>
-      </property>
-     </widget>
-    </item>
-   </layout>
-  </widget>
-  <widget class="QLineEdit" name="ln_sid">
-   <property name="geometry">
-    <rect>
-     <x>360</x>
-     <y>130</y>
-     <width>113</width>
-     <height>25</height>
-    </rect>
-   </property>
-  </widget>
-  <widget class="QPushButton" name="btnDabTune">
-   <property name="geometry">
-    <rect>
-     <x>370</x>
-     <y>160</y>
-     <width>89</width>
-     <height>25</height>
-    </rect>
-   </property>
-   <property name="text">
-    <string>DAB Tune</string>
-   </property>
-  </widget>
-  <widget class="QPushButton" name="btnDabScanFreq">
-   <property name="geometry">
-    <rect>
-     <x>370</x>
-     <y>200</y>
-     <width>121</width>
-     <height>25</height>
-    </rect>
-   </property>
-   <property name="text">
-    <string>DAB scan freq</string>
-   </property>
-  </widget>
-  <widget class="QListWidget" name="list_dab">
-   <property name="geometry">
-    <rect>
-     <x>20</x>
-     <y>280</y>
-     <width>256</width>
-     <height>192</height>
-    </rect>
-   </property>
-   <property name="focusPolicy">
-    <enum>Qt::NoFocus</enum>
-   </property>
-  </widget>
-  <widget class="QProgressBar" name="prog_bar_dab">
-   <property name="geometry">
-    <rect>
-     <x>340</x>
-     <y>270</y>
-     <width>161</width>
-     <height>23</height>
-    </rect>
-   </property>
-   <property name="value">
+   <property name="currentIndex">
     <number>0</number>
    </property>
-  </widget>
-  <widget class="QPushButton" name="pushButton">
-   <property name="geometry">
-    <rect>
-     <x>40</x>
-     <y>160</y>
-     <width>89</width>
-     <height>25</height>
-    </rect>
-   </property>
-   <property name="text">
-    <string>dab_vec_vec</string>
-   </property>
-  </widget>
-  <widget class="QPushButton" name="pushButton_2">
-   <property name="geometry">
-    <rect>
-     <x>40</x>
-     <y>200</y>
-     <width>89</width>
-     <height>25</height>
-    </rect>
-   </property>
-   <property name="text">
-    <string>save</string>
-   </property>
-  </widget>
-  <widget class="QPushButton" name="btn_add_fav">
-   <property name="geometry">
-    <rect>
-     <x>340</x>
-     <y>390</y>
-     <width>90</width>
-     <height>60</height>
-    </rect>
-   </property>
-   <property name="text">
-    <string>ADD
+   <widget class="QWidget" name="page">
+    <property name="minimumSize">
+     <size>
+      <width>800</width>
+      <height>480</height>
+     </size>
+    </property>
+    <property name="maximumSize">
+     <size>
+      <width>800</width>
+      <height>480</height>
+     </size>
+    </property>
+    <widget class="QTabWidget" name="tabWidget">
+     <property name="geometry">
+      <rect>
+       <x>400</x>
+       <y>70</y>
+       <width>400</width>
+       <height>410</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <pointsize>26</pointsize>
+       <weight>75</weight>
+       <bold>true</bold>
+      </font>
+     </property>
+     <property name="styleSheet">
+      <string notr="true">QTabBar::tab{width: 200px; height: 60px;};</string>
+     </property>
+     <property name="currentIndex">
+      <number>0</number>
+     </property>
+     <widget class="QWidget" name="tab">
+      <attribute name="title">
+       <string>DAB</string>
+      </attribute>
+      <widget class="QPushButton" name="btn_dab_st02">
+       <property name="geometry">
+        <rect>
+         <x>210</x>
+         <y>20</y>
+         <width>160</width>
+         <height>90</height>
+        </rect>
+       </property>
+       <property name="text">
+        <string>PushButton</string>
+       </property>
+      </widget>
+      <widget class="QPushButton" name="btn_dab_st01">
+       <property name="geometry">
+        <rect>
+         <x>30</x>
+         <y>20</y>
+         <width>160</width>
+         <height>90</height>
+        </rect>
+       </property>
+       <property name="text">
+        <string>PushButton</string>
+       </property>
+      </widget>
+      <widget class="QPushButton" name="btn_dab_st06">
+       <property name="geometry">
+        <rect>
+         <x>210</x>
+         <y>240</y>
+         <width>160</width>
+         <height>90</height>
+        </rect>
+       </property>
+       <property name="text">
+        <string>PushButton</string>
+       </property>
+      </widget>
+      <widget class="QPushButton" name="btn_dab_st03">
+       <property name="geometry">
+        <rect>
+         <x>30</x>
+         <y>130</y>
+         <width>160</width>
+         <height>90</height>
+        </rect>
+       </property>
+       <property name="text">
+        <string>PushButton</string>
+       </property>
+      </widget>
+      <widget class="QPushButton" name="btn_dab_st05">
+       <property name="geometry">
+        <rect>
+         <x>30</x>
+         <y>240</y>
+         <width>160</width>
+         <height>90</height>
+        </rect>
+       </property>
+       <property name="text">
+        <string>PushButton</string>
+       </property>
+      </widget>
+      <widget class="QPushButton" name="btn_dab_st04">
+       <property name="geometry">
+        <rect>
+         <x>210</x>
+         <y>130</y>
+         <width>160</width>
+         <height>90</height>
+        </rect>
+       </property>
+       <property name="text">
+        <string>PushButton</string>
+       </property>
+      </widget>
+     </widget>
+     <widget class="QWidget" name="tab_2">
+      <attribute name="title">
+       <string>FM</string>
+      </attribute>
+      <widget class="QPushButton" name="btn_fm_st02">
+       <property name="geometry">
+        <rect>
+         <x>210</x>
+         <y>20</y>
+         <width>160</width>
+         <height>90</height>
+        </rect>
+       </property>
+       <property name="text">
+        <string>PushButton</string>
+       </property>
+      </widget>
+      <widget class="QPushButton" name="btn_fm_st01">
+       <property name="geometry">
+        <rect>
+         <x>30</x>
+         <y>20</y>
+         <width>160</width>
+         <height>90</height>
+        </rect>
+       </property>
+       <property name="text">
+        <string>PushButton</string>
+       </property>
+      </widget>
+      <widget class="QPushButton" name="btn_fm_st06">
+       <property name="geometry">
+        <rect>
+         <x>210</x>
+         <y>240</y>
+         <width>160</width>
+         <height>90</height>
+        </rect>
+       </property>
+       <property name="text">
+        <string>PushButton</string>
+       </property>
+      </widget>
+      <widget class="QPushButton" name="btn_fm_st03">
+       <property name="geometry">
+        <rect>
+         <x>30</x>
+         <y>130</y>
+         <width>160</width>
+         <height>90</height>
+        </rect>
+       </property>
+       <property name="text">
+        <string>PushButton</string>
+       </property>
+      </widget>
+      <widget class="QPushButton" name="btn_fm_st05">
+       <property name="geometry">
+        <rect>
+         <x>30</x>
+         <y>240</y>
+         <width>160</width>
+         <height>90</height>
+        </rect>
+       </property>
+       <property name="text">
+        <string>PushButton</string>
+       </property>
+      </widget>
+      <widget class="QPushButton" name="btn_fm_st04">
+       <property name="geometry">
+        <rect>
+         <x>210</x>
+         <y>130</y>
+         <width>160</width>
+         <height>90</height>
+        </rect>
+       </property>
+       <property name="text">
+        <string>PushButton</string>
+       </property>
+      </widget>
+     </widget>
+    </widget>
+    <widget class="QLabel" name="label">
+     <property name="geometry">
+      <rect>
+       <x>10</x>
+       <y>370</y>
+       <width>371</width>
+       <height>17</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string/>
+     </property>
+    </widget>
+    <widget class="QFrame" name="frame">
+     <property name="geometry">
+      <rect>
+       <x>30</x>
+       <y>80</y>
+       <width>191</width>
+       <height>191</height>
+      </rect>
+     </property>
+     <property name="frameShape">
+      <enum>QFrame::StyledPanel</enum>
+     </property>
+     <property name="frameShadow">
+      <enum>QFrame::Raised</enum>
+     </property>
+    </widget>
+    <widget class="QPushButton" name="btn_main_to_scan">
+     <property name="geometry">
+      <rect>
+       <x>710</x>
+       <y>0</y>
+       <width>90</width>
+       <height>60</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>SCAN</string>
+     </property>
+    </widget>
+    <widget class="QPushButton" name="btn_main_mute">
+     <property name="geometry">
+      <rect>
+       <x>90</x>
+       <y>0</y>
+       <width>90</width>
+       <height>60</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>MUTE</string>
+     </property>
+    </widget>
+   </widget>
+   <widget class="QWidget" name="page_2">
+    <widget class="QPushButton" name="btn_add_fav">
+     <property name="geometry">
+      <rect>
+       <x>90</x>
+       <y>350</y>
+       <width>90</width>
+       <height>60</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>ADD
 FAVORITE</string>
-   </property>
-  </widget>
-  <widget class="QPushButton" name="bnt_rem_fav">
-   <property name="geometry">
-    <rect>
-     <x>440</x>
-     <y>390</y>
-     <width>90</width>
-     <height>60</height>
-    </rect>
-   </property>
-   <property name="text">
-    <string>REMOVE
+     </property>
+    </widget>
+    <widget class="QPushButton" name="btnTune">
+     <property name="geometry">
+      <rect>
+       <x>290</x>
+       <y>160</y>
+       <width>89</width>
+       <height>25</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>FM Tune</string>
+     </property>
+    </widget>
+    <widget class="QListWidget" name="list_dab">
+     <property name="geometry">
+      <rect>
+       <x>400</x>
+       <y>260</y>
+       <width>256</width>
+       <height>192</height>
+      </rect>
+     </property>
+     <property name="focusPolicy">
+      <enum>Qt::NoFocus</enum>
+     </property>
+    </widget>
+    <widget class="QLineEdit" name="ln_freq">
+     <property name="geometry">
+      <rect>
+       <x>270</x>
+       <y>130</y>
+       <width>131</width>
+       <height>25</height>
+      </rect>
+     </property>
+    </widget>
+    <widget class="QPushButton" name="btnDabTune">
+     <property name="geometry">
+      <rect>
+       <x>420</x>
+       <y>160</y>
+       <width>89</width>
+       <height>25</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>DAB Tune</string>
+     </property>
+    </widget>
+    <widget class="QWidget" name="layoutWidget">
+     <property name="geometry">
+      <rect>
+       <x>220</x>
+       <y>40</y>
+       <width>551</width>
+       <height>83</height>
+      </rect>
+     </property>
+     <layout class="QVBoxLayout" name="verticalLayout">
+      <item>
+       <layout class="QGridLayout" name="gridLayout">
+        <item row="0" column="0">
+         <widget class="QPushButton" name="btnMute">
+          <property name="text">
+           <string>mute</string>
+          </property>
+         </widget>
+        </item>
+        <item row="0" column="1">
+         <widget class="QPushButton" name="btnUnmute">
+          <property name="text">
+           <string>unmute</string>
+          </property>
+         </widget>
+        </item>
+        <item row="1" column="0">
+         <widget class="QPushButton" name="btnStop">
+          <property name="text">
+           <string>Stop</string>
+          </property>
+         </widget>
+        </item>
+        <item row="1" column="1">
+         <widget class="QPushButton" name="btnStart">
+          <property name="text">
+           <string>Start</string>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </item>
+     </layout>
+    </widget>
+    <widget class="QPushButton" name="bnt_rem_fav">
+     <property name="geometry">
+      <rect>
+       <x>190</x>
+       <y>350</y>
+       <width>90</width>
+       <height>60</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>REMOVE
 FAVORITE</string>
-   </property>
+     </property>
+    </widget>
+    <widget class="QPushButton" name="btnDabScanFreq">
+     <property name="geometry">
+      <rect>
+       <x>420</x>
+       <y>200</y>
+       <width>121</width>
+       <height>25</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>DAB scan freq</string>
+     </property>
+    </widget>
+    <widget class="QPushButton" name="pushButton_2">
+     <property name="geometry">
+      <rect>
+       <x>90</x>
+       <y>200</y>
+       <width>89</width>
+       <height>25</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>save</string>
+     </property>
+    </widget>
+    <widget class="QProgressBar" name="prog_bar_dab">
+     <property name="geometry">
+      <rect>
+       <x>520</x>
+       <y>150</y>
+       <width>161</width>
+       <height>23</height>
+      </rect>
+     </property>
+     <property name="value">
+      <number>0</number>
+     </property>
+    </widget>
+    <widget class="QPushButton" name="pushButton">
+     <property name="geometry">
+      <rect>
+       <x>90</x>
+       <y>160</y>
+       <width>89</width>
+       <height>25</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>dab_vec_vec</string>
+     </property>
+    </widget>
+    <widget class="QLineEdit" name="ln_sid">
+     <property name="geometry">
+      <rect>
+       <x>410</x>
+       <y>130</y>
+       <width>113</width>
+       <height>25</height>
+      </rect>
+     </property>
+    </widget>
+    <widget class="QPushButton" name="btn_scan_to_main">
+     <property name="geometry">
+      <rect>
+       <x>0</x>
+       <y>0</y>
+       <width>90</width>
+       <height>60</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>MAIN</string>
+     </property>
+    </widget>
+    <widget class="QPushButton" name="btn_scan_mute">
+     <property name="geometry">
+      <rect>
+       <x>90</x>
+       <y>0</y>
+       <width>90</width>
+       <height>60</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>MUTE</string>
+     </property>
+    </widget>
+   </widget>
   </widget>
  </widget>
  <layoutdefault spacing="6" margin="11"/>

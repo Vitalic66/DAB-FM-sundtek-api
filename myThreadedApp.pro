@@ -35,7 +35,7 @@ SOURCES += \
     globals.cpp
 
 HEADERS += \
-        dialog.h \
+    dialog.h\
     tune.h \
     scan.h \
     mute.h \

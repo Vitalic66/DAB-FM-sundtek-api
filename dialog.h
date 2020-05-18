@@ -4,6 +4,10 @@
 #include <QDialog>
 #include <QDebug>
 #include <QtConcurrent>
+#include <QFileInfo>
+#include <QPainter>
+#include <QBitmap>
+#include <QPixmap>
 
 
 #include <fm_rds.h>
@@ -70,6 +74,27 @@ private slots:
 
     void dab_fill_list();
 
+    void on_btn_main_to_scan_clicked();
+
+    void on_btn_scan_to_main_clicked();
+
+    bool dab_logo_exists(QString sid);
+
+    void dab_show_fav_btn();
+
+    QPixmap logo_dab(QString in);
+
+    void on_btn_dab_st01_clicked();
+    void on_btn_dab_st02_clicked();
+    void on_btn_dab_st03_clicked();
+    void on_btn_dab_st04_clicked();
+    void on_btn_dab_st05_clicked();
+    void on_btn_dab_st06_clicked();
+
+    void tune_dab_wrapper(int btn_id);
+
+    void on_btn_main_mute_clicked();
+
 public slots:
 
     //void newNumber(QString name, int number);
@@ -92,10 +117,15 @@ private:
     File mFile;
 
     int fd;
-    QString tuner_state = ""; //dab or fm
+    //QString tuner_mode = ""; //dab or fm
 
+    QVector<int> fm_found_favs;
+    QVector<int> dab_found_favs;
 
+    QString path_dab_icons = "../stationlogos/";
 
+    //stylesheets
+    QString btn_default_rounded = ("border: 1px solid #ababab;border-radius: 20px;background: qlineargradient(x1:0 y1:0, x2:0 y2:1, stop:0 #ffffff, stop:1 #efefef);");
 
 };
 
