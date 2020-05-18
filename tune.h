@@ -27,7 +27,8 @@ public slots:
     //int set_dab_channel(int fd, uint32_t frequency, char sid, uint8_t sid_set, uint32_t comp, uint8_t comp_set);
 
 
-    int set_radio_channel(int fd, int frequency, int tuner);
+    //int set_radio_channel(int fd, int frequency, int tuner);
+    int set_radio_channel(int fd, uint32_t frequency);
 
 private:
 

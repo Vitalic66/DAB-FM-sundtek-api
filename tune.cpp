@@ -30,7 +30,7 @@ int Tune::set_dab_channel(int fd, uint32_t frequency, uint32_t sid, uint8_t sid_
 
     qDebug() << "last_tuned_freq before compare: " << last_tuned_freq_dab;
 
-    if(last_tuned_freq_dab != frequency){
+    if(last_tuned_freq_dab != frequency){ //tune to dab freq first if not done yet
         last_tuned_freq_dab = frequency;
 
         QProcess::execute("/opt/bin/mediaclient -m DAB -f " + freq_as_string);
@@ -47,10 +47,6 @@ int Tune::set_dab_channel(int fd, uint32_t frequency, uint32_t sid, uint8_t sid_
 
         struct dab_frequency dabf;
         memset(&dabf, 0x0, sizeof(struct dab_frequency));
-
-
-
-
 /*
         if (sid_set && comp_set)
                 printf("Tuning: %d, 0x%x, 0x%x\n", frequency, sid, comp);
@@ -76,9 +72,11 @@ int Tune::set_dab_channel(int fd, uint32_t frequency, uint32_t sid, uint8_t sid_
         return 0;
 }
 
-int Tune::set_radio_channel(int fd, int frequency, int tuner) {
+int Tune::set_radio_channel(int fd, uint32_t frequency) {
 
-    last_tuned_freq_dab = 0;
+
+        uint32_t tuner = 0;
+    //last_tuned_freq_dab = 0;
 
 //int Tune::set_radio_channel(int fd) {
         struct v4l2_frequency freq;

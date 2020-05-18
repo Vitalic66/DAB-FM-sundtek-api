@@ -21,7 +21,10 @@ Dialog::Dialog(QWidget *parent) :
 
 
     mFile.dab_read_file();
-    Dialog::dab_fill_list(); //dab_vec_vec to fm_list
+    mFile.fm_read_file();
+
+    Dialog::dab_fill_list(); //dab_vec_vec to dab_list
+    Dialog::fm_fill_list(); //fm_vec_vec to fm_list
 
 //    net_open("/dev/dab0", O_RDWR);
 //    net_close(fd);
@@ -210,12 +213,16 @@ void Dialog::on_btnTune_clicked()
 
     //mMute.set_mute(fd,"off");
     g_last_state_mute_unmute = "unmuted";
+    g_tuner_mode = "FM";
     //qDebug() << "set mute: " << mMute.set_mute(fd, "off");
-    int frequency;
-    frequency = (ui->ln_freq->text()).toInt();
+//    int frequency;
+//    frequency = (ui->ln_freq->text()).toInt();
     //frequency = 94800000;
-    int tuner = 0;
+    //int tuner = 0;
     //tuner = 1;
+
+    int marked_row = (ui->list_fm->currentRow()); //marked row from fm list
+    uint32_t frequency = (g_fm_vec_vec[marked_row][1]).toUInt();
 
 
     //&mTune,Tune::set_radio_channel(fd,94800000,"RADIO");
@@ -225,7 +232,7 @@ void Dialog::on_btnTune_clicked()
     //connect(&mTune,&Tune::set_radio_channel,)
     //connect(this,&Dialog::on_Stop,&rds,&MyJob::stop);
     //connect(this,&Dialog::on_btnTune_clicked,mTune.set_radio_channel(fd,frequency,tuner));
-    mTune.set_radio_channel(fd,frequency,tuner);
+    mTune.set_radio_channel(fd, frequency);
 
 }
 
