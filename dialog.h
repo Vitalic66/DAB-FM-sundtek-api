@@ -8,6 +8,7 @@
 #include <QPainter>
 #include <QBitmap>
 #include <QPixmap>
+#include <QInputDialog>
 
 
 #include <fm_rds.h>
@@ -16,6 +17,7 @@
 #include <mute.h>
 #include <file.h>
 #include <globals.h>
+#include <dabdata.h>
 
 #include </opt/include/mediaclient.h>
 
@@ -114,6 +116,14 @@ private slots:
 
     void on_btn_tuner_mode_clicked();
 
+    void on_btn_testbutton_clicked();
+
+    void on_btn_rename_station_clicked();
+
+    void on_btn_add_clicked();
+
+    void on_btn_delete_clicked();
+
 public slots:
 
     //void newNumber(QString name, int number);
@@ -136,6 +146,7 @@ private:
     Tune mTune;
     Mute mMute;
     File mFile;
+    DabData mDabData;
 
 
     //QString tuner_mode = ""; //dab or fm

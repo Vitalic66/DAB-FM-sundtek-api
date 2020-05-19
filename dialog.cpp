@@ -42,6 +42,9 @@ Dialog::Dialog(QWidget *parent) :
         ui->prog_bar_dab->setVisible(true);
         ui->prog_bar_fm->setTextVisible(false);
         ui->btn_tuner_mode->setText("to FM\nMODE");
+        ui->btn_add->setEnabled(false);
+        ui->btn_rename_station->setEnabled(false);
+        ui->ln_add_station->setEnabled(false);
     }
 
     if(g_tuner_mode == "FM"){
@@ -836,7 +839,7 @@ void Dialog::on_btn_tuner_mode_clicked()
 {
     QString tmp_tuner_mode;
 
-    if(g_tuner_mode == "DAB"){ //DAB mode activ
+    if(g_tuner_mode == "DAB"){ //activating FM mode
 
         ui->btn_tuner_mode->setText("to DAB\nMODE");
         ui->list_dab->setVisible(false);
@@ -844,13 +847,16 @@ void Dialog::on_btn_tuner_mode_clicked()
         ui->list_dab->setCurrentRow(-1);
         ui->prog_bar_dab->setVisible(false);
         ui->prog_bar_fm->setVisible(true);
-
+        ui->btn_add->setEnabled(true);
+        ui->btn_rename_station->setEnabled(true);
+        ui->ln_add_station->setEnabled(true);
+        ui->list_fm->setCurrentRow(-1);
 
 
         tmp_tuner_mode = "FM";
     }
 
-    if(g_tuner_mode == "FM"){ //FM mode activ
+    if(g_tuner_mode == "FM"){ //activating DAB mode
 
 
         ui->btn_tuner_mode->setText("to FM\nMODE");
@@ -859,6 +865,10 @@ void Dialog::on_btn_tuner_mode_clicked()
         ui->list_fm->setCurrentRow(-1);
         ui->prog_bar_dab->setVisible(true);
         ui->prog_bar_fm->setVisible(false);
+        ui->btn_add->setEnabled(false);
+        ui->btn_rename_station->setEnabled(false);
+        ui->ln_add_station->setEnabled(false);
+        ui->list_dab->setCurrentRow(-1);
 
         tmp_tuner_mode = "DAB";
     }
@@ -901,4 +911,82 @@ void Dialog::on_btn_tuner_mode_clicked()
         MainWindow::dab_refresh_all();
     }
 */
+}
+
+void Dialog::on_btn_testbutton_clicked()
+{
+    mDabData.receive_dab_data();
+}
+
+void Dialog::on_btn_rename_station_clicked()
+{
+    int marked = ui->list_fm->currentRow();
+    QString name_marked = ui->list_fm->currentItem()->text();
+
+    bool ok;
+
+    QString new_name = QInputDialog::getText(this, "enter new name", "new name: ",QLineEdit::Normal,name_marked, &ok);
+
+    if(new_name.contains(",")){
+        new_name = new_name.replace(",", ".");
+    }
+
+    g_fm_vec_vec[marked].replace(0, new_name);
+
+    Dialog::fm_refresh_all();
+}
+
+void Dialog::on_btn_add_clicked() //FM only
+{
+    QString add_station = ui->ln_add_station->text();
+
+    if(!add_station.isEmpty()){
+
+        if(add_station.contains(",")){
+            add_station = add_station.replace(",", ".");
+        }
+
+        float add_station_float = add_station.toFloat();
+        int to_mhz = add_station_float * 1000000;
+        QString station_conv_string = (QString::number(to_mhz));
+
+        if(!add_station.contains(".")){
+            add_station = add_station.append(".0");
+        }
+
+        QVector<QString> fm_vec;
+
+        fm_vec.push_back("man Station@" + add_station + "MHz");
+        fm_vec.push_back(station_conv_string);
+        fm_vec.push_back("");
+
+        g_fm_vec_vec.push_back(fm_vec);
+
+        //qDebug() << " add station fm vecvec:" << fm_vec_vec;
+    }
+
+    ui->ln_add_station->setText(""); //empty line for new entrie
+
+    Dialog::fm_refresh_all();
+}
+
+void Dialog::on_btn_delete_clicked()
+{
+    if(g_tuner_mode == "FM"){
+        int fm_marked_line = ui->list_fm->currentRow();
+        //qDebug() << "line_remove fm list" << fm_marked_line;
+
+        g_fm_vec_vec.remove(fm_marked_line);
+
+        Dialog::fm_refresh_all();
+    }
+
+    if(g_tuner_mode == "DAB"){
+        int dab_marked_line = ui->list_dab->currentRow();
+        //qDebug() << "line_remove dab list" << dab_marked_line;
+
+        g_dab_vec_vec.remove(dab_marked_line);
+
+        Dialog::dab_refresh_all();
+    }
 }

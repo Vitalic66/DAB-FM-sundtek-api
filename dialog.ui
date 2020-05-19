@@ -23,7 +23,7 @@
     </rect>
    </property>
    <property name="currentIndex">
-    <number>0</number>
+    <number>1</number>
    </property>
    <widget class="QWidget" name="page">
     <property name="minimumSize">
@@ -58,7 +58,7 @@
       <string notr="true">QTabBar::tab{width: 200px; height: 60px;};</string>
      </property>
      <property name="currentIndex">
-      <number>1</number>
+      <number>0</number>
      </property>
      <widget class="QWidget" name="tab">
       <attribute name="title">
@@ -301,8 +301,8 @@ FAVORITE</string>
     <widget class="QPushButton" name="btnTune">
      <property name="geometry">
       <rect>
-       <x>590</x>
-       <y>340</y>
+       <x>40</x>
+       <y>400</y>
        <width>89</width>
        <height>25</height>
       </rect>
@@ -337,8 +337,8 @@ FAVORITE</string>
     <widget class="QPushButton" name="btnDabTune">
      <property name="geometry">
       <rect>
-       <x>690</x>
-       <y>340</y>
+       <x>40</x>
+       <y>430</y>
        <width>89</width>
        <height>25</height>
       </rect>
@@ -364,8 +364,8 @@ FAVORITE</string>
     <widget class="QPushButton" name="btnDabScanFreq">
      <property name="geometry">
       <rect>
-       <x>150</x>
-       <y>140</y>
+       <x>30</x>
+       <y>220</y>
        <width>90</width>
        <height>60</height>
       </rect>
@@ -495,7 +495,7 @@ MODE</string>
       <string/>
      </property>
     </widget>
-    <widget class="QWidget" name="">
+    <widget class="QWidget" name="layoutWidget">
      <property name="geometry">
       <rect>
        <x>210</x>
@@ -534,6 +534,90 @@ MODE</string>
        </widget>
       </item>
      </layout>
+    </widget>
+    <widget class="QPushButton" name="btn_testbutton">
+     <property name="geometry">
+      <rect>
+       <x>700</x>
+       <y>260</y>
+       <width>89</width>
+       <height>25</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>testbutton</string>
+     </property>
+    </widget>
+    <widget class="QPushButton" name="btn_rename_station">
+     <property name="geometry">
+      <rect>
+       <x>150</x>
+       <y>140</y>
+       <width>90</width>
+       <height>60</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>RENAME
+STATION</string>
+     </property>
+    </widget>
+    <widget class="QLineEdit" name="ln_add_station">
+     <property name="geometry">
+      <rect>
+       <x>150</x>
+       <y>220</y>
+       <width>90</width>
+       <height>30</height>
+      </rect>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+     </property>
+    </widget>
+    <widget class="QLabel" name="lbl_mhz">
+     <property name="geometry">
+      <rect>
+       <x>170</x>
+       <y>250</y>
+       <width>67</width>
+       <height>30</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Mhz</string>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+     </property>
+    </widget>
+    <widget class="QPushButton" name="btn_add">
+     <property name="geometry">
+      <rect>
+       <x>150</x>
+       <y>300</y>
+       <width>90</width>
+       <height>60</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>ADD
+STATION</string>
+     </property>
+    </widget>
+    <widget class="QPushButton" name="btn_delete">
+     <property name="geometry">
+      <rect>
+       <x>150</x>
+       <y>380</y>
+       <width>90</width>
+       <height>60</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>REMOVE
+STATION</string>
+     </property>
     </widget>
    </widget>
   </widget>

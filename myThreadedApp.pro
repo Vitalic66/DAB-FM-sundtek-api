@@ -32,7 +32,8 @@ SOURCES += \
     mute.cpp \
     fm_rds.cpp \
     file.cpp \
-    globals.cpp
+    globals.cpp \
+    dabdata.cpp
 
 HEADERS += \
     dialog.h\
@@ -41,7 +42,8 @@ HEADERS += \
     mute.h \
     fm_rds.h \
     file.h \
-    globals.h
+    globals.h \
+    dabdata.h
 
 FORMS += \
         dialog.ui
