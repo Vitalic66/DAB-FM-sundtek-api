@@ -232,7 +232,7 @@ void File::fm_read_file(){
 
        fm_vec.push_back(split_fm_fav_stream_in_line.at(0)); //== name of station
        fm_vec.push_back(split_fm_fav_stream_in_line.at(1)); //== freq of station
-       fm_vec.push_back(split_fm_fav_stream_in_line.at(3)); //== is favorit?
+       fm_vec.push_back(split_fm_fav_stream_in_line.at(2)); //== is favorit?
        g_fm_vec_vec.push_back(fm_vec);
     }
 

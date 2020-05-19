@@ -38,7 +38,7 @@ public:
 signals:
 
     void progress_scan_dab(int prog_bar_dab);
-    void progress_scan_fm();
+    void progress_scan_fm(int prog_bar_fm);
     void enable_buttons(bool btn_st);
     void write_to_file();
     void finished_scan();

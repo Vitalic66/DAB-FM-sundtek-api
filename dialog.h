@@ -87,6 +87,7 @@ private slots:
     bool dab_logo_exists(QString sid);
 
     void dab_show_fav_btn();
+    void fm_show_fav_btn();
 
     QPixmap logo_dab(QString in);
 
@@ -97,7 +98,15 @@ private slots:
     void on_btn_dab_st05_clicked();
     void on_btn_dab_st06_clicked();
 
+    void on_btn_fm_st01_clicked();
+    void on_btn_fm_st02_clicked();
+    void on_btn_fm_st03_clicked();
+    void on_btn_fm_st04_clicked();
+    void on_btn_fm_st05_clicked();
+    void on_btn_fm_st06_clicked();
+
     void tune_dab_wrapper(int btn_id);
+    void tune_fm_wrapper(int btn_id);
 
     void on_btn_main_mute_clicked();
 
@@ -113,7 +122,7 @@ public slots:
 
     void prog_bar_dab_valueChanged(int prog_bar_value);
 
-    //void prog_bar_fm_valueChanged(int prog_bar_value);
+    void prog_bar_fm_valueChanged(int prog_bar_value);
 
     //void fill_dab_list();
 

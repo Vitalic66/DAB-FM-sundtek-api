@@ -33,6 +33,7 @@ Dialog::Dialog(QWidget *parent) :
 //    mMute.set_mute(fd, "off");
 
     Dialog::dab_show_fav_btn();
+    Dialog::fm_show_fav_btn();
 
 }
 
@@ -83,12 +84,12 @@ void Dialog::prog_bar_dab_valueChanged(int prog_bar_value)
 }
 
 
-/*
+
 void Dialog::prog_bar_fm_valueChanged(int prog_bar_value)
 {
     ui->prog_bar_fm->setValue(prog_bar_value);
 }
-*/
+
 
 void Dialog::dab_fill_list()
 {
@@ -305,7 +306,7 @@ void Dialog::on_btnDabScanFreq_clicked()
         mScan.mStop_fm_scan = false; //for new scan set false
         ui->list_fm->clear();
 
-        //connect(&mScan,&Scan::progress_scan_fm,this,&Dialog::prog_bar_fm_valueChanged); //feedback from scan to progressbar
+        connect(&mScan,&Scan::progress_scan_fm,this,&Dialog::prog_bar_fm_valueChanged); //feedback from scan to progressbar
 
         //connect(&mScan,&Scan::progress_scan_dab,this,&Dialog::fill_dab_list); //feedback from scan to dab list
         connect(&mScan,&Scan::enable_buttons,this,&Dialog::enable_disable_btn);
@@ -343,20 +344,40 @@ void Dialog::on_pushButton_2_clicked()
 
 void Dialog::on_btn_add_fav_clicked()
 {
-    int marked = ui->list_dab->currentRow();
+    if(g_tuner_mode == "DAB"){
+        int marked = ui->list_dab->currentRow();
 
-    g_dab_vec_vec[marked].insert(3, "fav");
+        g_dab_vec_vec[marked].insert(3, "fav");
 
-    Dialog::dab_refresh_all();
+        Dialog::dab_refresh_all();
+    }
+
+    if(g_tuner_mode == "FM"){
+        int marked = ui->list_fm->currentRow();
+
+        g_fm_vec_vec[marked].insert(2, "fav");
+
+        Dialog::fm_refresh_all();
+    }
 }
 
 void Dialog::on_bnt_rem_fav_clicked()
 {
-    int marked = ui->list_dab->currentRow();
+    if(g_tuner_mode == "DAB"){
+        int marked = ui->list_dab->currentRow();
 
-    g_dab_vec_vec[marked].insert(3, "");
+        g_dab_vec_vec[marked].insert(3, "");
 
-    Dialog::dab_refresh_all();
+        Dialog::dab_refresh_all();
+    }
+
+    if(g_tuner_mode == "FM"){
+        int marked = ui->list_fm->currentRow();
+
+        g_fm_vec_vec[marked].insert(2, "");
+
+        Dialog::fm_refresh_all();
+    }
 }
 
 void Dialog::dab_refresh_all()
@@ -391,7 +412,7 @@ void Dialog::fm_refresh_all()
     ui->list_fm->clear();
     mFile.fm_read_file();
     Dialog::fm_fill_list(); //write file to vecvec
-    //Dialog::fm_show_fav_btn();
+    Dialog::fm_show_fav_btn();
     //MainWindow::dab_disable_btn();
 }
 
@@ -403,7 +424,7 @@ void Dialog::fm_refresh_after_scan()
     ui->list_fm->clear();
     mFile.fm_read_file();
     Dialog::fm_fill_list(); //write file to vecvec
-    //Dialog::fm_show_fav_btn();
+    Dialog::fm_show_fav_btn();
     //MainWindow::dab_disable_btn();
 }
 
@@ -464,10 +485,6 @@ void Dialog::dab_show_fav_btn()
             dab_found_favs.push_back(i);
         }
     }
-
-//qDebug() << "found dab favs: " << dab_found_favs;
-
-
 
     if(dab_found_favs.size() >= 1){
         ui->btn_dab_st01->setEnabled(true);
@@ -623,6 +640,76 @@ void Dialog::dab_show_fav_btn()
     }
 }
 
+void Dialog::fm_show_fav_btn()
+{
+
+    //QVector<int> fm_found_favs;
+
+    fm_found_favs.clear();
+
+    for(int i = 0; i < g_fm_vec_vec.size(); i++){
+        if(g_fm_vec_vec[i][2] == "fav"){
+
+            fm_found_favs.push_back(i);
+        }
+    }
+
+    ui->btn_fm_st01->setStyleSheet(btn_default_rounded);
+    ui->btn_fm_st02->setStyleSheet(btn_default_rounded);
+    ui->btn_fm_st03->setStyleSheet(btn_default_rounded);
+    ui->btn_fm_st04->setStyleSheet(btn_default_rounded);
+    ui->btn_fm_st05->setStyleSheet(btn_default_rounded);
+    ui->btn_fm_st06->setStyleSheet(btn_default_rounded);
+
+    if(fm_found_favs.size() >= 1){
+        ui->btn_fm_st01->setEnabled(true);
+        ui->btn_fm_st01->setText(g_fm_vec_vec[fm_found_favs.at(0)][0]);
+    } else if(fm_found_favs.size() < 1){
+        ui->btn_fm_st01->setEnabled(false);
+        ui->btn_fm_st01->setText("no favorite\navailable");
+    }
+
+    if(fm_found_favs.size() >= 2){
+        ui->btn_fm_st02->setEnabled(true);
+        ui->btn_fm_st02->setText(g_fm_vec_vec[fm_found_favs.at(1)][0]);
+    } else if(fm_found_favs.size() < 2){
+        ui->btn_fm_st02->setEnabled(false);
+        ui->btn_fm_st02->setText("no favorite\navailable");
+    }
+
+    if(fm_found_favs.size() >= 3){
+        ui->btn_fm_st03->setEnabled(true);
+        ui->btn_fm_st03->setText(g_fm_vec_vec[fm_found_favs.at(2)][0]);
+    } else if(fm_found_favs.size() < 3){
+        ui->btn_fm_st03->setEnabled(false);
+        ui->btn_fm_st03->setText("no favorite\navailable");
+    }
+
+    if(fm_found_favs.size() >= 4){
+        ui->btn_fm_st04->setEnabled(true);
+        ui->btn_fm_st04->setText(g_fm_vec_vec[fm_found_favs.at(3)][0]);
+    } else if(fm_found_favs.size() < 4){
+        ui->btn_fm_st04->setEnabled(false);
+        ui->btn_fm_st04->setText("no favorite\navailable");
+    }
+
+    if(fm_found_favs.size() >= 5){
+        ui->btn_fm_st05->setEnabled(true);
+        ui->btn_fm_st05->setText(g_fm_vec_vec[fm_found_favs.at(4)][0]);
+    } else if(fm_found_favs.size() < 5){
+        ui->btn_fm_st05->setEnabled(false);
+        ui->btn_fm_st05->setText("no favorite\navailable");
+    }
+
+    if(fm_found_favs.size() >= 6){
+        ui->btn_fm_st06->setEnabled(true);
+        ui->btn_fm_st06->setText(g_fm_vec_vec[fm_found_favs.at(5)][0]);
+    } else if(fm_found_favs.size() < 6){
+        ui->btn_fm_st06->setEnabled(false);
+        ui->btn_fm_st06->setText("no favorite\navailable");
+    }
+}
+
 void Dialog::tune_dab_wrapper(int btn_id)
 { 
     fd = net_open("/dev/dab0", O_RDWR);
@@ -644,6 +731,22 @@ void Dialog::tune_dab_wrapper(int btn_id)
     mTune.set_dab_channel(fd,frequency,sid,sid_set,comp,comp_set);
 }
 
+void Dialog::tune_fm_wrapper(int btn_id)
+{
+    fd = net_open("/dev/radio0", O_RDWR);
+
+    //g_last_state_dab_fm = "DAB";
+    g_tuner_mode = "FM";
+    qDebug() << "g_tuner_mode: " << g_tuner_mode;
+    g_last_state_mute_unmute = "muted";
+    qDebug() << "g_last_state_mute_unmute: : " << g_last_state_mute_unmute;
+    uint frequency = g_fm_vec_vec[fm_found_favs.at(btn_id)][1].toUInt();
+
+
+    //mMute.set_mute(fd, "off");
+    mMute.set_mute();
+    mTune.set_radio_channel(fd,frequency);
+}
 void Dialog::on_btn_dab_st01_clicked()
 {    
     Dialog::tune_dab_wrapper(0);
@@ -672,6 +775,36 @@ void Dialog::on_btn_dab_st05_clicked()
 void Dialog::on_btn_dab_st06_clicked()
 {
     Dialog::tune_dab_wrapper(5);
+}
+
+void Dialog::on_btn_fm_st01_clicked()
+{
+    Dialog::tune_fm_wrapper(0);
+}
+
+void Dialog::on_btn_fm_st02_clicked()
+{
+    Dialog::tune_fm_wrapper(1);
+}
+
+void Dialog::on_btn_fm_st03_clicked()
+{
+    Dialog::tune_fm_wrapper(2);
+}
+
+void Dialog::on_btn_fm_st04_clicked()
+{
+    Dialog::tune_fm_wrapper(3);
+}
+
+void Dialog::on_btn_fm_st05_clicked()
+{
+    Dialog::tune_fm_wrapper(4);
+}
+
+void Dialog::on_btn_fm_st06_clicked()
+{
+    Dialog::tune_fm_wrapper(5);
 }
 
 void Dialog::on_btn_main_mute_clicked()

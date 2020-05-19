@@ -201,7 +201,7 @@ int Scan::media_scan_dabfrequencies(char *device, int devfd, int console, int ru
                     qDebug() << "size of dab list: " << dab_frequency_list_size;
                     qDebug() << "scan index: " << current_scan_index;
 
-                    prog_bar_dab = (current_scan_index *100) / (dab_frequency_list_size -1);
+                    prog_bar_dab = (current_scan_index * 100) / (dab_frequency_list_size -1);
                     qDebug() << "prog bar value: " << prog_bar_dab;
 
                     emit progress_scan_dab(prog_bar_dab);
@@ -322,6 +322,10 @@ qDebug() << "media scan fm called";
         int nlen;
         char tmp[30];
         g_fm_vec_vec.clear();
+
+        int prog_bar_fm = 0;
+        //int prog_bar_act_freq = 87000;
+
         if (devfd>=0)
                 fd = devfd;
         else {
@@ -333,10 +337,13 @@ qDebug() << "media scan fm called";
                 int i;
                 int e;
                 int current_scan_index=-1;
+                qDebug() << "current scan index: " << current_scan_index;
                 struct fm_scan_setup setup;
+
                 struct fm_scan_parameters parameters;
                 memset(&parameters, 0x0, sizeof(struct fm_scan_parameters));
                 memset(&setup, 0x0, sizeof(struct fm_scan_setup));
+                qDebug() << "memset: " << memset(&setup, 0x0, sizeof(struct fm_scan_setup));
                 printf("SCAN SETUP\n");
                 net_ioctl(fd, FM_SCAN_SETUP, &setup);
 
@@ -344,7 +351,7 @@ qDebug() << "media scan fm called";
 
                 do {
 
-
+                        qDebug() << "READFREQ: " << parameters.READFREQ;
                         net_ioctl(fd, FM_SCAN_NEXT_FREQUENCY, &parameters);
         //              printf("LOCK STAT: %x - %d - %d\n", parameters.status, parameters.VALID, parameters.READFREQ);
 
@@ -389,14 +396,26 @@ qDebug() << "media scan fm called";
                                     break;
                             }
 
+
+
                         //station = station + 1;
-                        qDebug() << "i in fm scan: " << station;
+                        //qDebug() << "i in fm scan: " << station;
 
                         }
 //                        if (console>=0 && running == 0)
 //                                break;
 
-                        emit progress_scan_fm();
+
+                        //act freq - 108 + 21
+                        //divisor 21
+
+                        prog_bar_fm = (parameters.READFREQ - 87000) * 100 / 21000;
+
+                        //prog_bar_fm = (parameters.READFREQ *100) / 10800 ;
+                        qDebug() << "prog_bar_fm: " << prog_bar_fm;
+
+
+                        emit progress_scan_fm(prog_bar_fm);
                         emit enable_buttons(false);
 
                         qDebug() << "mStop_fm_scan: " << mStop_fm_scan;
