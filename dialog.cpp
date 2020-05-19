@@ -1,7 +1,7 @@
 #include "dialog.h"
 #include "ui_dialog.h"
 
-QString g_tuner_mode = "FM";
+QString g_tuner_mode = "DAB";
 
 QString g_last_state_mute_unmute;
 
@@ -35,6 +35,24 @@ Dialog::Dialog(QWidget *parent) :
     Dialog::dab_show_fav_btn();
     Dialog::fm_show_fav_btn();
 
+    // init some GUI buttons
+    if(g_tuner_mode == "DAB"){
+        ui->list_dab->setVisible(true);
+        ui->list_fm->setVisible(false);
+        ui->prog_bar_dab->setVisible(true);
+        ui->prog_bar_fm->setTextVisible(false);
+        ui->btn_tuner_mode->setText("to FM\nMODE");
+    }
+
+    if(g_tuner_mode == "FM"){
+        ui->list_dab->setVisible(false);
+        ui->list_fm->setVisible(true);
+        ui->prog_bar_dab->setVisible(false);
+        ui->prog_bar_fm->setTextVisible(true);
+        ui->btn_tuner_mode->setText("to DAB\nMODE");
+    }
+
+    qDebug() << "g_tuner_mode: " << g_tuner_mode;
 }
 
 Dialog::~Dialog()
@@ -83,13 +101,10 @@ void Dialog::prog_bar_dab_valueChanged(int prog_bar_value)
     ui->prog_bar_dab->setValue(prog_bar_value);
 }
 
-
-
 void Dialog::prog_bar_fm_valueChanged(int prog_bar_value)
 {
     ui->prog_bar_fm->setValue(prog_bar_value);
 }
-
 
 void Dialog::dab_fill_list()
 {
@@ -106,7 +121,7 @@ void Dialog::dab_fill_list()
         }
     }
 
-    qDebug() << "g_dab_vec_vec cleaned?: " << g_dab_vec_vec;
+    //qDebug() << "g_dab_vec_vec cleaned?: " << g_dab_vec_vec;
 
     for(int i = 0; i < g_dab_vec_vec.size(); i++){
         //QString dab_to_list;
@@ -140,7 +155,7 @@ void Dialog::fm_fill_list()
         }
     }
 
-    qDebug() << "g_fm_vec_vec cleaned?: " << g_fm_vec_vec;
+    //qDebug() << "g_fm_vec_vec cleaned?: " << g_fm_vec_vec;
 
     for(int i = 0; i < g_fm_vec_vec.size(); i++){
         //QString dab_to_list;
@@ -260,7 +275,7 @@ void Dialog::on_btnDabTune_clicked()
 //    QString sid_string = g_dab_vec_vec[marked_row][2];
     bool ok;
     uint sid = sid_string.toUInt(&ok, 16);
-    qDebug() << "als int:" << sid;
+    //qDebug() << "als int:" << sid;
 
     uint8_t sid_set = 1;
     uint8_t comp = 1;
@@ -333,7 +348,7 @@ void Dialog::on_btnDabScanFreq_clicked()
 void Dialog::on_pushButton_clicked()
 {
     //qDebug() << "dab_vev_vec: " << mScan.dab_vec_vec;
-    qDebug() << "g_dab_vev_vec: " << g_dab_vec_vec;
+    //qDebug() << "g_dab_vev_vec: " << g_dab_vec_vec;
 }
 
 void Dialog::on_pushButton_2_clicked()
@@ -495,7 +510,7 @@ void Dialog::dab_show_fav_btn()
         if(dab_logo_exist == true){
             ui->btn_dab_st01->setText("");
             QString dab_logo = path_dab_icons + btn_sid + ".png";
-            qDebug() << "dab_log: " << dab_logo;
+            //qDebug() << "dab_log: " << dab_logo;
             QPixmap back_from_scale {Dialog::logo_dab(dab_logo)};
             QIcon ButtonIcon(back_from_scale);
             ui->btn_dab_st01->setIcon(ButtonIcon);
@@ -716,9 +731,9 @@ void Dialog::tune_dab_wrapper(int btn_id)
 
     //g_last_state_dab_fm = "DAB";
     g_tuner_mode = "DAB";
-    qDebug() << "g_tuner_mode: " << g_tuner_mode;
+    //qDebug() << "g_tuner_mode: " << g_tuner_mode;
     g_last_state_mute_unmute = "muted";
-    qDebug() << "g_last_state_mute_unmute: : " << g_last_state_mute_unmute;
+    //qDebug() << "g_last_state_mute_unmute: : " << g_last_state_mute_unmute;
     uint frequency = g_dab_vec_vec[dab_found_favs.at(btn_id)][1].toUInt();
     bool ok;
     uint sid = g_dab_vec_vec[dab_found_favs.at(btn_id)][2].toUInt(&ok, 16);
@@ -821,12 +836,29 @@ void Dialog::on_btn_tuner_mode_clicked()
 {
     QString tmp_tuner_mode;
 
-    if(g_tuner_mode == "DAB"){
+    if(g_tuner_mode == "DAB"){ //DAB mode activ
+
+        ui->btn_tuner_mode->setText("to DAB\nMODE");
+        ui->list_dab->setVisible(false);
+        ui->list_fm->setVisible(true);
+        ui->list_dab->setCurrentRow(-1);
+        ui->prog_bar_dab->setVisible(false);
+        ui->prog_bar_fm->setVisible(true);
+
+
 
         tmp_tuner_mode = "FM";
     }
 
-    if(g_tuner_mode == "FM"){
+    if(g_tuner_mode == "FM"){ //FM mode activ
+
+
+        ui->btn_tuner_mode->setText("to FM\nMODE");
+        ui->list_dab->setVisible(true);
+        ui->list_fm->setVisible(false);
+        ui->list_fm->setCurrentRow(-1);
+        ui->prog_bar_dab->setVisible(true);
+        ui->prog_bar_fm->setVisible(false);
 
         tmp_tuner_mode = "DAB";
     }
@@ -834,4 +866,39 @@ void Dialog::on_btn_tuner_mode_clicked()
     g_tuner_mode = tmp_tuner_mode;
 
     qDebug() << "g_tuner_mode: " << g_tuner_mode;
+ /*
+    if(ui->btn_tuner_mode->text() == "FM\nMODE"){
+        ui->btn_tuner_mode->setText("DAB\nMODE");
+        tuner_mode = "FM";
+        ui->lst_dab->setVisible(false);
+        ui->lst_fm->setVisible(true);
+        //ui->btn_rename->setVisible(true);
+        //ui->ln_man_tune->setVisible(true);
+        //ui->label->setVisible(true);
+        ui->btn_add->setEnabled(true);
+        //ui->btn_man_tune->setVisible(true);
+        ui->btn_add->setEnabled(true);
+        ui->btn_rename_station->setEnabled(true);
+        ui->ln_add_station->setEnabled(true);
+        ui->lst_fm->setCurrentRow(-1);
+
+        MainWindow::fm_refresh_all();
+    } else {
+        ui->btn_tuner_mode->setText("FM\nMODE");
+        tuner_mode = "DAB";
+        ui->lst_dab->setVisible(true);
+        ui->lst_fm->setVisible(false);
+        //ui->btn_rename->setVisible(false);
+        //ui->ln_man_tune->setVisible(false);
+        //ui->label->setVisible(false);
+        ui->btn_add->setEnabled(false);
+        //ui->btn_man_tune->setVisible(false);
+        ui->btn_add->setEnabled(false);
+        ui->btn_rename_station->setEnabled(false);
+        ui->ln_add_station->setEnabled(false);
+        ui->lst_dab->setCurrentRow(-1);
+
+        MainWindow::dab_refresh_all();
+    }
+*/
 }

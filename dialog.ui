@@ -23,7 +23,7 @@
     </rect>
    </property>
    <property name="currentIndex">
-    <number>1</number>
+    <number>0</number>
    </property>
    <widget class="QWidget" name="page">
     <property name="minimumSize">
@@ -259,7 +259,7 @@
     <widget class="QPushButton" name="btn_main_to_scan">
      <property name="geometry">
       <rect>
-       <x>710</x>
+       <x>0</x>
        <y>0</y>
        <width>90</width>
        <height>60</height>
@@ -287,8 +287,8 @@
     <widget class="QPushButton" name="btn_add_fav">
      <property name="geometry">
       <rect>
-       <x>90</x>
-       <y>350</y>
+       <x>560</x>
+       <y>140</y>
        <width>90</width>
        <height>60</height>
       </rect>
@@ -301,8 +301,8 @@ FAVORITE</string>
     <widget class="QPushButton" name="btnTune">
      <property name="geometry">
       <rect>
-       <x>290</x>
-       <y>160</y>
+       <x>590</x>
+       <y>340</y>
        <width>89</width>
        <height>25</height>
       </rect>
@@ -314,10 +314,10 @@ FAVORITE</string>
     <widget class="QListWidget" name="list_dab">
      <property name="geometry">
       <rect>
-       <x>550</x>
-       <y>260</y>
-       <width>256</width>
-       <height>192</height>
+       <x>270</x>
+       <y>140</y>
+       <width>260</width>
+       <height>300</height>
       </rect>
      </property>
      <property name="focusPolicy">
@@ -327,8 +327,8 @@ FAVORITE</string>
     <widget class="QLineEdit" name="ln_freq">
      <property name="geometry">
       <rect>
-       <x>270</x>
-       <y>130</y>
+       <x>660</x>
+       <y>380</y>
        <width>131</width>
        <height>25</height>
       </rect>
@@ -337,8 +337,8 @@ FAVORITE</string>
     <widget class="QPushButton" name="btnDabTune">
      <property name="geometry">
       <rect>
-       <x>420</x>
-       <y>160</y>
+       <x>690</x>
+       <y>340</y>
        <width>89</width>
        <height>25</height>
       </rect>
@@ -347,55 +347,11 @@ FAVORITE</string>
       <string>DAB Tune</string>
      </property>
     </widget>
-    <widget class="QWidget" name="layoutWidget">
-     <property name="geometry">
-      <rect>
-       <x>220</x>
-       <y>40</y>
-       <width>551</width>
-       <height>83</height>
-      </rect>
-     </property>
-     <layout class="QVBoxLayout" name="verticalLayout">
-      <item>
-       <layout class="QGridLayout" name="gridLayout">
-        <item row="0" column="0">
-         <widget class="QPushButton" name="btnMute">
-          <property name="text">
-           <string>mute</string>
-          </property>
-         </widget>
-        </item>
-        <item row="0" column="1">
-         <widget class="QPushButton" name="btnUnmute">
-          <property name="text">
-           <string>unmute</string>
-          </property>
-         </widget>
-        </item>
-        <item row="1" column="0">
-         <widget class="QPushButton" name="btnStop">
-          <property name="text">
-           <string>Stop</string>
-          </property>
-         </widget>
-        </item>
-        <item row="1" column="1">
-         <widget class="QPushButton" name="btnStart">
-          <property name="text">
-           <string>Start</string>
-          </property>
-         </widget>
-        </item>
-       </layout>
-      </item>
-     </layout>
-    </widget>
     <widget class="QPushButton" name="bnt_rem_fav">
      <property name="geometry">
       <rect>
-       <x>190</x>
-       <y>350</y>
+       <x>680</x>
+       <y>140</y>
        <width>90</width>
        <height>60</height>
       </rect>
@@ -408,8 +364,8 @@ FAVORITE</string>
     <widget class="QPushButton" name="btnDabScanFreq">
      <property name="geometry">
       <rect>
-       <x>90</x>
-       <y>250</y>
+       <x>150</x>
+       <y>140</y>
        <width>90</width>
        <height>60</height>
       </rect>
@@ -421,8 +377,8 @@ FAVORITE</string>
     <widget class="QPushButton" name="pushButton_2">
      <property name="geometry">
       <rect>
-       <x>0</x>
-       <y>80</y>
+       <x>590</x>
+       <y>310</y>
        <width>89</width>
        <height>25</height>
       </rect>
@@ -434,21 +390,24 @@ FAVORITE</string>
     <widget class="QProgressBar" name="prog_bar_dab">
      <property name="geometry">
       <rect>
-       <x>600</x>
-       <y>220</y>
-       <width>161</width>
-       <height>23</height>
+       <x>270</x>
+       <y>110</y>
+       <width>260</width>
+       <height>30</height>
       </rect>
      </property>
      <property name="value">
       <number>0</number>
      </property>
+     <property name="format">
+      <string/>
+     </property>
     </widget>
     <widget class="QPushButton" name="pushButton">
      <property name="geometry">
       <rect>
-       <x>100</x>
-       <y>80</y>
+       <x>690</x>
+       <y>310</y>
        <width>89</width>
        <height>25</height>
       </rect>
@@ -460,8 +419,8 @@ FAVORITE</string>
     <widget class="QLineEdit" name="ln_sid">
      <property name="geometry">
       <rect>
-       <x>410</x>
-       <y>130</y>
+       <x>670</x>
+       <y>420</y>
        <width>113</width>
        <height>25</height>
       </rect>
@@ -496,10 +455,10 @@ FAVORITE</string>
     <widget class="QListWidget" name="list_fm">
      <property name="geometry">
       <rect>
-       <x>290</x>
-       <y>260</y>
-       <width>256</width>
-       <height>192</height>
+       <x>270</x>
+       <y>140</y>
+       <width>260</width>
+       <height>300</height>
       </rect>
      </property>
      <property name="focusPolicy">
@@ -509,8 +468,8 @@ FAVORITE</string>
     <widget class="QPushButton" name="btn_tuner_mode">
      <property name="geometry">
       <rect>
-       <x>90</x>
-       <y>170</y>
+       <x>30</x>
+       <y>140</y>
        <width>90</width>
        <height>60</height>
       </rect>
@@ -523,18 +482,58 @@ MODE</string>
     <widget class="QProgressBar" name="prog_bar_fm">
      <property name="geometry">
       <rect>
-       <x>340</x>
-       <y>220</y>
-       <width>161</width>
-       <height>23</height>
+       <x>270</x>
+       <y>110</y>
+       <width>260</width>
+       <height>30</height>
       </rect>
      </property>
      <property name="maximum">
       <number>99</number>
      </property>
-     <property name="value">
-      <number>0</number>
+     <property name="format">
+      <string/>
      </property>
+    </widget>
+    <widget class="QWidget" name="">
+     <property name="geometry">
+      <rect>
+       <x>210</x>
+       <y>10</y>
+       <width>549</width>
+       <height>81</height>
+      </rect>
+     </property>
+     <layout class="QGridLayout" name="gridLayout">
+      <item row="0" column="0">
+       <widget class="QPushButton" name="btnMute">
+        <property name="text">
+         <string>mute</string>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="1">
+       <widget class="QPushButton" name="btnUnmute">
+        <property name="text">
+         <string>unmute</string>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="0">
+       <widget class="QPushButton" name="btnStop">
+        <property name="text">
+         <string>Stop</string>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="1">
+       <widget class="QPushButton" name="btnStart">
+        <property name="text">
+         <string>Start</string>
+        </property>
+       </widget>
+      </item>
+     </layout>
     </widget>
    </widget>
   </widget>

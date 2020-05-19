@@ -33,7 +33,7 @@ int Scan::dab_scan_wrapped(){
 }
 
 int Scan::fm_scan_wrapped(){
-qDebug() << "fm scan wrapper called";
+//qDebug() << "fm scan wrapper called";
     int devfd = -1;
 //    int console = -1;
 //    int running = -1;
@@ -150,7 +150,7 @@ int Scan::media_scan_dabfrequencies(char *device, int devfd, int console, int ru
 
                                 QByteArray array = string.toLocal8Bit();
                                 char* buffer = array.data();
-                                qDebug() << "char buffer: " << buffer;
+                                //qDebug() << "char buffer: " << buffer;
 
                                 //QVector<int> dab_sid_vec_back {Scan::media_scan_dabservices(buffer)};
 
@@ -175,9 +175,9 @@ int Scan::media_scan_dabfrequencies(char *device, int devfd, int console, int ru
                                 dab_sid_vec.clear();
 
 
-                                qDebug() << "dab_vec_after_for" << dab_vec;
+                                //qDebug() << "dab_vec_after_for" << dab_vec;
                                 //qDebug() << "dab_vec_vec_after_for" << dab_vec_vec;
-                                qDebug() << "g_dab_vec_vec_after_for" << g_dab_vec_vec;
+                                //qDebug() << "g_dab_vec_vec_after_for" << g_dab_vec_vec;
                             }
                             break;
                         }
@@ -198,11 +198,11 @@ int Scan::media_scan_dabfrequencies(char *device, int devfd, int console, int ru
 
                     current_scan_index = parameters.scan_index;
                     //qDebug() << "status: " << parameters.status;
-                    qDebug() << "size of dab list: " << dab_frequency_list_size;
-                    qDebug() << "scan index: " << current_scan_index;
+                    //qDebug() << "size of dab list: " << dab_frequency_list_size;
+                    //qDebug() << "scan index: " << current_scan_index;
 
                     prog_bar_dab = (current_scan_index * 100) / (dab_frequency_list_size -1);
-                    qDebug() << "prog bar value: " << prog_bar_dab;
+                    //qDebug() << "prog bar value: " << prog_bar_dab;
 
                     emit progress_scan_dab(prog_bar_dab);
                     emit enable_buttons(false);
@@ -217,11 +217,11 @@ int Scan::media_scan_dabfrequencies(char *device, int devfd, int console, int ru
                         mStop_dab_scan = true;
                     }
 
-                    qDebug() << "mStop_scan_dab: " << mStop_dab_scan;
+                    //qDebug() << "mStop_scan_dab: " << mStop_dab_scan;
 
                 } while (parameters.status != DAB_SCAN_COMPLETE && mStop_dab_scan == false);
 
-            qDebug() << "g_dabvecvec after scan: " << g_dab_vec_vec;
+            //qDebug() << "g_dabvecvec after scan: " << g_dab_vec_vec;
 
             if (devfd == -1)
                     net_close(fd);
@@ -316,7 +316,7 @@ int Scan::media_scan_dabservices(char *device) {
 
 //int Scan::media_scan_fm_frequencies(char *device, int devfd, int console, int running) {
 int Scan::media_scan_fm_frequencies(char *device, int devfd) {
-qDebug() << "media scan fm called";
+//qDebug() << "media scan fm called";
         int fd;
         int rv;
         int nlen;
@@ -334,51 +334,55 @@ qDebug() << "media scan fm called";
         }
 
         if (fd>=0) {
-                int i;
-                int e;
-                int current_scan_index=-1;
-                qDebug() << "current scan index: " << current_scan_index;
+//                int i;
+//                int e;
+//                int current_scan_index=-1;
+                //qDebug() << "current scan index: " << current_scan_index;
                 struct fm_scan_setup setup;
 
                 struct fm_scan_parameters parameters;
                 memset(&parameters, 0x0, sizeof(struct fm_scan_parameters));
                 memset(&setup, 0x0, sizeof(struct fm_scan_setup));
-                qDebug() << "memset: " << memset(&setup, 0x0, sizeof(struct fm_scan_setup));
-                printf("SCAN SETUP\n");
+                //qDebug() << "memset: " << memset(&setup, 0x0, sizeof(struct fm_scan_setup));
+                //printf("SCAN SETUP\n");
                 net_ioctl(fd, FM_SCAN_SETUP, &setup);
 
                 int station = 0;
 
                 do {
 
-                        qDebug() << "READFREQ: " << parameters.READFREQ;
+                        //qDebug() << "READFREQ: " << parameters.READFREQ;
                         net_ioctl(fd, FM_SCAN_NEXT_FREQUENCY, &parameters);
         //              printf("LOCK STAT: %x - %d - %d\n", parameters.status, parameters.VALID, parameters.READFREQ);
 
                         switch(parameters.status) {
                             case FM_SCAN_LOCKED:
                             {
-                                    QString freq = QString::number(parameters.READFREQ*1000);
-                                    qDebug() << "fm freq: " << freq;
-    //                                if (console>=0) {
-    //                                        printf("FREQUENCY: %d ", parameters.READFREQ);
-    //                                        rv=write(console, "[LOCKED]\n", 9);
-    //                                } else {
-                                            fprintf(stdout, "%d [LOCKED]\n", parameters.READFREQ);
+                                QString freq = QString::number(parameters.READFREQ*1000);
 
-                                            station++;
-                                            fm_vec.clear();
-                                            fm_vec.push_back("Station " + QString::number(station)); //Station x
-                                            fm_vec.push_back(freq); //frequency
-                                            fm_vec.push_back(""); //placeholder for fav
+                                float mhz_float = freq.toFloat() / 1000000;
+                                //qDebug() << "mhz_float: " << mhz_float;
+                                QString mhz = QString::number(mhz_float);
 
-                                            qDebug() << "fm_vec: " << fm_vec;
+                                //qDebug() << "mhz: " << mhz;
+                                if(!mhz.contains(".")){
+                                    mhz = mhz + ".0";
+                                }
 
-                                            g_fm_vec_vec.push_back(fm_vec);
-                                            qDebug() << "g_fm_vec_vec: " << g_fm_vec_vec;
 
-    //                                }
-                                    break;
+                                station++;
+                                fm_vec.clear();
+                                fm_vec.push_back("Station " + QString::number(station) + "@" + mhz + "MHz"); //Station x
+                                fm_vec.push_back(freq); //frequency
+                                fm_vec.push_back(""); //placeholder for fav
+
+                                //qDebug() << "fm_vec: " << fm_vec;
+
+                                g_fm_vec_vec.push_back(fm_vec);
+                                //qDebug() << "g_fm_vec_vec: " << g_fm_vec_vec;
+
+//                                }
+                                break;
                             }
                             case FM_SCAN_SEARCHING:
                                     usleep(10000);
@@ -412,13 +416,13 @@ qDebug() << "media scan fm called";
                         prog_bar_fm = (parameters.READFREQ - 87000) * 100 / 21000;
 
                         //prog_bar_fm = (parameters.READFREQ *100) / 10800 ;
-                        qDebug() << "prog_bar_fm: " << prog_bar_fm;
+                        //qDebug() << "prog_bar_fm: " << prog_bar_fm;
 
 
                         emit progress_scan_fm(prog_bar_fm);
                         emit enable_buttons(false);
 
-                        qDebug() << "mStop_fm_scan: " << mStop_fm_scan;
+                        //qDebug() << "mStop_fm_scan: " << mStop_fm_scan;
 
                 } while (parameters.status != FM_SCAN_COMPLETE && mStop_fm_scan == false);
 
