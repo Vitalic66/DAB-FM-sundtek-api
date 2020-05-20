@@ -45,6 +45,7 @@ Dialog::Dialog(QWidget *parent) :
         ui->btn_add->setEnabled(false);
         ui->btn_rename_station->setEnabled(false);
         ui->ln_add_station->setEnabled(false);
+        ui->btn_tune->setEnabled(false);
     }
 
     if(g_tuner_mode == "FM"){
@@ -53,6 +54,7 @@ Dialog::Dialog(QWidget *parent) :
         ui->prog_bar_dab->setVisible(false);
         ui->prog_bar_fm->setTextVisible(true);
         ui->btn_tuner_mode->setText("to DAB\nMODE");
+        ui->btn_tune->setEnabled(false);
     }
 
     qDebug() << "g_tuner_mode: " << g_tuner_mode;
@@ -66,7 +68,7 @@ Dialog::~Dialog()
     delete ui;
 }
 
-void Dialog::on_btnStart_clicked()
+void Dialog::on_btnStart_clicked()  //start rds streaming
 {
 
 
@@ -82,10 +84,10 @@ void Dialog::on_btnStart_clicked()
     QFuture<void> test_rds = QtConcurrent::run(&this->mRds,&FM_rds::rds);
 }
 
-void Dialog::on_btnStop_clicked()
+void Dialog::on_btnStop_clicked()  //stop rds streaming
 {
-    emit on_Stop();
-    emit on_StopScan();
+    emit on_Stop(); //rds stop
+    emit on_StopScan(); //dab fm scan progressbar stop
 }
 
 //void Dialog::newNumber(QString name, int number)
@@ -96,7 +98,7 @@ void Dialog::on_btnStop_clicked()
 
 void Dialog::rds_stream(QString radio_program)
 {
-    ui->label->setText(radio_program);
+    ui->lbl_rds_stream->setText(radio_program);
 }
 
 void Dialog::prog_bar_dab_valueChanged(int prog_bar_value)
@@ -184,9 +186,9 @@ void Dialog::fm_fill_list()
 
 void Dialog::enable_disable_btn(bool btn_state){
 
-    ui->btnDabScanFreq->setEnabled(btn_state);
-    ui->btnDabTune->setEnabled(btn_state);
-    ui->btnTune->setEnabled(btn_state);
+    ui->btn_scan->setEnabled(btn_state);
+    ui->btn_tune->setEnabled(btn_state);
+    ui->btn_tune->setEnabled(btn_state);
 }
 
 //void Dialog::on_btnMute_clicked()
@@ -222,79 +224,11 @@ void Dialog::enable_disable_btn(bool btn_state){
 //        return 0;
 //}
 
-void Dialog::on_btnTune_clicked()
-{
-    //g_last_state_dab_fm = "FM";
-
-    ui->label->clear();
-
-    fd = net_open("/dev/radio0", O_RDWR);
-
-    //mMute.set_mute(fd,"off");
-    g_last_state_mute_unmute = "unmuted";
-    g_tuner_mode = "FM";
-    //qDebug() << "set mute: " << mMute.set_mute(fd, "off");
-//    int frequency;
-//    frequency = (ui->ln_freq->text()).toInt();
-    //frequency = 94800000;
-    //int tuner = 0;
-    //tuner = 1;
-
-    int marked_row = (ui->list_fm->currentRow()); //marked row from fm list
-    uint32_t frequency = (g_fm_vec_vec[marked_row][1]).toUInt();
 
 
-    //&mTune,Tune::set_radio_channel(fd,94800000,"RADIO");
+//void Dialog::on_btnDabTune_clicked()
 
-
-    //connect(&rds,&MyJob::rds_out,this,&Dialog::rds_stream);
-    //connect(&mTune,&Tune::set_radio_channel,)
-    //connect(this,&Dialog::on_Stop,&rds,&MyJob::stop);
-    //connect(this,&Dialog::on_btnTune_clicked,mTune.set_radio_channel(fd,frequency,tuner));
-    mTune.set_radio_channel(fd, frequency);
-
-}
-
-void Dialog::on_btnDabTune_clicked()
-{
-    //fd = net_open("/dev/dab0", O_RDWR);
-    //tuner_state = "DAB";
-
-    //g_last_state_dab_fm = "DAB";
-
-    //mMute.set_mute(fd, "off");
-    g_last_state_mute_unmute = "unmuted";
-    g_tuner_mode = "DAB";
-    //qDebug() << "set mute: " << mMute.set_mute(fd, "off");
-
-    int marked_row = (ui->list_dab->currentRow()); //marked row from dab list
-
-    uint frequency = (g_dab_vec_vec[marked_row][1]).toUInt();
-
-    QString sid_string = g_dab_vec_vec[marked_row][2];
-
-//    uint frequency = (g_dab_vec_vec[marked_row][1]).toUInt();
-
-//    QString sid_string = g_dab_vec_vec[marked_row][2];
-    bool ok;
-    uint sid = sid_string.toUInt(&ok, 16);
-    //qDebug() << "als int:" << sid;
-
-    uint8_t sid_set = 1;
-    uint8_t comp = 1;
-    uint8_t comp_set = 1;
-
-
-    //mTune.set_dab_channel_pretune(fd,frequency);
-    //mTune.set_dab_freq(fd,frequency);
-    //QThread::msleep(4000);
-    mTune.set_dab_channel(fd,frequency,sid,sid_set,comp,comp_set);
-
-    //QThread::msleep(200);
-    //Dialog::set_mute(fd, "off");
-}
-
-void Dialog::on_btnDabScanFreq_clicked()
+void Dialog::on_btn_scan_clicked()
 {
     if(g_tuner_mode == "DAB"){
 
@@ -344,20 +278,6 @@ void Dialog::on_btnDabScanFreq_clicked()
     }
 
 
-}
-
-
-
-void Dialog::on_pushButton_clicked()
-{
-    //qDebug() << "dab_vev_vec: " << mScan.dab_vec_vec;
-    //qDebug() << "g_dab_vev_vec: " << g_dab_vec_vec;
-}
-
-void Dialog::on_pushButton_2_clicked()
-{
-    //connect(this,&Dialog::on_pushButton_2_clicked,&mFile,&File::dab_write_file);
-    //mFile.dab_write_file();
 }
 
 void Dialog::on_btn_add_fav_clicked()
@@ -728,9 +648,68 @@ void Dialog::fm_show_fav_btn()
     }
 }
 
+void Dialog::on_btn_tune_clicked()
+{
+    if(g_tuner_mode == "FM"){
+
+        g_last_tuned_freq_dab = 0;
+
+        ui->lbl_rds_stream->clear();
+
+        fd = net_open("/dev/radio0", O_RDWR);
+
+        g_last_state_mute_unmute = "muted";
+        g_tuner_mode = "FM";
+
+        int marked_row = (ui->list_fm->currentRow()); //marked row from fm list
+        uint32_t frequency = (g_fm_vec_vec[marked_row][1]).toUInt();
+
+        mMute.set_mute();
+        mTune.set_radio_channel(fd, frequency);
+    }
+
+    if(g_tuner_mode == "DAB"){
+
+        g_last_state_mute_unmute = "muted";
+        g_tuner_mode = "DAB";
+
+        ui->lbl_rds_stream->clear();
+
+        int marked_row = (ui->list_dab->currentRow()); //marked row from dab list
+
+        uint frequency = (g_dab_vec_vec[marked_row][1]).toUInt();
+
+        QString sid_string = g_dab_vec_vec[marked_row][2];
+
+    //    uint frequency = (g_dab_vec_vec[marked_row][1]).toUInt();
+
+    //    QString sid_string = g_dab_vec_vec[marked_row][2];
+        bool ok;
+        uint sid = sid_string.toUInt(&ok, 16);
+        //qDebug() << "als int:" << sid;
+
+        uint8_t sid_set = 1;
+        uint8_t comp = 1;
+        uint8_t comp_set = 1;
+
+
+        //mTune.set_dab_channel_pretune(fd,frequency);
+        //mTune.set_dab_freq(fd,frequency);
+        //QThread::msleep(4000);
+        mMute.set_mute();
+        mTune.set_dab_channel(fd,frequency,sid,sid_set,comp,comp_set);
+
+        //QThread::msleep(200);
+        //Dialog::set_mute(fd, "off");
+    }
+
+}
+
 void Dialog::tune_dab_wrapper(int btn_id)
 { 
     fd = net_open("/dev/dab0", O_RDWR);
+
+    ui->lbl_rds_stream->clear();
 
     //g_last_state_dab_fm = "DAB";
     g_tuner_mode = "DAB";
@@ -751,7 +730,11 @@ void Dialog::tune_dab_wrapper(int btn_id)
 
 void Dialog::tune_fm_wrapper(int btn_id)
 {
+    g_last_tuned_freq_dab = 0; //reset in case dab is chosen again
+
     fd = net_open("/dev/radio0", O_RDWR);
+
+    ui->lbl_rds_stream->clear();
 
     //g_last_state_dab_fm = "DAB";
     g_tuner_mode = "FM";
@@ -876,6 +859,27 @@ void Dialog::on_btn_tuner_mode_clicked()
     g_tuner_mode = tmp_tuner_mode;
 
     qDebug() << "g_tuner_mode: " << g_tuner_mode;
+
+    //enable/disable tune button depending on station selected or not
+    int init_fm_list = ui->list_fm->currentRow();
+    int init_dab_list = ui->list_dab->currentRow();
+
+    if(init_fm_list == -1 && g_tuner_mode == "FM"){
+        ui->btn_tune->setDisabled(true);
+    }
+
+    if(init_fm_list != -1 && g_tuner_mode == "FM"){
+        ui->btn_tune->setDisabled(false);
+    }
+
+    if(init_dab_list == -1 && g_tuner_mode == "DAB"){
+        ui->btn_tune->setDisabled(true);
+    }
+
+    if(init_dab_list != -1 && g_tuner_mode == "DAB"){
+        ui->btn_tune->setDisabled(false);
+    }
+
  /*
     if(ui->btn_tuner_mode->text() == "FM\nMODE"){
         ui->btn_tuner_mode->setText("DAB\nMODE");
@@ -926,6 +930,10 @@ void Dialog::on_btn_rename_station_clicked()
     bool ok;
 
     QString new_name = QInputDialog::getText(this, "enter new name", "new name: ",QLineEdit::Normal,name_marked, &ok);
+
+    if(new_name == ""){
+        new_name = name_marked;
+    }
 
     if(new_name.contains(",")){
         new_name = new_name.replace(",", ".");
@@ -989,4 +997,14 @@ void Dialog::on_btn_delete_clicked()
 
         Dialog::dab_refresh_all();
     }
+}
+
+void Dialog::on_list_fm_itemSelectionChanged()
+{
+    ui->btn_tune->setEnabled(true);
+}
+
+void Dialog::on_list_dab_itemSelectionChanged()
+{
+    ui->btn_tune->setEnabled(true);
 }

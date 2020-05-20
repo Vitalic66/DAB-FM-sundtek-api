@@ -4,6 +4,8 @@
 #include <QDebug>
 #include <QProcess>
 
+uint32_t g_last_tuned_freq_dab;
+
 Tune::Tune(QObject *parent) : QObject(parent)
 {
 
@@ -28,15 +30,15 @@ int Tune::set_dab_channel(int fd, uint32_t frequency, uint32_t sid, uint8_t sid_
 
     QString freq_as_string = QString::number(frequency);
 
-    qDebug() << "last_tuned_freq before compare: " << last_tuned_freq_dab;
+    //qDebug() << "last_tuned_freq before compare: " << last_tuned_freq_dab;
 
-    if(last_tuned_freq_dab != frequency){ //tune to dab freq first if not done yet
-        last_tuned_freq_dab = frequency;
+    if(g_last_tuned_freq_dab != frequency){ //tune to dab freq first if not done yet
+        g_last_tuned_freq_dab = frequency;
 
         QProcess::execute("/opt/bin/mediaclient -m DAB -f " + freq_as_string);
     }
 
-    qDebug() << "last_tuned_freq: " << last_tuned_freq_dab;
+    qDebug() << "last_tuned_freq: " << g_last_tuned_freq_dab;
 
        //sid_set = -1;
 

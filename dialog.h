@@ -36,17 +36,19 @@ public:
 
 
 signals:
-    void on_Stop();
+    void on_Stop(); //rds streaming stop fm_rds.cpp
 
-    void on_StopScan();
+    void on_StopScan(); //dab fm scan progressbar stop scan.cpp
+
+
     //void on_btnTune_clicked();
 
 
 
 private slots:
-    void on_btnStart_clicked();
+    void on_btnStart_clicked(); //start rds stream
 
-    void on_btnStop_clicked();
+    void on_btnStop_clicked();  //stop rds stream
 
     //void on_btnMute_clicked();
 
@@ -54,17 +56,13 @@ private slots:
 
     //int set_mute(int fd, const char *arg);
 
-    void on_btnTune_clicked();
+    void on_btn_tune_clicked();
 
-    void on_btnDabTune_clicked();
+    //void on_btnDabTune_clicked();
 
-    void on_btnDabScanFreq_clicked();
+    void on_btn_scan_clicked();
 
     //void disable_btn();
-
-    void on_pushButton_clicked();
-
-    void on_pushButton_2_clicked();
 
     void on_btn_add_fav_clicked();
 
@@ -123,6 +121,10 @@ private slots:
     void on_btn_add_clicked();
 
     void on_btn_delete_clicked();
+
+    void on_list_fm_itemSelectionChanged();
+
+    void on_list_dab_itemSelectionChanged();
 
 public slots:
 

@@ -6,6 +6,7 @@
 #include </opt/include/mediaclient.h>
 #include <fcntl.h>  //for O_RDWR
 #include <unistd.h> //for usleep
+#include <globals.h>
 
 class Tune : public QObject
 {
@@ -32,7 +33,7 @@ public slots:
 
 private:
 
-    uint32_t last_tuned_freq_dab;
+    //uint32_t last_tuned_freq_dab;
 
 };
 
