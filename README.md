@@ -33,4 +33,8 @@ open a terminal if closed before
 
 git clone https://github.com/Vitalic66/DAB-FM-sundtek-api.git
 cd DAB-FM-sundtek-api.git
-qmake 
+qmake dab_fm_suntek_api.pro
+make
+
+start program:
+./DAB_FM_sundtek
