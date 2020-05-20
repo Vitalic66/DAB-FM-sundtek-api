@@ -70,7 +70,7 @@ Dialog::~Dialog()
     QProcess::execute("/opt/bin/mediaclient --shutdown");
     delete ui;
 }
-
+/*
 void Dialog::on_btnStart_clicked()  //start rds streaming
 {
 
@@ -86,6 +86,7 @@ void Dialog::on_btnStart_clicked()  //start rds streaming
 
     QFuture<void> test_rds = QtConcurrent::run(&this->mRds,&FM_rds::rds);
 }
+*/
 
 void Dialog::start_rds_stream(){
 
@@ -99,11 +100,13 @@ void Dialog::rds_stream(QString radio_program)
     ui->lbl_rds_stream->setText(radio_program);
 }
 
+/*
 void Dialog::on_btnStop_clicked()  //stop rds streaming
 {
     emit on_Stop(); //rds stop
     emit on_StopScan(); //dab fm scan progressbar stop
 }
+*/
 
 //void Dialog::newNumber(QString name, int number)
 //{
@@ -425,7 +428,7 @@ QPixmap Dialog::logo_dab(QString in)
     map.fill(Qt::color0);
 
     QPainter painter(&map);
-    painter.setRenderHint(QPainter::Antialiasing, true);
+    painter.setRenderHint(QPainter::Antialiasing, false);
     painter.setBrush(Qt::color1);
     //painter.drawRoundedRect(3, 18, 153, 83, 11, 11);
     painter.drawRoundedRect(0, 15, 160, 90, 20, 20);

@@ -46,9 +46,9 @@ signals:
 
 
 private slots:
-    void on_btnStart_clicked(); //start rds stream
+    //void on_btnStart_clicked(); //start rds stream
 
-    void on_btnStop_clicked();  //stop rds stream
+    //void on_btnStop_clicked();  //stop rds stream
 
     //void on_btnMute_clicked();
 
