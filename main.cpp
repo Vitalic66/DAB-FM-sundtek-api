@@ -1,4 +1,4 @@
-#include "main.h"
+#include "dialog.h"
 //#include "tune.h"
 #include <QApplication>
 
