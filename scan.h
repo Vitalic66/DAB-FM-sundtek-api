@@ -40,6 +40,8 @@ signals:
     void progress_scan_dab(int prog_bar_dab);
     void progress_scan_fm(int prog_bar_fm);
     void enable_buttons(bool btn_st);
+    void show_progbar_fm(bool vis);
+    void show_progbar_dab(bool vis);
     void write_to_file();
     void finished_scan();
     void finished_scan_fm();

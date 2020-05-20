@@ -140,6 +140,10 @@ public slots:
 
     void enable_disable_btn(bool btn_state);
 
+    void show_progbars(bool vis);
+
+    void start_rds_stream();
+
 private:
     Ui::Dialog *ui;
     //MyJob mJob;

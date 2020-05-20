@@ -23,7 +23,7 @@
     </rect>
    </property>
    <property name="currentIndex">
-    <number>0</number>
+    <number>1</number>
    </property>
    <widget class="QWidget" name="page">
     <property name="minimumSize">
@@ -266,7 +266,8 @@
       </rect>
      </property>
      <property name="text">
-      <string>SCAN</string>
+      <string>ALL
+STATIONS</string>
      </property>
     </widget>
     <widget class="QPushButton" name="btn_main_mute">
@@ -367,9 +368,9 @@ FAVORITE</string>
      <property name="geometry">
       <rect>
        <x>270</x>
-       <y>110</y>
+       <y>140</y>
        <width>260</width>
-       <height>30</height>
+       <height>300</height>
       </rect>
      </property>
      <property name="value">
@@ -439,9 +440,9 @@ MODE</string>
      <property name="geometry">
       <rect>
        <x>270</x>
-       <y>110</y>
+       <y>140</y>
        <width>260</width>
-       <height>30</height>
+       <height>300</height>
       </rect>
      </property>
      <property name="maximum">

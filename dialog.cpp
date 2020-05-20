@@ -57,6 +57,9 @@ Dialog::Dialog(QWidget *parent) :
         ui->btn_tune->setEnabled(false);
     }
 
+    ui->prog_bar_dab->setVisible(false);
+    ui->prog_bar_fm->setVisible(false);
+
     qDebug() << "g_tuner_mode: " << g_tuner_mode;
 }
 
@@ -84,6 +87,18 @@ void Dialog::on_btnStart_clicked()  //start rds streaming
     QFuture<void> test_rds = QtConcurrent::run(&this->mRds,&FM_rds::rds);
 }
 
+void Dialog::start_rds_stream(){
+
+    connect(&mRds,&FM_rds::rds_out,this,&Dialog::rds_stream);
+    connect(this,&Dialog::on_Stop,&mRds,&FM_rds::stop);
+    QFuture<void> test_rds = QtConcurrent::run(&this->mRds,&FM_rds::rds);
+}
+
+void Dialog::rds_stream(QString radio_program)
+{
+    ui->lbl_rds_stream->setText(radio_program);
+}
+
 void Dialog::on_btnStop_clicked()  //stop rds streaming
 {
     emit on_Stop(); //rds stop
@@ -96,10 +111,7 @@ void Dialog::on_btnStop_clicked()  //stop rds streaming
 //    ui->lineEdit->setText(name + " " + QString::number(number));
 //}
 
-void Dialog::rds_stream(QString radio_program)
-{
-    ui->lbl_rds_stream->setText(radio_program);
-}
+
 
 void Dialog::prog_bar_dab_valueChanged(int prog_bar_value)
 {
@@ -191,6 +203,18 @@ void Dialog::enable_disable_btn(bool btn_state){
     ui->btn_tune->setEnabled(btn_state);
 }
 
+void Dialog::show_progbars(bool visibility){
+
+    if(g_tuner_mode == "DAB"){
+        ui->prog_bar_dab->setVisible(visibility);
+    }
+
+    if(g_tuner_mode == "FM"){
+        ui->prog_bar_fm->setVisible(visibility);
+    }
+}
+
+
 //void Dialog::on_btnMute_clicked()
 //{
 //    fd = net_open("/dev/radio0", O_RDWR); // open device node
@@ -238,6 +262,7 @@ void Dialog::on_btn_scan_clicked()
         connect(&mScan,&Scan::progress_scan_dab,this,&Dialog::prog_bar_dab_valueChanged); //feedback from scan to progressbar
         //connect(&mScan,&Scan::progress_scan_dab,this,&Dialog::fill_dab_list); //feedback from scan to dab list
         connect(&mScan,&Scan::enable_buttons,this,&Dialog::enable_disable_btn);
+        connect(&mScan,&Scan::show_progbar_dab,this,&Dialog::show_progbars);
         //connect(&mScan,&Scan::write_to_file,&mFile,&File::dab_write_file);
 
         QFuture<void> scan_dab = QtConcurrent::run(&this->mScan,&Scan::dab_scan_wrapped); //create new thread for scan
@@ -262,6 +287,7 @@ void Dialog::on_btn_scan_clicked()
 
         //connect(&mScan,&Scan::progress_scan_dab,this,&Dialog::fill_dab_list); //feedback from scan to dab list
         connect(&mScan,&Scan::enable_buttons,this,&Dialog::enable_disable_btn);
+        connect(&mScan,&Scan::show_progbar_fm,this,&Dialog::show_progbars);
         //connect(&mScan,&Scan::write_to_file,&mFile,&File::dab_write_file);
 
         QFuture<void> scan_fm = QtConcurrent::run(&this->mScan,&Scan::fm_scan_wrapped); //create new thread for scan
@@ -654,7 +680,9 @@ void Dialog::on_btn_tune_clicked()
 
         g_last_tuned_freq_dab = 0;
 
-        ui->lbl_rds_stream->clear();
+        ui->lbl_rds_stream->clear(); //clear rds output
+
+        Dialog::start_rds_stream(); //start rds streaming
 
         fd = net_open("/dev/radio0", O_RDWR);
 
@@ -673,7 +701,9 @@ void Dialog::on_btn_tune_clicked()
         g_last_state_mute_unmute = "muted";
         g_tuner_mode = "DAB";
 
-        ui->lbl_rds_stream->clear();
+        ui->lbl_rds_stream->clear(); //clear rds output
+
+        emit on_Stop(); //stop rds stream
 
         int marked_row = (ui->list_dab->currentRow()); //marked row from dab list
 
@@ -711,6 +741,9 @@ void Dialog::tune_dab_wrapper(int btn_id)
 
     ui->lbl_rds_stream->clear();
 
+
+    emit on_Stop(); //stop rds_stream
+
     //g_last_state_dab_fm = "DAB";
     g_tuner_mode = "DAB";
     //qDebug() << "g_tuner_mode: " << g_tuner_mode;
@@ -735,6 +768,9 @@ void Dialog::tune_fm_wrapper(int btn_id)
     fd = net_open("/dev/radio0", O_RDWR);
 
     ui->lbl_rds_stream->clear();
+
+    //start rds stream
+    Dialog::start_rds_stream(); //start rds streaming
 
     //g_last_state_dab_fm = "DAB";
     g_tuner_mode = "FM";
@@ -828,8 +864,8 @@ void Dialog::on_btn_tuner_mode_clicked()
         ui->list_dab->setVisible(false);
         ui->list_fm->setVisible(true);
         ui->list_dab->setCurrentRow(-1);
-        ui->prog_bar_dab->setVisible(false);
-        ui->prog_bar_fm->setVisible(true);
+        //ui->prog_bar_dab->setVisible(false);
+        //ui->prog_bar_fm->setVisible(true);
         ui->btn_add->setEnabled(true);
         ui->btn_rename_station->setEnabled(true);
         ui->ln_add_station->setEnabled(true);
@@ -846,8 +882,8 @@ void Dialog::on_btn_tuner_mode_clicked()
         ui->list_dab->setVisible(true);
         ui->list_fm->setVisible(false);
         ui->list_fm->setCurrentRow(-1);
-        ui->prog_bar_dab->setVisible(true);
-        ui->prog_bar_fm->setVisible(false);
+        //ui->prog_bar_dab->setVisible(true);
+        //ui->prog_bar_fm->setVisible(false);
         ui->btn_add->setEnabled(false);
         ui->btn_rename_station->setEnabled(false);
         ui->ln_add_station->setEnabled(false);

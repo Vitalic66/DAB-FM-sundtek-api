@@ -45,7 +45,7 @@ int FM_rds::rds(){
                     memset(program, 0x0, 9);
                     memset(print_program, 0x0, 9);
                     int x=0;
-                    while(1) {
+                    while(1 && !mStop) {
                             net_ioctl(rdsfd, FM_RDS_STATUS, &data);
 
                             QString test;
@@ -90,7 +90,7 @@ int FM_rds::rds(){
 
                                     for (i=0;i<64;i++) {
 
-                                        if(mStop) return 0;
+                                        //if(mStop) return 0;
 
                                         if(radiotext[i] != 0){
 
