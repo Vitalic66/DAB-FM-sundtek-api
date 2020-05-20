@@ -428,7 +428,7 @@ QPixmap Dialog::logo_dab(QString in)
     map.fill(Qt::color0);
 
     QPainter painter(&map);
-    painter.setRenderHint(QPainter::Antialiasing, false);
+    //painter.setRenderHint(QPainter::Antialiasing, false);
     painter.setBrush(Qt::color1);
     //painter.drawRoundedRect(3, 18, 153, 83, 11, 11);
     painter.drawRoundedRect(0, 15, 160, 90, 20, 20);
