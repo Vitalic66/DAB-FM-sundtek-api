@@ -680,6 +680,8 @@ void Dialog::on_btn_tune_clicked()
 
         g_last_tuned_freq_dab = 0;
 
+        emit on_Stop(); //stop rds stream
+
         ui->lbl_rds_stream->clear(); //clear rds output
 
         Dialog::start_rds_stream(); //start rds streaming
@@ -701,9 +703,11 @@ void Dialog::on_btn_tune_clicked()
         g_last_state_mute_unmute = "muted";
         g_tuner_mode = "DAB";
 
-        ui->lbl_rds_stream->clear(); //clear rds output
 
         emit on_Stop(); //stop rds stream
+        ui->lbl_rds_stream->clear(); //clear rds output
+
+
 
         int marked_row = (ui->list_dab->currentRow()); //marked row from dab list
 
@@ -739,10 +743,12 @@ void Dialog::tune_dab_wrapper(int btn_id)
 { 
     fd = net_open("/dev/dab0", O_RDWR);
 
+    emit on_Stop(); //stop rds_stream
+
     ui->lbl_rds_stream->clear();
 
 
-    emit on_Stop(); //stop rds_stream
+
 
     //g_last_state_dab_fm = "DAB";
     g_tuner_mode = "DAB";
@@ -766,6 +772,8 @@ void Dialog::tune_fm_wrapper(int btn_id)
     g_last_tuned_freq_dab = 0; //reset in case dab is chosen again
 
     fd = net_open("/dev/radio0", O_RDWR);
+
+    emit on_Stop(); //stop rds_stream
 
     ui->lbl_rds_stream->clear();
 
