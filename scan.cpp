@@ -222,7 +222,9 @@ int Scan::media_scan_dabfrequencies(char *device, int devfd, int console, int ru
 
                     //qDebug() << "mStop_scan_dab: " << mStop_dab_scan;
 
-                } while (parameters.status != DAB_SCAN_COMPLETE && mStop_dab_scan == false);
+                //test6
+                //} while (parameters.status != DAB_SCAN_COMPLETE && mStop_dab_scan == false);
+                } while (parameters.status != DAB_SCAN_COMPLETE);
 
             //qDebug() << "g_dabvecvec after scan: " << g_dab_vec_vec;
 
@@ -230,8 +232,8 @@ int Scan::media_scan_dabfrequencies(char *device, int devfd, int console, int ru
 //            if (devfd == -1)
 //                    net_close(fd);
         }
-
-    return 0;
+    //test6
+    //return 0;
 
 }
 
@@ -429,7 +431,9 @@ int Scan::media_scan_fm_frequencies(char *device, int devfd) {
 
                         //qDebug() << "mStop_fm_scan: " << mStop_fm_scan;
 
-                } while (parameters.status != FM_SCAN_COMPLETE && mStop_fm_scan == false);
+                //test6
+                //} while (parameters.status != FM_SCAN_COMPLETE && mStop_fm_scan == false);
+                } while (parameters.status != FM_SCAN_COMPLETE);
 
                 //test5
                 //emit enable_buttons(true);
@@ -447,5 +451,6 @@ int Scan::media_scan_fm_frequencies(char *device, int devfd) {
 //                if (devfd == -1)
 //                        net_close(fd);
         }
-        return 0;
+        //test6
+        //return 0;
 }
