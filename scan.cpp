@@ -225,8 +225,9 @@ int Scan::media_scan_dabfrequencies(char *device, int devfd, int console, int ru
 
             //qDebug() << "g_dabvecvec after scan: " << g_dab_vec_vec;
 
-            if (devfd == -1)
-                    net_close(fd);
+            //test4
+//            if (devfd == -1)
+//                    net_close(fd);
         }
 
     return 0;
@@ -437,8 +438,9 @@ int Scan::media_scan_fm_frequencies(char *device, int devfd) {
 
                 qDebug() << "g_fm_vec_vec: " << g_fm_vec_vec;
 
-                if (devfd == -1)
-                        net_close(fd);
+                //test4
+//                if (devfd == -1)
+//                        net_close(fd);
         }
         return 0;
 }
