@@ -4,7 +4,7 @@
 //#include <QThread> //new
 //#include <scan.h> //new
 
-QString g_tuner_mode = "DAB";
+QString g_tuner_mode = "FM";
 
 QString g_last_state_mute_unmute;
 
@@ -79,10 +79,10 @@ Dialog::Dialog(QWidget *parent) :
 
 
 
-    setup_connections_fm_scan();
-    setup_connections_dab_scan();
+//    setup_connections_fm_scan();
+//    setup_connections_dab_scan();
 
-
+    setup_connections_scan();
 
 
 
@@ -91,6 +91,7 @@ Dialog::Dialog(QWidget *parent) :
 
 Dialog::~Dialog()
 {
+    /*
     // Quit thread
     thread_fm_scan->quit();
     // Wait for it to be closed properly
@@ -104,6 +105,13 @@ Dialog::~Dialog()
     while(!thread_dab_scan->isFinished());
     // Delete thread and UI
     delete thread_dab_scan;
+    */
+    // Quit thread
+    thread_scan->quit();
+    // Wait for it to be closed properly
+    while(!thread_scan->isFinished());
+    // Delete thread and UI
+    delete thread_scan;
 
 
     //emit on_Stop();
@@ -111,6 +119,7 @@ Dialog::~Dialog()
     QProcess::execute("/opt/bin/mediaclient --shutdown");
     delete ui;
 }
+/*
 void Dialog::setup_connections_fm_scan()
 {
     // Slots and signals
@@ -183,6 +192,54 @@ void Dialog::setup_connections_dab_scan()
 
     // Start main event loop of thread
     thread_dab_scan->start();
+}
+*/
+void Dialog::setup_connections_scan()
+{
+    // Slots and signals
+    // Connect buttons to slots
+    //connect(ui->btn_scan, SIGNAL(clicked()), this, SLOT(setThreadState()));
+    //connect(ui->buttonToggleWorker, SIGNAL(clicked()), this, SLOT(setThreadState()));
+    //connect(ui->spinBoxWorkAmount, SIGNAL(valueChanged(int)), this, SLOT(setWorkAmount(int)));
+    //connect(ui->sliderWorkSpeed, SIGNAL(valueChanged(int)), this, SLOT(setWorkSpeed(int)));
+
+    // Create thread, worker and timer
+    thread_scan = new QThread();
+    // Important that both the worker and timer are NOT members of this widget class otherwise thread affinity will not change at all!
+    //Worker *worker = new Worker();
+    Scan *scan = new Scan();
+
+    //QTimer *timer = new QTimer();
+    //timer->setInterval(0);  // Timer's inteveral set to 0 means that timer will trigger an event as soon as there are no other events to be processed
+
+    // Connect worker to widget and vice verser (buttons, progressBarWork)
+
+    connect(scan, SIGNAL(enable_buttons(bool)), this, SLOT(enable_disable_btn(bool))); //enable/disable some buttons during scan
+
+
+
+    //if(g_tuner_mode == "DAB"){
+        connect(scan, SIGNAL(show_progbar_dab(bool)), this, SLOT(show_progbars(bool))); //hide/unhide progbars
+        connect(scan, SIGNAL(finished_scan_dab()), this, SLOT(dab_refresh_after_scan()));  //when finished do save and refresh
+        connect(scan, SIGNAL(progress_scan_dab(int)), this, SLOT(prog_bar_dab_valueChanged(int)));  //progress of scan fm for progressbar
+        connect(this, SIGNAL(start_scan_dab()), scan, SLOT(dab_scan_wrapper())); //start scanning
+    //}
+    //if(g_tuner_mode == "FM"){
+        connect(scan, SIGNAL(show_progbar_fm(bool)), this, SLOT(show_progbars(bool))); //hide/unhide progbars
+        connect(scan, SIGNAL(finished_scan_fm()), this, SLOT(fm_refresh_after_scan()));  //when finished do save and refresh
+        connect(scan, SIGNAL(progress_scan_fm(int)), this, SLOT(prog_bar_fm_valueChanged(int)));  //progress of scan fm for progressbar
+        connect(this, SIGNAL(start_scan_fm()), scan, SLOT(fm_scan_wrapper())); //start scanning
+    //}
+
+    // Mark timer and worker for deletion ones the thread is stopped
+    connect(thread_scan, SIGNAL(finished()), scan, SLOT(deleteLater()));
+    connect(thread_scan, SIGNAL(finished()), thread_scan, SLOT(deleteLater()));
+
+    // Move worker to thread
+    scan->moveToThread(thread_scan);
+
+    // Start main event loop of thread
+    thread_scan->start();
 }
 /*
 void Dialog::receiveProgress(int workDone)
@@ -329,7 +386,7 @@ void Dialog::enable_disable_btn(bool btn_state){
 
     ui->btn_scan->setEnabled(btn_state);
     ui->btn_tune->setEnabled(btn_state);
-    ui->btn_tune->setEnabled(btn_state);
+    ui->btn_tuner_mode->setEnabled(btn_state);
 }
 
 void Dialog::show_progbars(bool visibility){

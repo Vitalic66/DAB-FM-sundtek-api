@@ -168,11 +168,15 @@ public slots:
 private:
     Ui::Dialog *ui;
 
-    QThread *thread_fm_scan;
-    QThread *thread_dab_scan;
+//    QThread *thread_fm_scan;
+//    QThread *thread_dab_scan;
 
-    void setup_connections_fm_scan();
-    void setup_connections_dab_scan();
+    QThread *thread_scan;
+
+//    void setup_connections_fm_scan();
+//    void setup_connections_dab_scan();
+
+    void setup_connections_scan();
 
 
 
