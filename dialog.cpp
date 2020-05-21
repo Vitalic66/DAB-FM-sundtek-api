@@ -278,8 +278,8 @@ void Dialog::on_btn_scan_clicked()
         //mFile.dab_write_file();
 
         //connect(&mScan,&Scan::finished_scan,this,&Dialog::dab_refresh_all);
-
-        connect(&mScan,&Scan::finished_scan,this,&Dialog::dab_refresh_after_scan);
+        //test2
+        //connect(&mScan,&Scan::finished_scan,this,&Dialog::dab_refresh_after_scan);
     }
 
     if(g_tuner_mode == "FM"){
@@ -304,8 +304,8 @@ void Dialog::on_btn_scan_clicked()
         //mFile.dab_write_file();
 
         //connect(&mScan,&Scan::finished_scan,this,&Dialog::dab_refresh_all);
-
-        connect(&mScan,&Scan::finished_scan_fm,this,&Dialog::fm_refresh_after_scan);
+        //test2
+        //connect(&mScan,&Scan::finished_scan_fm,this,&Dialog::fm_refresh_after_scan);
     }
 
 
