@@ -176,7 +176,7 @@ private:
 
     //MyJob mJob;
     FM_rds mRds;
-//    Scan mScan;
+Scan mScan;
     Tune mTune;
     Mute mMute;
     File mFile;

@@ -125,7 +125,7 @@ void Dialog::setup_connections_fm_scan()
     // Connect worker to widget and vice verser (buttons, progressBarWork)
     // Connect timer to worker
     //connect(worker, SIGNAL(sendThreadStatus(QString)), this, SLOT(receiveThreadStatus(QString)));
-    //connect(worker, SIGNAL(sendFinished()), this, SLOT(receiveFinished()));
+    connect(scan_fm, SIGNAL(finished_scan_fm()), this, SLOT(fm_refresh_after_scan()));
     connect(scan_fm, SIGNAL(sendProgress(int)), this, SLOT(receiveProgress(int)));
 
     //connect(this, SIGNAL(sendWorkAmount(int)), worker, SLOT(receiveWorkAmount(int)));
@@ -152,6 +152,11 @@ void Dialog::setup_connections_fm_scan()
     //emit sendWorkSpeed(ui->sliderWorkSpeed->value() * 10);
 
     // Start main event loop of thread
+
+    //scan_fm->mStop_fm_scan = false;
+
+    //mScan.mStop_fm_scan = false;
+
     thread_fm_scan->start();
 }
 
@@ -354,7 +359,7 @@ void Dialog::show_progbars(bool visibility){
 void Dialog::on_btn_scan_clicked()
 {
 
-
+//mScan.mStop_fm_scan = false;
 
     //emit toggleThread();
     emit start_scan_fm();

@@ -168,6 +168,8 @@ int Scan::media_scan_fm_frequencies(char *device, int devfd) {
                 //test5
                 emit finished_scan_fm();
 
+                mStop_fm_scan = false;
+
 
                 qDebug() << "g_fm_vec_vec: " << g_fm_vec_vec;
 
