@@ -212,10 +212,11 @@ int Scan::media_scan_dabfrequencies(char *device, int devfd, int console, int ru
                             break;
 
                     if(prog_bar_dab == 100){
-                        emit enable_buttons(true);
-                        emit show_progbar_dab(false);
-                        emit write_to_file();
-                        emit finished_scan();
+                        //test5
+                        //emit enable_buttons(true);
+                        //emit show_progbar_dab(false);
+                        //emit write_to_file();
+                        //emit finished_scan();
                         mStop_dab_scan = true;
                     }
 
@@ -430,10 +431,14 @@ int Scan::media_scan_fm_frequencies(char *device, int devfd) {
 
                 } while (parameters.status != FM_SCAN_COMPLETE && mStop_fm_scan == false);
 
-                emit enable_buttons(true);
-                emit show_progbar_fm(false);
+                //test5
+                //emit enable_buttons(true);
+                //emit show_progbar_fm(false);
+
                 //emit write_to_file();
-                emit finished_scan_fm();
+
+                //test5
+                //emit finished_scan_fm();
 
 
                 qDebug() << "g_fm_vec_vec: " << g_fm_vec_vec;
