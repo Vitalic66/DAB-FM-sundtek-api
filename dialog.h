@@ -9,7 +9,8 @@
 #include <QBitmap>
 #include <QPixmap>
 #include <QInputDialog>
-
+#include <QThread> //new
+//#include <QtCore>
 
 #include <fm_rds.h>
 #include <scan.h>
@@ -33,6 +34,8 @@ public:
     explicit Dialog(QWidget *parent = nullptr);
     ~Dialog();
 
+    Scan *mScan;
+
 
 
 signals:
@@ -46,6 +49,9 @@ signals:
 
 
 private slots:
+
+    void onNumberChanged(int);
+
     //void on_btnStart_clicked(); //start rds stream
 
     //void on_btnStop_clicked();  //stop rds stream
@@ -148,7 +154,7 @@ private:
     Ui::Dialog *ui;
     //MyJob mJob;
     FM_rds mRds;
-    Scan mScan;
+//    Scan mScan;
     Tune mTune;
     Mute mMute;
     File mFile;

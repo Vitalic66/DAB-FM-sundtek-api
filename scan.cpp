@@ -6,13 +6,50 @@
 QVector<QVector<QString>> g_dab_vec_vec;
 QVector<QVector<QString>> g_fm_vec_vec;
 
-Scan::Scan(QObject *parent) : QObject(parent)
+//Scan::Scan(QObject *parent) : QObject(parent)
+  Scan::Scan(QObject *parent) : QThread(parent)
 {
-    mStop_dab_scan = false;
-    mStop_fm_scan = false;
+    //mStop_dab_scan = false;
+    //mStop_fm_scan = false;
 
 }
 
+  //new2
+
+  void Scan::run()
+  {
+
+      for(int i = 0; i < 10000; i++){
+
+          //QMutex mutex;
+          //mutex.lock();
+          //if(this->Stop) break;
+          //mutex.unlock();
+
+          emit NumberChanged(i);
+
+          this->msleep(100);
+      }
+  }
+
+
+/*
+void Scan::DoSetup(QThread &cThread)
+{
+    connect(&cThread,SIGNAL(started()),this,SLOT(DoWork()));
+}
+
+void Scan::DoWork()
+{
+    for (int i = 0; i < 10000; i++){
+        qDebug() << i;
+    }
+}
+*/
+
+
+
+/*
 void Scan::stop_scan_dab()
 {
    mStop_dab_scan = true;
@@ -467,3 +504,4 @@ int Scan::media_scan_fm_frequencies(char *device, int devfd) {
         //test7 (after test 6 return deactivated -> invalid pointer
         return 0;
 }
+*/

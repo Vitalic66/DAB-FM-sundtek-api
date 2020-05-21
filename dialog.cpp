@@ -1,6 +1,9 @@
 #include "dialog.h"
 #include "ui_dialog.h"
 
+//#include <QThread> //new
+//#include <scan.h> //new
+
 QString g_tuner_mode = "DAB";
 
 QString g_last_state_mute_unmute;
@@ -12,6 +15,9 @@ Dialog::Dialog(QWidget *parent) :
     ui(new Ui::Dialog)
 {
     ui->setupUi(this);
+
+    mScan = new Scan(this);
+    connect(mScan,SIGNAL(NumberChanged(int)),this,SLOT(onNumberChanged(int)));
 
     //start mediaclient in case it did not...
     QProcess::execute("/opt/bin/mediaclient --shutdown");
@@ -257,6 +263,24 @@ void Dialog::show_progbars(bool visibility){
 
 void Dialog::on_btn_scan_clicked()
 {
+
+    mScan->start();
+
+    //new
+    /*
+    QThread cThread;
+    Scan cObject;
+
+    cObject.DoSetup(cThread);
+    cObject.moveToThread(&cThread);
+
+    cThread.start();
+*/
+    //new2
+
+
+
+    /*
     if(g_tuner_mode == "DAB"){
 
         mScan.mStop_dab_scan = false; //for new scan set false
@@ -310,7 +334,7 @@ void Dialog::on_btn_scan_clicked()
         //test2
         //connect(&mScan,&Scan::finished_scan_fm,this,&Dialog::fm_refresh_after_scan);
     }
-
+*/
 
 }
 
@@ -1059,4 +1083,9 @@ void Dialog::on_list_fm_itemSelectionChanged()
 void Dialog::on_list_dab_itemSelectionChanged()
 {
     ui->btn_tune->setEnabled(true);
+}
+
+void Dialog::onNumberChanged(int Number)
+{
+    ui->label->setText(QString::number(Number));
 }

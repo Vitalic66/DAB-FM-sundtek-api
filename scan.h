@@ -4,6 +4,9 @@
 #include <QObject>
 #include <QVector>
 #include <QThread>
+#include <QDebug>   //new
+#include <QMutex>
+
 //#include <QStringList>
 
 #include </opt/include/mediaclient.h>
@@ -12,12 +15,19 @@
 #include <tune.h>
 #include <globals.h>
 
-class Scan : public QObject
+//class Scan : public QObject
+class Scan : public QThread //new2
 {
     Q_OBJECT
 public:
-    explicit Scan(QObject *parent = nullptr);    
+    explicit Scan(QObject *parent = nullptr);
 
+    void run();
+    bool Stop;
+
+
+
+/*
     int media_scan_dabfrequencies(char *device, int devfd, int console, int running);
 
     int media_scan_dabservices(char *device);
@@ -34,9 +44,15 @@ public:
 
     bool mStop_dab_scan;
     bool mStop_fm_scan;
+*/
+   // void DoSetup(QThread &cThread); //new
 
 signals:
 
+    void NumberChanged(int);
+
+
+/*
     void progress_scan_dab(int prog_bar_dab);
     void progress_scan_fm(int prog_bar_fm);
     void enable_buttons(bool btn_st);
@@ -45,13 +61,16 @@ signals:
     void write_to_file();
     void finished_scan();
     void finished_scan_fm();
-
+*/
 public slots:
-
+/*
     void stop_scan_dab();
     void stop_scan_fm();
+*/
+    //void DoWork(); //new
 
 private:
+/*
     //QVector<QVector<uint32_t>> dab_vec_vec;
 
     //QVector<uint32_t> dab_sid_vec;
@@ -66,7 +85,7 @@ private:
     //mStop_dac_scan = false;
 
 //public:
-
+*/
 };
 
 #endif // SCAN_H
