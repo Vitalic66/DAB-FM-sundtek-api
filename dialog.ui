@@ -368,16 +368,16 @@ FAVORITE</string>
      <property name="geometry">
       <rect>
        <x>270</x>
-       <y>110</y>
+       <y>140</y>
        <width>260</width>
-       <height>30</height>
+       <height>300</height>
       </rect>
      </property>
      <property name="value">
       <number>0</number>
      </property>
      <property name="format">
-      <string/>
+      <string>%p%</string>
      </property>
     </widget>
     <widget class="QPushButton" name="btn_scan_to_main">
@@ -440,9 +440,9 @@ MODE</string>
      <property name="geometry">
       <rect>
        <x>270</x>
-       <y>80</y>
+       <y>140</y>
        <width>260</width>
-       <height>30</height>
+       <height>300</height>
       </rect>
      </property>
      <property name="maximum">

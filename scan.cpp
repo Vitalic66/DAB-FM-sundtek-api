@@ -136,51 +136,36 @@ int Scan::media_scan_fm_frequencies(char *device, int devfd) {
 //                        if (console>=0 && running == 0)
 //                                break;
 
-
-                        //act freq - 108 + 21
-                        //divisor 21
-
-                        //test8
                         prog_bar_fm = (parameters.READFREQ - 87000) * 100 / 21000;
 
                         //prog_bar_fm = (parameters.READFREQ *100) / 10800 ;
                         qDebug() << "prog_bar_fm: " << prog_bar_fm;
 
-                        //test8
+
                         emit progress_scan_fm(prog_bar_fm);
-                        workDone = prog_bar_fm;
-                        emit sendProgress(workDone);
-                        //emit enable_buttons(false);
-                        //emit show_progbar_fm(true);
+                        //workDone = prog_bar_fm;
+                        //emit sendProgress(workDone);
+                        emit enable_buttons(false);
+                        emit show_progbar_fm(true);
 
                         qDebug() << "mStop_fm_scan: " << mStop_fm_scan;
 
-                //test6
                 } while (parameters.status != FM_SCAN_COMPLETE && mStop_fm_scan == false);
-                //} while (parameters.status != FM_SCAN_COMPLETE);
 
-                //test5
-                //emit enable_buttons(true);
-                //emit show_progbar_fm(false);
 
-                //emit write_to_file();
 
-                //test5
+                emit enable_buttons(true);
+                emit show_progbar_fm(false);
                 emit finished_scan_fm();
 
-                mStop_fm_scan = false;
+                mStop_fm_scan = false; //reset for next scan
 
 
                 qDebug() << "g_fm_vec_vec: " << g_fm_vec_vec;
 
-                //test4
                 if (devfd == -1)
                         net_close(fd);
         }
-        //test6
-        //return 0;
-
-        //test7 (after test 6 return deactivated -> invalid pointer
         return 0;
 }
 

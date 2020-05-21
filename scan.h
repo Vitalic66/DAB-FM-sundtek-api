@@ -22,7 +22,7 @@ class Scan : public QObject
 public:
     explicit Scan(QObject *parent = nullptr);
 
-    void run();
+    //void run();
     bool Stop;
     bool mStop_fm_scan;
 
@@ -55,14 +55,18 @@ public:
 
 signals:
 
-    void sendProgress(int workDone);
-    void sendFinished();
+    //void sendProgress(int workDone);
+    //void sendFinished();
 
 
-    void NumberChanged(int);
-void progress_scan_fm(int prog_bar_fm);
+    //void NumberChanged(int);
+    void progress_scan_fm(int prog_bar_fm);
     //void progress_scan_fm(int);
     void finished_scan_fm();
+
+    void show_progbar_fm(bool vis);
+    void enable_buttons(bool btn_st);
+
 
 /*
     void progress_scan_dab(int prog_bar_dab);
@@ -86,7 +90,7 @@ public slots:
 
 private:
 
-int workDone;
+//int workDone;
 
 /*
     //QVector<QVector<uint32_t>> dab_vec_vec;

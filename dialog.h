@@ -51,7 +51,7 @@ signals:
 
 private slots:
 
-    void onNumberChanged(int);
+    //void onNumberChanged(int);
     void prog_bar_fm_valueChanged(int);
 
 
@@ -59,7 +59,7 @@ private slots:
 
 
     //void receiveFinished();
-    void receiveProgress(int workDone);
+    //void receiveProgress(int workDone);
 
 
 
@@ -176,7 +176,7 @@ private:
 
     //MyJob mJob;
     FM_rds mRds;
-Scan mScan;
+//Scan mScan;
     Tune mTune;
     Mute mMute;
     File mFile;
