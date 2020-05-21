@@ -368,9 +368,9 @@ FAVORITE</string>
      <property name="geometry">
       <rect>
        <x>270</x>
-       <y>140</y>
+       <y>110</y>
        <width>260</width>
-       <height>300</height>
+       <height>30</height>
       </rect>
      </property>
      <property name="value">
@@ -440,9 +440,9 @@ MODE</string>
      <property name="geometry">
       <rect>
        <x>270</x>
-       <y>140</y>
+       <y>110</y>
        <width>260</width>
-       <height>300</height>
+       <height>30</height>
       </rect>
      </property>
      <property name="maximum">

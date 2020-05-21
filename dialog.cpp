@@ -57,8 +57,8 @@ Dialog::Dialog(QWidget *parent) :
         ui->btn_tune->setEnabled(false);
     }
 
-    ui->prog_bar_dab->setVisible(false);
-    ui->prog_bar_fm->setVisible(false);
+    //ui->prog_bar_dab->setVisible(false);
+    //ui->prog_bar_fm->setVisible(false);
 
     qDebug() << "g_tuner_mode: " << g_tuner_mode;
 }
@@ -265,14 +265,15 @@ void Dialog::on_btn_scan_clicked()
         connect(&mScan,&Scan::progress_scan_dab,this,&Dialog::prog_bar_dab_valueChanged); //feedback from scan to progressbar
         //connect(&mScan,&Scan::progress_scan_dab,this,&Dialog::fill_dab_list); //feedback from scan to dab list
         connect(&mScan,&Scan::enable_buttons,this,&Dialog::enable_disable_btn);
-        connect(&mScan,&Scan::show_progbar_dab,this,&Dialog::show_progbars);
+        //test1
+        //connect(&mScan,&Scan::show_progbar_dab,this,&Dialog::show_progbars);
         //connect(&mScan,&Scan::write_to_file,&mFile,&File::dab_write_file);
 
         QFuture<void> scan_dab = QtConcurrent::run(&this->mScan,&Scan::dab_scan_wrapped); //create new thread for scan
 
         //QFuture<void> stop_scan = QtConcurrent::
-
-        connect(this,&Dialog::on_StopScan,&mScan,&Scan::stop_scan_dab);
+        //test1
+        //connect(this,&Dialog::on_StopScan,&mScan,&Scan::stop_scan_dab);
 
         //mFile.dab_write_file();
 
@@ -290,14 +291,15 @@ void Dialog::on_btn_scan_clicked()
 
         //connect(&mScan,&Scan::progress_scan_dab,this,&Dialog::fill_dab_list); //feedback from scan to dab list
         connect(&mScan,&Scan::enable_buttons,this,&Dialog::enable_disable_btn);
-        connect(&mScan,&Scan::show_progbar_fm,this,&Dialog::show_progbars);
+        //test1
+        //connect(&mScan,&Scan::show_progbar_fm,this,&Dialog::show_progbars);
         //connect(&mScan,&Scan::write_to_file,&mFile,&File::dab_write_file);
 
         QFuture<void> scan_fm = QtConcurrent::run(&this->mScan,&Scan::fm_scan_wrapped); //create new thread for scan
 
         //QFuture<void> stop_scan = QtConcurrent::
-
-        connect(this,&Dialog::on_StopScan,&mScan,&Scan::stop_scan_fm);
+        //test1
+        //connect(this,&Dialog::on_StopScan,&mScan,&Scan::stop_scan_fm);
 
         //mFile.dab_write_file();
 
