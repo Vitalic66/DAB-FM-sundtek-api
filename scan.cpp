@@ -234,6 +234,8 @@ int Scan::media_scan_dabfrequencies(char *device, int devfd, int console, int ru
         }
     //test6
     //return 0;
+    //test7 (after test 6 return deactivated -> invalid pointer
+    return 0;
 
 }
 
@@ -453,4 +455,7 @@ int Scan::media_scan_fm_frequencies(char *device, int devfd) {
         }
         //test6
         //return 0;
+
+        //test7 (after test 6 return deactivated -> invalid pointer
+        return 0;
 }
