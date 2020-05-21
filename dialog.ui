@@ -368,9 +368,9 @@ FAVORITE</string>
      <property name="geometry">
       <rect>
        <x>270</x>
-       <y>140</y>
+       <y>110</y>
        <width>260</width>
-       <height>300</height>
+       <height>30</height>
       </rect>
      </property>
      <property name="value">
@@ -440,9 +440,9 @@ MODE</string>
      <property name="geometry">
       <rect>
        <x>270</x>
-       <y>140</y>
+       <y>110</y>
        <width>260</width>
-       <height>300</height>
+       <height>30</height>
       </rect>
      </property>
      <property name="maximum">
@@ -549,19 +549,6 @@ STATION</string>
      <property name="text">
       <string>REMOVE
 STATION</string>
-     </property>
-    </widget>
-    <widget class="QLabel" name="label">
-     <property name="geometry">
-      <rect>
-       <x>620</x>
-       <y>260</y>
-       <width>67</width>
-       <height>17</height>
-      </rect>
-     </property>
-     <property name="text">
-      <string>TextLabel</string>
      </property>
     </widget>
    </widget>

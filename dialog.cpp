@@ -80,6 +80,7 @@ Dialog::Dialog(QWidget *parent) :
 
 
     setup_connections_fm_scan();
+    setup_connections_dab_scan();
 
 
 
@@ -96,6 +97,13 @@ Dialog::~Dialog()
     while(!thread_fm_scan->isFinished());
     // Delete thread and UI
     delete thread_fm_scan;
+
+    // Quit thread
+    thread_dab_scan->quit();
+    // Wait for it to be closed properly
+    while(!thread_dab_scan->isFinished());
+    // Delete thread and UI
+    delete thread_dab_scan;
 
 
     //emit on_Stop();
@@ -138,6 +146,43 @@ void Dialog::setup_connections_fm_scan()
 
     // Start main event loop of thread
     thread_fm_scan->start();
+}
+
+void Dialog::setup_connections_dab_scan()
+{
+    // Slots and signals
+    // Connect buttons to slots
+    //connect(ui->btn_scan, SIGNAL(clicked()), this, SLOT(setThreadState()));
+    //connect(ui->buttonToggleWorker, SIGNAL(clicked()), this, SLOT(setThreadState()));
+    //connect(ui->spinBoxWorkAmount, SIGNAL(valueChanged(int)), this, SLOT(setWorkAmount(int)));
+    //connect(ui->sliderWorkSpeed, SIGNAL(valueChanged(int)), this, SLOT(setWorkSpeed(int)));
+
+    // Create thread, worker and timer
+    thread_dab_scan = new QThread();
+    // Important that both the worker and timer are NOT members of this widget class otherwise thread affinity will not change at all!
+    //Worker *worker = new Worker();
+    Scan *scan_dab = new Scan();
+
+    //QTimer *timer = new QTimer();
+    //timer->setInterval(0);  // Timer's inteveral set to 0 means that timer will trigger an event as soon as there are no other events to be processed
+
+    // Connect worker to widget and vice verser (buttons, progressBarWork)
+
+    connect(scan_dab, SIGNAL(enable_buttons(bool)), this, SLOT(enable_disable_btn(bool))); //enable/disable some buttons during scan
+    connect(scan_dab, SIGNAL(show_progbar_dab(bool)), this, SLOT(show_progbars(bool))); //hide/unhide progbars
+    connect(scan_dab, SIGNAL(finished_scan_dab()), this, SLOT(dab_refresh_after_scan()));  //when finished do save and refresh
+    connect(scan_dab, SIGNAL(progress_scan_dab(int)), this, SLOT(prog_bar_dab_valueChanged(int)));  //progress of scan fm for progressbar
+    connect(this, SIGNAL(start_scan_dab()), scan_dab, SLOT(dab_scan_wrapper())); //start scanning
+
+    // Mark timer and worker for deletion ones the thread is stopped
+    connect(thread_dab_scan, SIGNAL(finished()), scan_dab, SLOT(deleteLater()));
+    connect(thread_dab_scan, SIGNAL(finished()), thread_dab_scan, SLOT(deleteLater()));
+
+    // Move worker to thread
+    scan_dab->moveToThread(thread_dab_scan);
+
+    // Start main event loop of thread
+    thread_dab_scan->start();
 }
 /*
 void Dialog::receiveProgress(int workDone)
@@ -338,35 +383,14 @@ void Dialog::show_progbars(bool visibility){
 
 void Dialog::on_btn_scan_clicked()
 {
+    if(g_tuner_mode == "DAB"){
+        emit start_scan_dab();
+    }
 
-//mScan.mStop_fm_scan = false;
+    if(g_tuner_mode == "FM"){
+        emit start_scan_fm();
+    }
 
-    //emit toggleThread();
-    emit start_scan_fm();
-
-    //mScan->mStop_fm_scan = false;
-
-    //mScan->start();
-
-    //connect(mScan,SIGNAL(progress_scan_fm(int)),this,SLOT(prog_bar_fm_valueChanged(int)));
-
-
-
-
-
-
-
-    //new
-    /*
-    QThread cThread;
-    Scan cObject;
-
-    cObject.DoSetup(cThread);
-    cObject.moveToThread(&cThread);
-
-    cThread.start();
-*/
-    //new2
 
 
 

@@ -25,13 +25,18 @@ public:
     //void run();
     bool Stop;
     bool mStop_fm_scan;
+    bool mStop_dab_scan;
 
     QVector<QString> dab_vec;
+    QVector<QString> dab_name_vec;
+    QVector<QString> dab_sid_vec;
     QVector<QString> fm_vec;
 
     //int fm_scan_wrapped();
 
     int media_scan_fm_frequencies(char *device, int devfd);
+    int media_scan_dabfrequencies(char *device, int devfd, int console, int running);
+    int media_scan_dabservices(char *device);
 
 /*
     int media_scan_dabfrequencies(char *device, int devfd, int console, int running);
@@ -61,10 +66,14 @@ signals:
 
     //void NumberChanged(int);
     void progress_scan_fm(int prog_bar_fm);
+    void progress_scan_dab(int prog_bar_dab);
     //void progress_scan_fm(int);
     void finished_scan_fm();
+    void finished_scan_dab();
 
     void show_progbar_fm(bool vis);
+    void show_progbar_dab(bool vis);
+
     void enable_buttons(bool btn_st);
 
 
@@ -81,33 +90,11 @@ signals:
 public slots:
 
     void fm_scan_wrapper();
-
-/*
-    void stop_scan_dab();
-    void stop_scan_fm();
-*/
-    //void DoWork(); //new
+    void dab_scan_wrapper();
 
 private:
-
-//int workDone;
-
-/*
-    //QVector<QVector<uint32_t>> dab_vec_vec;
-
-    //QVector<uint32_t> dab_sid_vec;
-    QVector<QString> dab_name_vec;
-    QVector<QString> fm_name_vec;
-    QVector<QString> dab_sid_vec;
-
-
     Tune mTune;
 
-
-    //mStop_dac_scan = false;
-
-//public:
-*/
 };
 
 #endif // SCAN_H

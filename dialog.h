@@ -44,6 +44,7 @@ signals:
     void on_StopScan(); //dab fm scan progressbar stop scan.cpp
 
     void start_scan_fm();
+    void start_scan_dab();
 
     //void on_btnTune_clicked();
 
@@ -168,8 +169,10 @@ private:
     Ui::Dialog *ui;
 
     QThread *thread_fm_scan;
+    QThread *thread_dab_scan;
 
     void setup_connections_fm_scan();
+    void setup_connections_dab_scan();
 
 
 
