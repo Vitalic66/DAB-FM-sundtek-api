@@ -16,8 +16,18 @@ Dialog::Dialog(QWidget *parent) :
 {
     ui->setupUi(this);
 
-    mScan = new Scan(this);
-    connect(mScan,SIGNAL(NumberChanged(int)),this,SLOT(onNumberChanged(int)));
+
+
+    //mScan = new Scan(this);
+    //connect(mScan,SIGNAL(NumberChanged(int)),this,SLOT(onNumberChanged(int)));
+
+    //connect(mScan,SIGNAL(progress_scan_fm(int)),this,SLOT(prog_bar_fm_valueChanged(int)));
+    //connect(mScan,SIGNAL(progress_scan_fm(int)),this,&Dialog::prog_bar_dab_valueChanged(prog_bar_value));
+
+
+
+
+
 
     //start mediaclient in case it did not...
     QProcess::execute("/opt/bin/mediaclient --shutdown");
@@ -45,8 +55,8 @@ Dialog::Dialog(QWidget *parent) :
     if(g_tuner_mode == "DAB"){
         ui->list_dab->setVisible(true);
         ui->list_fm->setVisible(false);
-        ui->prog_bar_dab->setVisible(true);
-        ui->prog_bar_fm->setTextVisible(false);
+        //ui->prog_bar_dab->setVisible(true);
+        //ui->prog_bar_fm->setTextVisible(false);
         ui->btn_tuner_mode->setText("to FM\nMODE");
         ui->btn_add->setEnabled(false);
         ui->btn_rename_station->setEnabled(false);
@@ -57,8 +67,8 @@ Dialog::Dialog(QWidget *parent) :
     if(g_tuner_mode == "FM"){
         ui->list_dab->setVisible(false);
         ui->list_fm->setVisible(true);
-        ui->prog_bar_dab->setVisible(false);
-        ui->prog_bar_fm->setTextVisible(true);
+        //ui->prog_bar_dab->setVisible(false);
+        //ui->prog_bar_fm->setTextVisible(true);
         ui->btn_tuner_mode->setText("to DAB\nMODE");
         ui->btn_tune->setEnabled(false);
     }
@@ -67,15 +77,93 @@ Dialog::Dialog(QWidget *parent) :
     //ui->prog_bar_fm->setVisible(false);
 
     qDebug() << "g_tuner_mode: " << g_tuner_mode;
+
+
+
+    setup_connections_fm_scan();
+
+
+
+
+
+
 }
 
 Dialog::~Dialog()
 {
-    emit on_Stop();
-    emit on_StopScan();
+    // Quit thread
+    thread_fm_scan->quit();
+    // Wait for it to be closed properly
+    while(!thread_fm_scan->isFinished());
+    // Delete thread and UI
+    delete thread_fm_scan;
+
+
+    //emit on_Stop();
+    //emit on_StopScan();
     QProcess::execute("/opt/bin/mediaclient --shutdown");
     delete ui;
 }
+void Dialog::setup_connections_fm_scan()
+{
+    // Slots and signals
+    // Connect buttons to slots
+    //connect(ui->btn_scan, SIGNAL(clicked()), this, SLOT(setThreadState()));
+    //connect(ui->buttonToggleWorker, SIGNAL(clicked()), this, SLOT(setThreadState()));
+    //connect(ui->spinBoxWorkAmount, SIGNAL(valueChanged(int)), this, SLOT(setWorkAmount(int)));
+    //connect(ui->sliderWorkSpeed, SIGNAL(valueChanged(int)), this, SLOT(setWorkSpeed(int)));
+
+    // Create thread, worker and timer
+    thread_fm_scan = new QThread();
+    // Important that both the worker and timer are NOT members of this widget class otherwise thread affinity will not change at all!
+    //Worker *worker = new Worker();
+    Scan *scan_fm = new Scan();
+
+    //QTimer *timer = new QTimer();
+    //timer->setInterval(0);  // Timer's inteveral set to 0 means that timer will trigger an event as soon as there are no other events to be processed
+
+    // Connect worker to widget and vice verser (buttons, progressBarWork)
+    // Connect timer to worker
+    //connect(worker, SIGNAL(sendThreadStatus(QString)), this, SLOT(receiveThreadStatus(QString)));
+    //connect(worker, SIGNAL(sendFinished()), this, SLOT(receiveFinished()));
+    connect(scan_fm, SIGNAL(sendProgress(int)), this, SLOT(receiveProgress(int)));
+
+    //connect(this, SIGNAL(sendWorkAmount(int)), worker, SLOT(receiveWorkAmount(int)));
+    //connect(this, SIGNAL(sendWorkSpeed(int)), worker, SLOT(receiveWorkSpeed(int)));
+    connect(this, SIGNAL(start_scan_fm()), scan_fm, SLOT(fm_scan_wrapper()));
+
+    //connect(timer, SIGNAL(timeout()), worker, SLOT(doWork()));
+    //connect(thread, SIGNAL(started()), timer, SLOT(start()));
+
+    // Mark timer and worker for deletion ones the thread is stopped
+    connect(thread_fm_scan, SIGNAL(finished()), scan_fm, SLOT(deleteLater()));
+    //connect(thread, SIGNAL(finished()), timer, SLOT(deleteLater()));
+    connect(thread_fm_scan, SIGNAL(finished()), thread_fm_scan, SLOT(deleteLater()));
+
+
+    // Start timer and move to thread
+    //timer->moveToThread(thread);
+
+    // Move worker to thread
+    scan_fm->moveToThread(thread_fm_scan);
+
+    // Send initial work amount and speed to worker
+    //emit sendWorkAmount(ui->spinBoxWorkAmount->value());
+    //emit sendWorkSpeed(ui->sliderWorkSpeed->value() * 10);
+
+    // Start main event loop of thread
+    thread_fm_scan->start();
+}
+
+void Dialog::receiveProgress(int workDone)
+{
+    ui->prog_bar_fm->setValue(workDone);
+    //ui->progressBar->setValue(workDone);
+    ui->label->setText(QString::number(workDone));
+    //ui->progressBarWork->setFormat(QString::number(workDone) + " out of " + QString::number(ui->progressBarWork->maximum()) + " | [time per chunk : " + QString::number(workSpeed) + "ms]");
+}
+
+
 /*
 void Dialog::on_btnStart_clicked()  //start rds streaming
 {
@@ -127,9 +215,11 @@ void Dialog::prog_bar_dab_valueChanged(int prog_bar_value)
     ui->prog_bar_dab->setValue(prog_bar_value);
 }
 
+//void Dialog::prog_bar_fm_valueChanged(int prog_bar_value)
 void Dialog::prog_bar_fm_valueChanged(int prog_bar_value)
 {
     ui->prog_bar_fm->setValue(prog_bar_value);
+    ui->label->setText(QString::number(prog_bar_value));
 }
 
 void Dialog::dab_fill_list()
@@ -215,11 +305,11 @@ void Dialog::enable_disable_btn(bool btn_state){
 void Dialog::show_progbars(bool visibility){
 
     if(g_tuner_mode == "DAB"){
-        ui->prog_bar_dab->setVisible(visibility);
+        //ui->prog_bar_dab->setVisible(visibility);
     }
 
     if(g_tuner_mode == "FM"){
-        ui->prog_bar_fm->setVisible(visibility);
+        //ui->prog_bar_fm->setVisible(visibility);
     }
 }
 
@@ -264,7 +354,22 @@ void Dialog::show_progbars(bool visibility){
 void Dialog::on_btn_scan_clicked()
 {
 
-    mScan->start();
+
+
+    //emit toggleThread();
+    emit start_scan_fm();
+
+    //mScan->mStop_fm_scan = false;
+
+    //mScan->start();
+
+    //connect(mScan,SIGNAL(progress_scan_fm(int)),this,SLOT(prog_bar_fm_valueChanged(int)));
+
+
+
+
+
+
 
     //new
     /*

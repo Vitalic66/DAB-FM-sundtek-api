@@ -1,13 +1,14 @@
 #include "scan.h"
 //#include <QVector>
 #include <QDebug>
-#include <QStringLiteral>
+//#include <QStringLiteral>
+#include <QMutexLocker>
 
 QVector<QVector<QString>> g_dab_vec_vec;
 QVector<QVector<QString>> g_fm_vec_vec;
 
-//Scan::Scan(QObject *parent) : QObject(parent)
-  Scan::Scan(QObject *parent) : QThread(parent)
+Scan::Scan(QObject *parent) : QObject(parent)
+  //Scan::Scan(QObject *parent) : QThread(parent)
 {
     //mStop_dab_scan = false;
     //mStop_fm_scan = false;
@@ -16,9 +17,10 @@ QVector<QVector<QString>> g_fm_vec_vec;
 
   //new2
 
-  void Scan::run()
-  {
-
+//void Scan::run()
+void Scan::fm_scan_wrapper()
+{
+/*
       for(int i = 0; i < 10000; i++){
 
           //QMutex mutex;
@@ -30,7 +32,159 @@ QVector<QVector<QString>> g_fm_vec_vec;
 
           this->msleep(100);
       }
-  }
+*/
+
+    //qDebug() << "fm scan wrapper called";
+        int devfd = -1;
+    //    int console = -1;
+    //    int running = -1;
+
+        Scan::media_scan_fm_frequencies("/dev/radio0",devfd);
+}
+
+int Scan::media_scan_fm_frequencies(char *device, int devfd) {
+//qDebug() << "media scan fm called";
+        int fd;
+        int rv;
+        int nlen;
+        char tmp[30];
+        g_fm_vec_vec.clear();
+
+        int prog_bar_fm = 0;
+        //int prog_bar_act_freq = 87000;
+
+        if (devfd>=0)
+                fd = devfd;
+        else {
+                printf("opening device: %s\n", device);
+                fd = net_open(device, O_RDWR);
+        }
+
+        if (fd>=0) {
+//                int i;
+//                int e;
+//                int current_scan_index=-1;
+                //qDebug() << "current scan index: " << current_scan_index;
+                struct fm_scan_setup setup;
+
+                struct fm_scan_parameters parameters;
+                memset(&parameters, 0x0, sizeof(struct fm_scan_parameters));
+                memset(&setup, 0x0, sizeof(struct fm_scan_setup));
+                //qDebug() << "memset: " << memset(&setup, 0x0, sizeof(struct fm_scan_setup));
+                //printf("SCAN SETUP\n");
+                net_ioctl(fd, FM_SCAN_SETUP, &setup);
+
+                int station = 0;
+
+                do {
+
+                        //qDebug() << "READFREQ: " << parameters.READFREQ;
+                        net_ioctl(fd, FM_SCAN_NEXT_FREQUENCY, &parameters);
+        //              printf("LOCK STAT: %x - %d - %d\n", parameters.status, parameters.VALID, parameters.READFREQ);
+
+                        switch(parameters.status) {
+                            case FM_SCAN_LOCKED:
+                            {
+                                QString freq = QString::number(parameters.READFREQ*1000);
+
+                                float mhz_float = freq.toFloat() / 1000000;
+                                //qDebug() << "mhz_float: " << mhz_float;
+                                QString mhz = QString::number(mhz_float);
+
+                                //qDebug() << "mhz: " << mhz;
+                                if(!mhz.contains(".")){
+                                    mhz = mhz + ".0";
+                                }
+
+
+                                station++;
+                                fm_vec.clear();
+                                fm_vec.push_back("Station " + QString::number(station) + "@" + mhz + "MHz"); //Station x
+                                fm_vec.push_back(freq); //frequency
+                                fm_vec.push_back(""); //placeholder for fav
+
+                                //qDebug() << "fm_vec: " << fm_vec;
+
+                                g_fm_vec_vec.push_back(fm_vec);
+                                //qDebug() << "g_fm_vec_vec: " << g_fm_vec_vec;
+
+//                                }
+                                break;
+                            }
+                            case FM_SCAN_SEARCHING:
+                                    usleep(10000);
+                                    break;
+                            case FM_SCAN_COMPLETE:
+                            {
+    //                                if (console>=0) {
+    //                                        rv=write(console, "[FINISHED]\n", 11);
+    //                                } else {
+                                            fprintf(stdout, "\nScan completed\n");
+
+                                            //test8
+                                            mStop_fm_scan = true;
+                                    //}
+                                    break;
+                            }
+
+
+
+                        //station = station + 1;
+                        //qDebug() << "i in fm scan: " << station;
+
+                        }
+//                        if (console>=0 && running == 0)
+//                                break;
+
+
+                        //act freq - 108 + 21
+                        //divisor 21
+
+                        //test8
+                        prog_bar_fm = (parameters.READFREQ - 87000) * 100 / 21000;
+
+                        //prog_bar_fm = (parameters.READFREQ *100) / 10800 ;
+                        qDebug() << "prog_bar_fm: " << prog_bar_fm;
+
+                        //test8
+                        emit progress_scan_fm(prog_bar_fm);
+                        workDone = prog_bar_fm;
+                        emit sendProgress(workDone);
+                        //emit enable_buttons(false);
+                        //emit show_progbar_fm(true);
+
+                        qDebug() << "mStop_fm_scan: " << mStop_fm_scan;
+
+                //test6
+                } while (parameters.status != FM_SCAN_COMPLETE && mStop_fm_scan == false);
+                //} while (parameters.status != FM_SCAN_COMPLETE);
+
+                //test5
+                //emit enable_buttons(true);
+                //emit show_progbar_fm(false);
+
+                //emit write_to_file();
+
+                //test5
+                emit finished_scan_fm();
+
+
+                qDebug() << "g_fm_vec_vec: " << g_fm_vec_vec;
+
+                //test4
+                if (devfd == -1)
+                        net_close(fd);
+        }
+        //test6
+        //return 0;
+
+        //test7 (after test 6 return deactivated -> invalid pointer
+        return 0;
+}
+
+
+
+//new threading ################################################################################################################################
 
 
 /*

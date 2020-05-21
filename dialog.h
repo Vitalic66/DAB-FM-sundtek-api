@@ -9,7 +9,7 @@
 #include <QBitmap>
 #include <QPixmap>
 #include <QInputDialog>
-#include <QThread> //new
+//#include <QThread> //new
 //#include <QtCore>
 
 #include <fm_rds.h>
@@ -34,7 +34,7 @@ public:
     explicit Dialog(QWidget *parent = nullptr);
     ~Dialog();
 
-    Scan *mScan;
+    //Scan *mScan;
 
 
 
@@ -43,6 +43,7 @@ signals:
 
     void on_StopScan(); //dab fm scan progressbar stop scan.cpp
 
+    void start_scan_fm();
 
     //void on_btnTune_clicked();
 
@@ -51,6 +52,19 @@ signals:
 private slots:
 
     void onNumberChanged(int);
+    void prog_bar_fm_valueChanged(int);
+
+
+
+
+
+    //void receiveFinished();
+    void receiveProgress(int workDone);
+
+
+
+
+
 
     //void on_btnStart_clicked(); //start rds stream
 
@@ -140,7 +154,7 @@ public slots:
 
     void prog_bar_dab_valueChanged(int prog_bar_value);
 
-    void prog_bar_fm_valueChanged(int prog_bar_value);
+    //void prog_bar_fm_valueChanged(int prog_bar_value);
 
     //void fill_dab_list();
 
@@ -152,6 +166,14 @@ public slots:
 
 private:
     Ui::Dialog *ui;
+
+    QThread *thread_fm_scan;
+
+    void setup_connections_fm_scan();
+
+
+
+
     //MyJob mJob;
     FM_rds mRds;
 //    Scan mScan;

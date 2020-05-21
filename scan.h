@@ -15,8 +15,8 @@
 #include <tune.h>
 #include <globals.h>
 
-//class Scan : public QObject
-class Scan : public QThread //new2
+class Scan : public QObject
+//class Scan : public QThread //new2
 {
     Q_OBJECT
 public:
@@ -24,8 +24,14 @@ public:
 
     void run();
     bool Stop;
+    bool mStop_fm_scan;
 
+    QVector<QString> dab_vec;
+    QVector<QString> fm_vec;
 
+    //int fm_scan_wrapped();
+
+    int media_scan_fm_frequencies(char *device, int devfd);
 
 /*
     int media_scan_dabfrequencies(char *device, int devfd, int console, int running);
@@ -49,8 +55,14 @@ public:
 
 signals:
 
-    void NumberChanged(int);
+    void sendProgress(int workDone);
+    void sendFinished();
 
+
+    void NumberChanged(int);
+void progress_scan_fm(int prog_bar_fm);
+    //void progress_scan_fm(int);
+    void finished_scan_fm();
 
 /*
     void progress_scan_dab(int prog_bar_dab);
@@ -63,6 +75,9 @@ signals:
     void finished_scan_fm();
 */
 public slots:
+
+    void fm_scan_wrapper();
+
 /*
     void stop_scan_dab();
     void stop_scan_fm();
@@ -70,6 +85,9 @@ public slots:
     //void DoWork(); //new
 
 private:
+
+int workDone;
+
 /*
     //QVector<QVector<uint32_t>> dab_vec_vec;
 
