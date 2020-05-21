@@ -262,9 +262,11 @@ void Dialog::on_btn_scan_clicked()
         mScan.mStop_dab_scan = false; //for new scan set false
         ui->list_dab->clear();
 
-        connect(&mScan,&Scan::progress_scan_dab,this,&Dialog::prog_bar_dab_valueChanged); //feedback from scan to progressbar
+        //test3
+        //connect(&mScan,&Scan::progress_scan_dab,this,&Dialog::prog_bar_dab_valueChanged); //feedback from scan to progressbar
         //connect(&mScan,&Scan::progress_scan_dab,this,&Dialog::fill_dab_list); //feedback from scan to dab list
-        connect(&mScan,&Scan::enable_buttons,this,&Dialog::enable_disable_btn);
+        //test3
+        //connect(&mScan,&Scan::enable_buttons,this,&Dialog::enable_disable_btn);
         //test1
         //connect(&mScan,&Scan::show_progbar_dab,this,&Dialog::show_progbars);
         //connect(&mScan,&Scan::write_to_file,&mFile,&File::dab_write_file);
@@ -286,11 +288,12 @@ void Dialog::on_btn_scan_clicked()
 
         mScan.mStop_fm_scan = false; //for new scan set false
         ui->list_fm->clear();
-
-        connect(&mScan,&Scan::progress_scan_fm,this,&Dialog::prog_bar_fm_valueChanged); //feedback from scan to progressbar
+        //test3
+        //connect(&mScan,&Scan::progress_scan_fm,this,&Dialog::prog_bar_fm_valueChanged); //feedback from scan to progressbar
 
         //connect(&mScan,&Scan::progress_scan_dab,this,&Dialog::fill_dab_list); //feedback from scan to dab list
-        connect(&mScan,&Scan::enable_buttons,this,&Dialog::enable_disable_btn);
+        //test3
+        //connect(&mScan,&Scan::enable_buttons,this,&Dialog::enable_disable_btn);
         //test1
         //connect(&mScan,&Scan::show_progbar_fm,this,&Dialog::show_progbars);
         //connect(&mScan,&Scan::write_to_file,&mFile,&File::dab_write_file);
