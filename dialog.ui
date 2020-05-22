@@ -345,7 +345,7 @@ STATIONS</string>
       </rect>
      </property>
      <property name="text">
-      <string>v1.0</string>
+      <string>v1.0.1</string>
      </property>
     </widget>
    </widget>

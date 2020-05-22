@@ -97,8 +97,8 @@ int FM_rds::rds(){
                                                 for(int i = 0; i < 9; i++){
                                                 prog_chars = prog_chars.append(static_cast<char>(program[i]));
                                                 }
-                                                if(prog_chars.contains("\uFFD9")){
-                                                    prog_chars = prog_chars.replace("\uFFD9", "");
+                                                if(prog_chars.contains('\0')){
+                                                    prog_chars = prog_chars.replace('\0', "");
                                                 }
                                             //}
 
@@ -174,8 +174,8 @@ int FM_rds::rds(){
 
                                                             rds_chars.append(rds_single_char);
 
-                                                            if(rds_chars.contains("\uFFD9")){
-                                                                rds_chars = rds_chars.replace("\uFFD9", "");
+                                                            if(rds_chars.contains('\0')){
+                                                                rds_chars = rds_chars.replace('\0', "");
                                                             }
 
                                                             //qDebug() << test;
