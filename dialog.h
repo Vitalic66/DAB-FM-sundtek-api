@@ -39,12 +39,16 @@ public:
 
 
 signals:
-    void on_Stop(); //rds streaming stop fm_rds.cpp
+    //void on_Stop(); //rds streaming stop fm_rds.cpp
 
-    void on_StopScan(); //dab fm scan progressbar stop scan.cpp
+    //void on_StopScan(); //dab fm scan progressbar stop scan.cpp
 
     void start_scan_fm();
     void start_scan_dab();
+    void stop_scan();
+    void start_rds();
+    void stop_rds();
+    void tuner_mode_changed();
 
     //void on_btnTune_clicked();
 
@@ -163,7 +167,7 @@ public slots:
 
     void show_progbars(bool vis);
 
-    void start_rds_stream();
+
 
 private:
     Ui::Dialog *ui;
@@ -171,18 +175,20 @@ private:
 //    QThread *thread_fm_scan;
 //    QThread *thread_dab_scan;
 
-    QThread *thread_scan;
+    QThread *thread_scan, *thread_rds;
+
 
 //    void setup_connections_fm_scan();
 //    void setup_connections_dab_scan();
 
     void setup_connections_scan();
-
+    void setup_connections_fm_rds();
+    void setup_button_connections();
 
 
 
     //MyJob mJob;
-    FM_rds mRds;
+    //FM_rds mRds;
 //Scan mScan;
     Tune mTune;
     Mute mMute;

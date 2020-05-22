@@ -2,7 +2,7 @@
 
 FM_rds::FM_rds(QObject *parent) : QObject(parent)
 {
-    mStop = false;
+    mStop_rds = false;
 }
 
 //void MyJob::start(QString name)
@@ -18,15 +18,17 @@ FM_rds::FM_rds(QObject *parent) : QObject(parent)
 //    }
 //}
 
-void FM_rds::stop()
+void FM_rds::stop_rds_reading()
 {
-   mStop = true;
+   mStop_rds = true;
 }
 
 //int MyJob::rds(const char *device){
 int FM_rds::rds(){
 
-    mStop = false;
+    qDebug() << "stop before while: " << mStop_rds;
+
+    //mStop_rds = false;
 
     int i;
     struct rds_data *rdsd;
@@ -45,10 +47,10 @@ int FM_rds::rds(){
                     memset(program, 0x0, 9);
                     memset(print_program, 0x0, 9);
                     int x=0;
-                    while(1 && !mStop) {
+                    while(1 && !mStop_rds) {
                             net_ioctl(rdsfd, FM_RDS_STATUS, &data);
 
-                            QString test;
+                            QString rds_chars;
                             //char irgendwas;
                             QStringList irgendwas_list;
                             QString irgendwas_line;
@@ -110,11 +112,11 @@ int FM_rds::rds(){
                                                             //ui->label_2->setText(buch);
                                                              //qDebug() << radiotext[i];
 
-                                                            char irgendwas = static_cast<char>(radiotext[i]);
+                                                            char rds_single_char = static_cast<char>(radiotext[i]);
                                                             //QChar char(radiotext[i]);
                                                             //qDebug() << irgendwas;
 
-                                                            test.append(irgendwas);
+                                                            rds_chars.append(rds_single_char);
 
                                                             //qDebug() << test;
 
@@ -144,7 +146,7 @@ int FM_rds::rds(){
                                                             //qDebug() << dst;
                                      //QString buch = dst;
                                             }
-                                           emit rds_out(test);
+                                           emit rds_out(rds_chars);
 
                                     }
                                     //printf("\n");
@@ -155,6 +157,8 @@ int FM_rds::rds(){
                             }
                             //QThread::currentThread()->msleep(5000);
                     }
+                    emit finished_rds_reading();
+                    mStop_rds = false;
             }
     net_close(rdsfd);
     }

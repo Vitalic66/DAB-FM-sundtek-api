@@ -10,9 +10,15 @@ QVector<QVector<QString>> g_fm_vec_vec;
 Scan::Scan(QObject *parent) : QObject(parent)
   //Scan::Scan(QObject *parent) : QThread(parent)
 {
-    //mStop_dab_scan = false;
-    //mStop_fm_scan = false;
+    mStop_dab_scan = false;
+    mStop_fm_scan = false;
 
+}
+
+void Scan::stop_scans()
+{
+    mStop_dab_scan = true;
+    mStop_fm_scan = true;
 }
 
   //new2

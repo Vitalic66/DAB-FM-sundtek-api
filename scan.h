@@ -23,7 +23,7 @@ public:
     explicit Scan(QObject *parent = nullptr);
 
     //void run();
-    bool Stop;
+    //bool Stop;
     bool mStop_fm_scan;
     bool mStop_dab_scan;
 
@@ -91,6 +91,7 @@ public slots:
 
     void fm_scan_wrapper();
     void dab_scan_wrapper();
+    void stop_scans();
 
 private:
     Tune mTune;

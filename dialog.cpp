@@ -83,6 +83,8 @@ Dialog::Dialog(QWidget *parent) :
 //    setup_connections_dab_scan();
 
     setup_connections_scan();
+    setup_connections_fm_rds();
+    setup_button_connections();
 
 
 
@@ -91,6 +93,11 @@ Dialog::Dialog(QWidget *parent) :
 
 Dialog::~Dialog()
 {
+    emit stop_rds();
+    emit stop_scan();
+
+    //qDebug() "status scan thread: " << thread_scan->isRunning()
+
     /*
     // Quit thread
     thread_fm_scan->quit();
@@ -106,6 +113,7 @@ Dialog::~Dialog()
     // Delete thread and UI
     delete thread_dab_scan;
     */
+    /*
     // Quit thread
     thread_scan->quit();
     // Wait for it to be closed properly
@@ -113,12 +121,27 @@ Dialog::~Dialog()
     // Delete thread and UI
     delete thread_scan;
 
+    // Quit thread
+    thread_rds->quit();
+    // Wait for it to be closed properly
+    while(!thread_rds->isFinished());
+    // Delete thread and UI
+    delete thread_rds;
+*/
 
     //emit on_Stop();
     //emit on_StopScan();
     QProcess::execute("/opt/bin/mediaclient --shutdown");
     delete ui;
 }
+
+void Dialog::setup_button_connections() //connect some buttons to change behaviour
+{
+    connect(this, SIGNAL(tuner_mode_changed()), this, SLOT(on_btn_tuner_mode_clicked()));
+    //connect(ui->btn_scan, SIGNAL(clicked()), this, SLOT(setThreadState()));
+}
+
+
 /*
 void Dialog::setup_connections_fm_scan()
 {
@@ -232,14 +255,68 @@ void Dialog::setup_connections_scan()
     //}
 
     // Mark timer and worker for deletion ones the thread is stopped
-    connect(thread_scan, SIGNAL(finished()), scan, SLOT(deleteLater()));
-    connect(thread_scan, SIGNAL(finished()), thread_scan, SLOT(deleteLater()));
+    //connect(thread_scan, SIGNAL(finished()), scan, SLOT(deleteLater()));
+    //connect(thread_scan, SIGNAL(finished()), thread_scan, SLOT(deleteLater()));
 
     // Move worker to thread
     scan->moveToThread(thread_scan);
 
     // Start main event loop of thread
     thread_scan->start();
+}
+/*
+void Dialog::start_rds_stream(){
+
+    emit start_rds();
+
+    //connect(&mRds,&FM_rds::rds_out,this,&Dialog::rds_stream);
+    //connect(this,&Dialog::on_Stop,&mRds,&FM_rds::stop);
+    //QFuture<void> test_rds = QtConcurrent::run(&this->mRds,&FM_rds::rds);
+}
+*/
+void Dialog::rds_stream(QString radio_program)
+{
+    ui->lbl_rds_stream->setText(radio_program);
+}
+
+void Dialog::setup_connections_fm_rds()
+{
+    // Slots and signals
+    // Connect buttons to slots
+    //connect(ui->btn_scan, SIGNAL(clicked()), this, SLOT(setThreadState()));
+    //connect(ui->buttonToggleWorker, SIGNAL(clicked()), this, SLOT(setThreadState()));
+    //connect(ui->spinBoxWorkAmount, SIGNAL(valueChanged(int)), this, SLOT(setWorkAmount(int)));
+    //connect(ui->sliderWorkSpeed, SIGNAL(valueChanged(int)), this, SLOT(setWorkSpeed(int)));
+
+    // Create thread, worker and timer
+    thread_rds = new QThread();
+    // Important that both the worker and timer are NOT members of this widget class otherwise thread affinity will not change at all!
+    //Worker *worker = new Worker();
+    FM_rds *rds = new FM_rds();
+
+    //QTimer *timer = new QTimer();
+    //timer->setInterval(0);  // Timer's inteveral set to 0 means that timer will trigger an event as soon as there are no other events to be processed
+
+    // Connect worker to widget and vice verser (buttons, progressBarWork)
+
+    //connect(rds, SIGNAL(enable_buttons(bool)), this, SLOT(enable_disable_btn(bool))); //enable/disable some buttons during scan
+
+        //connect(scan, SIGNAL(show_progbar_dab(bool)), this, SLOT(show_progbars(bool))); //hide/unhide progbars
+        //connect(scan, SIGNAL(finished_scan_dab()), this, SLOT(dab_refresh_after_scan()));  //when finished do save and refresh
+        connect(rds, SIGNAL(rds_out(QString)), this, SLOT(rds_stream(QString)));  //progress of scan fm for progressbar
+        connect(this, SIGNAL(start_rds()), rds, SLOT(rds())); //start rds streaming
+        connect(this, SIGNAL(stop_rds()), rds, SLOT(stop_rds_reading())); //stop rds streaming
+
+
+    // Mark timer and worker for deletion ones the thread is stopped
+    //connect(thread_rds, SIGNAL(finished()), rds, SLOT(deleteLater()));
+    //connect(thread_rds, SIGNAL(finished()), thread_rds, SLOT(deleteLater()));
+
+    // Move worker to thread
+    rds->moveToThread(thread_rds);
+
+    // Start main event loop of thread
+    thread_rds->start();
 }
 /*
 void Dialog::receiveProgress(int workDone)
@@ -269,17 +346,7 @@ void Dialog::on_btnStart_clicked()  //start rds streaming
 }
 */
 
-void Dialog::start_rds_stream(){
 
-    connect(&mRds,&FM_rds::rds_out,this,&Dialog::rds_stream);
-    connect(this,&Dialog::on_Stop,&mRds,&FM_rds::stop);
-    QFuture<void> test_rds = QtConcurrent::run(&this->mRds,&FM_rds::rds);
-}
-
-void Dialog::rds_stream(QString radio_program)
-{
-    ui->lbl_rds_stream->setText(radio_program);
-}
 
 /*
 void Dialog::on_btnStop_clicked()  //stop rds streaming
@@ -598,6 +665,7 @@ void Dialog::fm_refresh_after_scan()
 void Dialog::on_btn_main_to_scan_clicked()
 {
     ui->stackedWidget->setCurrentIndex(1);
+    //Dialog::on_btn_tuner_mode_clicked();
 }
 
 void Dialog::on_btn_scan_to_main_clicked()
@@ -883,11 +951,13 @@ void Dialog::on_btn_tune_clicked()
 
         g_last_tuned_freq_dab = 0;
 
-        emit on_Stop(); //stop rds stream
+        //emit stop_rds(); //stop rds stream
 
         ui->lbl_rds_stream->clear(); //clear rds output
 
-        Dialog::start_rds_stream(); //start rds streaming
+        //Dialog::start_rds_stream(); //start rds streaming
+
+        emit start_rds();
 
         fd = net_open("/dev/radio0", O_RDWR);
 
@@ -907,10 +977,8 @@ void Dialog::on_btn_tune_clicked()
         g_tuner_mode = "DAB";
 
 
-        emit on_Stop(); //stop rds stream
+        emit stop_rds(); //stop rds stream
         ui->lbl_rds_stream->clear(); //clear rds output
-
-
 
         int marked_row = (ui->list_dab->currentRow()); //marked row from dab list
 
@@ -946,16 +1014,26 @@ void Dialog::tune_dab_wrapper(int btn_id)
 { 
     fd = net_open("/dev/dab0", O_RDWR);
 
-    emit on_Stop(); //stop rds_stream
+    emit stop_rds(); //stop rds_stream
 
     ui->lbl_rds_stream->clear();
 
-
+    ui->btn_tuner_mode->setText("to FM\nMODE");
+    ui->list_dab->setVisible(true);
+    ui->list_fm->setVisible(false);
+    ui->list_fm->setCurrentRow(-1);
+    //ui->prog_bar_dab->setVisible(true);
+    //ui->prog_bar_fm->setVisible(false);
+    ui->btn_add->setEnabled(false);
+    ui->btn_rename_station->setEnabled(false);
+    ui->ln_add_station->setEnabled(false);
+    ui->list_dab->setCurrentRow(-1);
 
 
     //g_last_state_dab_fm = "DAB";
     g_tuner_mode = "DAB";
-    //qDebug() << "g_tuner_mode: " << g_tuner_mode;
+    qDebug() << "g_tuner_mode: " << g_tuner_mode;
+
     g_last_state_mute_unmute = "muted";
     //qDebug() << "g_last_state_mute_unmute: : " << g_last_state_mute_unmute;
     uint frequency = g_dab_vec_vec[dab_found_favs.at(btn_id)][1].toUInt();
@@ -976,12 +1054,25 @@ void Dialog::tune_fm_wrapper(int btn_id)
 
     fd = net_open("/dev/radio0", O_RDWR);
 
-    emit on_Stop(); //stop rds_stream
+    //emit stop_rds(); //stop rds_stream
 
     ui->lbl_rds_stream->clear();
 
+    ui->btn_tuner_mode->setText("to DAB\nMODE");
+    ui->list_dab->setVisible(false);
+    ui->list_fm->setVisible(true);
+    ui->list_dab->setCurrentRow(-1);
+    //ui->prog_bar_dab->setVisible(false);
+    //ui->prog_bar_fm->setVisible(true);
+    ui->btn_add->setEnabled(true);
+    ui->btn_rename_station->setEnabled(true);
+    ui->ln_add_station->setEnabled(true);
+    ui->list_fm->setCurrentRow(-1);
+
     //start rds stream
-    Dialog::start_rds_stream(); //start rds streaming
+    //Dialog::start_rds_stream(); //start rds streaming
+
+    emit start_rds();
 
     //g_last_state_dab_fm = "DAB";
     g_tuner_mode = "FM";
