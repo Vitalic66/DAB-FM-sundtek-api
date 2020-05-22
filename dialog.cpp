@@ -959,7 +959,7 @@ void Dialog::on_btn_tune_clicked()
 
         g_last_tuned_freq_dab = 0;
 
-        //emit stop_rds(); //stop rds stream
+        emit stop_rds(); //stop rds stream
 
         ui->lbl_rds_stream->clear(); //clear rds output
         ui->lbl_rds_station_stream->clear();
@@ -1056,7 +1056,7 @@ void Dialog::tune_fm_wrapper(int btn_id)
 
     fd = net_open("/dev/radio0", O_RDWR);
 
-    //emit stop_rds(); //stop rds_stream
+    emit stop_rds(); //stop rds_stream
 
     ui->lbl_rds_stream->clear();
     ui->lbl_rds_station_stream->clear();

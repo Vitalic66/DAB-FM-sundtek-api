@@ -30,7 +30,7 @@ int FM_rds::rds(){
 
     qDebug() << "stop before while: " << mStop_rds;
 
-    //mStop_rds = false;
+    mStop_rds = false;
 
     int i;
     struct rds_data *rdsd;
@@ -50,10 +50,11 @@ int FM_rds::rds(){
                     memset(print_program, 0x0, 9);
                     int x=0;
                     QString prog_chars;
+                    QString rds_chars;
                     while(1 && !mStop_rds) {
                             net_ioctl(rdsfd, FM_RDS_STATUS, &data);
 
-                            QString rds_chars;
+                            //QString rds_chars;
 
 
                             //char irgendwas;
@@ -93,8 +94,11 @@ int FM_rds::rds(){
 
                                             //if(prog_chars.length() < ){
                                                 prog_chars.clear();
-                                                for(int i = 0; i<9;i++){
+                                                for(int i = 0; i < 9; i++){
                                                 prog_chars = prog_chars.append(static_cast<char>(program[i]));
+                                                }
+                                                if(prog_chars.contains("\uFFD9")){
+                                                    prog_chars = prog_chars.replace("\uFFD9", "");
                                                 }
                                             //}
 
@@ -135,6 +139,8 @@ int FM_rds::rds(){
 
                                     //printf("RADIOTEXT: ");
 
+                                    rds_chars.clear();
+
                                     for (i=0;i<64;i++) {
 
                                         //if(mStop) return 0;
@@ -167,6 +173,10 @@ int FM_rds::rds(){
                                                             //qDebug() << irgendwas;
 
                                                             rds_chars.append(rds_single_char);
+
+                                                            if(rds_chars.contains("\uFFD9")){
+                                                                rds_chars = rds_chars.replace("\uFFD9", "");
+                                                            }
 
                                                             //qDebug() << test;
 
