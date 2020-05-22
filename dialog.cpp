@@ -961,7 +961,7 @@ void Dialog::on_btn_tune_clicked()
 
         emit stop_rds(); //stop rds stream
 
-        QThread::msleep(100);
+        //QThread::msleep(100);
 
         ui->lbl_rds_stream->clear(); //clear rds output
         ui->lbl_rds_station_stream->clear();
@@ -990,7 +990,7 @@ void Dialog::on_btn_tune_clicked()
 
         emit stop_rds(); //stop rds stream
 
-        QThread::msleep(100);
+        //QThread::msleep(100);
 
         ui->lbl_rds_stream->clear(); //clear rds output
         ui->lbl_rds_station_stream->clear();
@@ -1031,7 +1031,7 @@ void Dialog::tune_dab_wrapper(int btn_id)
 
     emit stop_rds(); //stop rds_stream
 
-    QThread::msleep(100);
+    //QThread::msleep(100);
 
     ui->lbl_rds_stream->clear();
     ui->lbl_rds_station_stream->clear();
@@ -1065,7 +1065,7 @@ void Dialog::tune_fm_wrapper(int btn_id)
 
     emit stop_rds(); //stop rds_stream
 
-    QThread::msleep(100);
+    //QThread::msleep(100);
 
     ui->lbl_rds_stream->clear();
     ui->lbl_rds_station_stream->clear();

@@ -219,6 +219,8 @@ int FM_rds::rds(){
                             //QThread::currentThread()->msleep(5000);
                     }
                     emit finished_rds_reading();
+                    rds_chars.clear();
+                    prog_chars.clear();
                     mStop_rds = false;
             }
     net_close(rdsfd);
