@@ -26,6 +26,8 @@ void FM_rds::stop_rds_reading()
 //int MyJob::rds(const char *device){
 int FM_rds::rds(){
 
+    qDebug() << "rds thread started";
+
     qDebug() << "stop before while: " << mStop_rds;
 
     //mStop_rds = false;
@@ -47,13 +49,16 @@ int FM_rds::rds(){
                     memset(program, 0x0, 9);
                     memset(print_program, 0x0, 9);
                     int x=0;
+                    QString prog_chars;
                     while(1 && !mStop_rds) {
                             net_ioctl(rdsfd, FM_RDS_STATUS, &data);
 
                             QString rds_chars;
+
+
                             //char irgendwas;
-                            QStringList irgendwas_list;
-                            QString irgendwas_line;
+                            //QStringList irgendwas_list;
+                            //QString irgendwas_line;
 
 
                             if (data.rdssync) {
@@ -80,9 +85,49 @@ int FM_rds::rds(){
 
                                     if (isprint(program[0]) && isprint(program[1])) {
                                             memcpy(print_program, program, 9);
+//                                            prog_chars = static_cast<char>(program[0]) + static_cast<char>(program[1]) + static_cast<char>(program[2])
+//                                                    +    static_cast<char>(program[3]) + static_cast<char>(program[4]) + static_cast<char>(program[5])
+//                                                    +    static_cast<char>(program[6]) + static_cast<char>(program[7]) + static_cast<char>(program[8])
+//                                                    +    static_cast<char>(program[9]);
+                                            //prog_chars = program[0]+program[1]+program[2];
+
+                                            //if(prog_chars.length() < ){
+                                                prog_chars.clear();
+                                                for(int i = 0; i<9;i++){
+                                                prog_chars = prog_chars.append(static_cast<char>(program[i]));
+                                                }
+                                            //}
+
+//                                            + static_cast<char>(program[1]) + static_cast<char>(program[2])
+//                                                                                                +    static_cast<char>(program[3]) + static_cast<char>(program[4]) + static_cast<char>(program[5])
+//                                                                                                +    static_cast<char>(program[6]) + static_cast<char>(program[7]) + static_cast<char>(program[8])
+//                                                                                                +    static_cast<char>(program[9]);
                                     }
 
-                                    //printf("PROGRAM: %s\n", print_program);
+//                                    QByteArray prog_chars;
+//                                    for(int i = 0; i < 9; i++){
+//                                        char rad_prog_single_char = 32;
+//                                        rad_prog_single_char = static_cast<char>(program[i]);
+//                                        prog_chars.append(rad_prog_single_char);
+//                                    }
+
+
+
+//                                    for(int i = 0; i < 9; i++){
+//                                        char rad_prog_single_char = 32;
+//                                        rad_prog_single_char = static_cast<char>(program[i]);
+
+//                                    //qDebug() << "rdaio program: " << print_program;
+//                                        qDebug() << "radio program single char: " << rad_prog_single_char;
+
+//                                        prog_chars.append(rad_prog_single_char);
+                                        qDebug() << "radio program: " << prog_chars;
+//                                    }
+
+                                    //QString print_prog = print_program;
+
+
+                                    printf("PROGRAM: %s\n", print_program);
 
                                     //char irgendwas = static_cast<char>(print_program);
 
@@ -107,12 +152,17 @@ int FM_rds::rds(){
                                                             break;
                                                     default:
                                                             //printf("%c", radiotext[i]);
-                                                            qDebug() << i;
+                                                            //qDebug() << i;
                                                             //QString buch = radiotext[i];
                                                             //ui->label_2->setText(buch);
                                                              //qDebug() << radiotext[i];
 
-                                                            char rds_single_char = static_cast<char>(radiotext[i]);
+                                                            char rds_single_char = 32; //init with space
+                                                            if(radiotext[i] != 127){ //remove white rectangles (ascii del)
+//qDebug() << "single rds char: " << radiotext[i];
+                                                                rds_single_char = static_cast<char>(radiotext[i]);
+
+                                                            }
                                                             //QChar char(radiotext[i]);
                                                             //qDebug() << irgendwas;
 
@@ -147,6 +197,7 @@ int FM_rds::rds(){
                                      //QString buch = dst;
                                             }
                                            emit rds_out(rds_chars);
+                                           emit rds_prog_out(prog_chars);
 
                                     }
                                     //printf("\n");

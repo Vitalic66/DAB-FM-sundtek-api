@@ -84,7 +84,7 @@ Dialog::Dialog(QWidget *parent) :
 
     setup_connections_scan();
     setup_connections_fm_rds();
-    setup_button_connections();
+    //setup_button_connections();
 
 
 
@@ -135,11 +135,11 @@ Dialog::~Dialog()
     delete ui;
 }
 
-void Dialog::setup_button_connections() //connect some buttons to change behaviour
-{
-    connect(this, SIGNAL(tuner_mode_changed()), this, SLOT(on_btn_tuner_mode_clicked()));
-    //connect(ui->btn_scan, SIGNAL(clicked()), this, SLOT(setThreadState()));
-}
+//void Dialog::setup_button_connections() //connect some buttons to change behaviour
+//{
+//    connect(this, SIGNAL(tuner_mode_changed()), this, SLOT(on_btn_tuner_mode_clicked()));
+//    //connect(ui->btn_scan, SIGNAL(clicked()), this, SLOT(setThreadState()));
+//}
 
 
 /*
@@ -274,9 +274,16 @@ void Dialog::start_rds_stream(){
     //QFuture<void> test_rds = QtConcurrent::run(&this->mRds,&FM_rds::rds);
 }
 */
-void Dialog::rds_stream(QString radio_program)
+void Dialog::rds_stream(QString data)
 {
-    ui->lbl_rds_stream->setText(radio_program);
+    ui->lbl_rds_stream->setWordWrap(true);
+    ui->lbl_rds_stream->setText(data);
+}
+
+void Dialog::rds_prog(QString prog)
+{
+    //ui->lbl_rds_stream->setWordWrap(true);
+    ui->lbl_rds_station_stream->setText(prog);
 }
 
 void Dialog::setup_connections_fm_rds()
@@ -303,7 +310,8 @@ void Dialog::setup_connections_fm_rds()
 
         //connect(scan, SIGNAL(show_progbar_dab(bool)), this, SLOT(show_progbars(bool))); //hide/unhide progbars
         //connect(scan, SIGNAL(finished_scan_dab()), this, SLOT(dab_refresh_after_scan()));  //when finished do save and refresh
-        connect(rds, SIGNAL(rds_out(QString)), this, SLOT(rds_stream(QString)));  //progress of scan fm for progressbar
+        connect(rds, SIGNAL(rds_out(QString)), this, SLOT(rds_stream(QString)));  //rds data stream
+        connect(rds, SIGNAL(rds_prog_out(QString)), this, SLOT(rds_prog(QString)));  //rds data stream
         connect(this, SIGNAL(start_rds()), rds, SLOT(rds())); //start rds streaming
         connect(this, SIGNAL(stop_rds()), rds, SLOT(stop_rds_reading())); //stop rds streaming
 
@@ -954,6 +962,7 @@ void Dialog::on_btn_tune_clicked()
         //emit stop_rds(); //stop rds stream
 
         ui->lbl_rds_stream->clear(); //clear rds output
+        ui->lbl_rds_station_stream->clear();
 
         //Dialog::start_rds_stream(); //start rds streaming
 
@@ -979,6 +988,7 @@ void Dialog::on_btn_tune_clicked()
 
         emit stop_rds(); //stop rds stream
         ui->lbl_rds_stream->clear(); //clear rds output
+        ui->lbl_rds_station_stream->clear();
 
         int marked_row = (ui->list_dab->currentRow()); //marked row from dab list
 
@@ -1017,17 +1027,9 @@ void Dialog::tune_dab_wrapper(int btn_id)
     emit stop_rds(); //stop rds_stream
 
     ui->lbl_rds_stream->clear();
+    ui->lbl_rds_station_stream->clear();
 
-    ui->btn_tuner_mode->setText("to FM\nMODE");
-    ui->list_dab->setVisible(true);
-    ui->list_fm->setVisible(false);
-    ui->list_fm->setCurrentRow(-1);
-    //ui->prog_bar_dab->setVisible(true);
-    //ui->prog_bar_fm->setVisible(false);
-    ui->btn_add->setEnabled(false);
-    ui->btn_rename_station->setEnabled(false);
-    ui->ln_add_station->setEnabled(false);
-    ui->list_dab->setCurrentRow(-1);
+    Dialog::dab_btn_changer();
 
 
     //g_last_state_dab_fm = "DAB";
@@ -1057,17 +1059,9 @@ void Dialog::tune_fm_wrapper(int btn_id)
     //emit stop_rds(); //stop rds_stream
 
     ui->lbl_rds_stream->clear();
+    ui->lbl_rds_station_stream->clear();
 
-    ui->btn_tuner_mode->setText("to DAB\nMODE");
-    ui->list_dab->setVisible(false);
-    ui->list_fm->setVisible(true);
-    ui->list_dab->setCurrentRow(-1);
-    //ui->prog_bar_dab->setVisible(false);
-    //ui->prog_bar_fm->setVisible(true);
-    ui->btn_add->setEnabled(true);
-    ui->btn_rename_station->setEnabled(true);
-    ui->ln_add_station->setEnabled(true);
-    ui->list_fm->setCurrentRow(-1);
+    Dialog::fm_btn_changer();
 
     //start rds stream
     //Dialog::start_rds_stream(); //start rds streaming
@@ -1162,34 +1156,14 @@ void Dialog::on_btn_tuner_mode_clicked()
 
     if(g_tuner_mode == "DAB"){ //activating FM mode
 
-        ui->btn_tuner_mode->setText("to DAB\nMODE");
-        ui->list_dab->setVisible(false);
-        ui->list_fm->setVisible(true);
-        ui->list_dab->setCurrentRow(-1);
-        //ui->prog_bar_dab->setVisible(false);
-        //ui->prog_bar_fm->setVisible(true);
-        ui->btn_add->setEnabled(true);
-        ui->btn_rename_station->setEnabled(true);
-        ui->ln_add_station->setEnabled(true);
-        ui->list_fm->setCurrentRow(-1);
-
+        Dialog::fm_btn_changer();
 
         tmp_tuner_mode = "FM";
     }
 
     if(g_tuner_mode == "FM"){ //activating DAB mode
 
-
-        ui->btn_tuner_mode->setText("to FM\nMODE");
-        ui->list_dab->setVisible(true);
-        ui->list_fm->setVisible(false);
-        ui->list_fm->setCurrentRow(-1);
-        //ui->prog_bar_dab->setVisible(true);
-        //ui->prog_bar_fm->setVisible(false);
-        ui->btn_add->setEnabled(false);
-        ui->btn_rename_station->setEnabled(false);
-        ui->ln_add_station->setEnabled(false);
-        ui->list_dab->setCurrentRow(-1);
+        Dialog::dab_btn_changer();
 
         tmp_tuner_mode = "DAB";
     }
@@ -1352,3 +1326,39 @@ void Dialog::onNumberChanged(int Number)
     ui->label->setText(QString::number(Number));
 }
 */
+
+void Dialog::dab_btn_changer()
+{
+    ui->btn_tuner_mode->setText("to FM\nMODE");
+    ui->list_dab->setVisible(true);
+    ui->list_fm->setVisible(false);
+    ui->list_fm->setCurrentRow(-1);
+    //ui->prog_bar_dab->setVisible(true);
+    //ui->prog_bar_fm->setVisible(false);
+    ui->btn_add->setEnabled(false);
+    ui->btn_rename_station->setEnabled(false);
+    ui->ln_add_station->setEnabled(false);
+    ui->list_dab->setCurrentRow(-1);
+    ui->lbl_rds_stream->setVisible(false);
+    ui->lbl_rds->setVisible(false);
+    ui->lbl_rds_station->setVisible(false);
+    ui->lbl_rds_station_stream->setVisible(false);
+}
+
+void Dialog::fm_btn_changer()
+{
+    ui->btn_tuner_mode->setText("to DAB\nMODE");
+    ui->list_dab->setVisible(false);
+    ui->list_fm->setVisible(true);
+    ui->list_dab->setCurrentRow(-1);
+    //ui->prog_bar_dab->setVisible(false);
+    //ui->prog_bar_fm->setVisible(true);
+    ui->btn_add->setEnabled(true);
+    ui->btn_rename_station->setEnabled(true);
+    ui->ln_add_station->setEnabled(true);
+    ui->list_fm->setCurrentRow(-1);
+    ui->lbl_rds_stream->setVisible(true);
+    ui->lbl_rds->setVisible(true);
+    ui->lbl_rds_station->setVisible(true);
+    ui->lbl_rds_station_stream->setVisible(true);
+}

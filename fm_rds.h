@@ -29,6 +29,7 @@ signals:
     //void on_number(QString name, int number);
 
     void rds_out(QString rds_stream);
+    void rds_prog_out(QString rds_prog);
     void finished_rds_reading();
 
 public slots:

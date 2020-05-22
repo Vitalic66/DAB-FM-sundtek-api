@@ -23,7 +23,7 @@
     </rect>
    </property>
    <property name="currentIndex">
-    <number>1</number>
+    <number>0</number>
    </property>
    <widget class="QWidget" name="page">
     <property name="minimumSize">
@@ -230,14 +230,22 @@
     <widget class="QLabel" name="lbl_rds_stream">
      <property name="geometry">
       <rect>
-       <x>10</x>
-       <y>370</y>
-       <width>371</width>
-       <height>17</height>
+       <x>30</x>
+       <y>380</y>
+       <width>361</width>
+       <height>91</height>
       </rect>
+     </property>
+     <property name="font">
+      <font>
+       <pointsize>15</pointsize>
+      </font>
      </property>
      <property name="text">
       <string/>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
      </property>
     </widget>
     <widget class="QFrame" name="frame">
@@ -281,6 +289,50 @@ STATIONS</string>
      </property>
      <property name="text">
       <string>MUTE</string>
+     </property>
+    </widget>
+    <widget class="QLabel" name="lbl_rds">
+     <property name="geometry">
+      <rect>
+       <x>30</x>
+       <y>350</y>
+       <width>67</width>
+       <height>17</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>RDS:</string>
+     </property>
+    </widget>
+    <widget class="QLabel" name="lbl_rds_station">
+     <property name="geometry">
+      <rect>
+       <x>30</x>
+       <y>280</y>
+       <width>67</width>
+       <height>17</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Station:</string>
+     </property>
+    </widget>
+    <widget class="QLabel" name="lbl_rds_station_stream">
+     <property name="geometry">
+      <rect>
+       <x>30</x>
+       <y>300</y>
+       <width>171</width>
+       <height>31</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <pointsize>15</pointsize>
+      </font>
+     </property>
+     <property name="text">
+      <string/>
      </property>
     </widget>
    </widget>

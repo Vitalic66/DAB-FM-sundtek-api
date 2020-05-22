@@ -155,7 +155,9 @@ public slots:
 
     //void newNumber(QString name, int number);
 
-    void rds_stream(QString radio_program);
+    void rds_stream(QString rds_data);
+
+    void rds_prog(QString prog);
 
     void prog_bar_dab_valueChanged(int prog_bar_value);
 
@@ -183,7 +185,10 @@ private:
 
     void setup_connections_scan();
     void setup_connections_fm_rds();
-    void setup_button_connections();
+    //void setup_button_connections();
+
+    void dab_btn_changer();
+    void fm_btn_changer();
 
 
 
