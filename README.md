@@ -16,7 +16,7 @@ sudo -s
 cd /tmp  
 wget http://sundtek.de/media/sundtek_netinst.sh  
 chmod 777 sundtek_netinst.sh  
-./sundtek_netinst.sh  
+./sundtek_netinst.sh -service  
 exit  
 
 
@@ -37,4 +37,4 @@ qmake dab_fm_suntek_api.pro
 make
 
 start program:  
-./DAB_FM_sundtek  
+sudo ./DAB_FM_sundtek  
