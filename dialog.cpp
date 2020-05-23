@@ -347,7 +347,8 @@ connect(ui->sliderForSize, SIGNAL(valueChanged(int)), this, SLOT(setForSize(int)
     emit sendWorkSpeed(ui->sliderWorkSpeed->value() * 10);
     emit sendForSize(ui->sliderForSize->value());
     // Start main event loop of thread
-    thread_rds->start(QThread::HighestPriority);
+    //thread_rds->start(QThread::HighestPriority);
+    thread_rds->start();
 }
 /*
 void Dialog::receiveProgress(int workDone)

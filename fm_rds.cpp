@@ -66,6 +66,9 @@ int FM_rds::rds(){
                     while(1 && !mStop_rds) {
                             net_ioctl(rdsfd, FM_RDS_STATUS, &data);
 
+                                                rds_chars.clear();
+                                                prog_chars.clear();
+
                             //QString rds_chars;
 
 
@@ -218,24 +221,24 @@ for (i = 0; i < forsize; i++) {
                                                             //qDebug() << dst;
                                      //QString buch = dst;
                                             }
-                                           emit rds_out(rds_chars);
-                                           emit rds_prog_out(prog_chars);
+//                                           emit rds_out(rds_chars);
+//                                           emit rds_prog_out(prog_chars);
 
-                                    }
-//emit rds_out(rds_chars);
-//emit rds_prog_out(prog_chars);
+                                    } //end for loop
+emit rds_out(rds_chars);
+emit rds_prog_out(prog_chars);
 
                                     //printf("\n");
 
                                     //ui->label_2->setText(test);
 
                                     fflush(stdout);
-                            }
+                            } //end if loop
                             //QThread::currentThread()->msleep(5000);
-                    }
+                    } //end while loop
                     emit finished_rds_reading();
-                    rds_chars.clear();
-                    prog_chars.clear();
+//                    rds_chars.clear();
+//                    prog_chars.clear();
                     mStop_rds = false;
             }
     net_close(rdsfd);
