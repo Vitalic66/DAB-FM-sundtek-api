@@ -75,7 +75,7 @@ Dialog::Dialog(QWidget *parent) :
     ui->prog_bar_dab->setVisible(false);
     ui->prog_bar_fm->setVisible(false);
 
-    qDebug() << "g_tuner_mode: " << g_tuner_mode;
+    //qDebug() << "g_tuner_mode: " << g_tuner_mode;
 
 
 
@@ -981,16 +981,23 @@ void Dialog::fm_show_fav_btn()
 
 void Dialog::on_btn_tune_clicked()
 {
+
+    emit stop_rds(); //stop rds stream
+    QThread::msleep(250);
+    ui->lbl_rds_stream->clear();
+    ui->lbl_rds_station_stream->clear();
+
+
     if(g_tuner_mode == "FM"){
 
         g_last_tuned_freq_dab = 0;
 
-        emit stop_rds(); //stop rds stream
+        //emit stop_rds(); //stop rds stream
 
         //QThread::msleep(100);
 
-        ui->lbl_rds_stream->setText(""); //clear rds output
-        ui->lbl_rds_station_stream->setText("");
+        //ui->lbl_rds_stream->setText(""); //clear rds output
+        //ui->lbl_rds_station_stream->setText("");
 
         //Dialog::start_rds_stream(); //start rds streaming
 
@@ -1018,12 +1025,12 @@ void Dialog::on_btn_tune_clicked()
         g_tuner_mode = "DAB";
 
 
-        emit stop_rds(); //stop rds stream
+        //emit stop_rds(); //stop rds stream
 
         //QThread::msleep(100);
 
-        ui->lbl_rds_stream->setText(""); //clear rds output
-        ui->lbl_rds_station_stream->setText("");
+        //ui->lbl_rds_stream->setText(""); //clear rds output
+        //ui->lbl_rds_station_stream->setText("");
 
         int marked_row = (ui->list_dab->currentRow()); //marked row from dab list
 
@@ -1063,17 +1070,17 @@ void Dialog::tune_dab_wrapper(int btn_id)
 
     emit stop_rds(); //stop rds_stream
 
-    //QThread::msleep(100);
+    QThread::msleep(250);
 
-    ui->lbl_rds_stream->setText("");
-    ui->lbl_rds_station_stream->setText("");
+    ui->lbl_rds_stream->clear();
+    ui->lbl_rds_station_stream->clear();
 
     Dialog::dab_btn_changer();
 
 
     //g_last_state_dab_fm = "DAB";
     g_tuner_mode = "DAB";
-    qDebug() << "g_tuner_mode: " << g_tuner_mode;
+    //qDebug() << "g_tuner_mode: " << g_tuner_mode;
 
     g_last_state_mute_unmute = "muted";
     //qDebug() << "g_last_state_mute_unmute: : " << g_last_state_mute_unmute;
@@ -1093,16 +1100,18 @@ void Dialog::tune_dab_wrapper(int btn_id)
 
 void Dialog::tune_fm_wrapper(int btn_id)
 {
-    g_last_tuned_freq_dab = 0; //reset in case dab is chosen again
 
-    fd = net_open("/dev/radio0", O_RDWR);
+
+
 
     emit stop_rds(); //stop rds_stream
 
-    //QThread::msleep(100);
+    QThread::msleep(250);
 
-    ui->lbl_rds_stream->setText("");
-    ui->lbl_rds_station_stream->setText("");
+    ui->lbl_rds_stream->clear();
+    ui->lbl_rds_station_stream->clear();
+
+     g_last_tuned_freq_dab = 0; //reset in case dab is chosen again
 
     Dialog::fm_btn_changer();
 
@@ -1113,9 +1122,10 @@ void Dialog::tune_fm_wrapper(int btn_id)
 
     //g_last_state_dab_fm = "DAB";
     g_tuner_mode = "FM";
-    qDebug() << "g_tuner_mode: " << g_tuner_mode;
+    //qDebug() << "g_tuner_mode: " << g_tuner_mode;
     g_last_state_mute_unmute = "muted";
-    qDebug() << "g_last_state_mute_unmute: : " << g_last_state_mute_unmute;
+    //qDebug() << "g_last_state_mute_unmute: : " << g_last_state_mute_unmute;
+    fd = net_open("/dev/radio0", O_RDWR);
     uint frequency = g_fm_vec_vec[fm_found_favs.at(btn_id)][1].toUInt();
 
 
@@ -1213,7 +1223,7 @@ void Dialog::on_btn_tuner_mode_clicked()
 
     g_tuner_mode = tmp_tuner_mode;
 
-    qDebug() << "g_tuner_mode: " << g_tuner_mode;
+    //qDebug() << "g_tuner_mode: " << g_tuner_mode;
 
     //enable/disable tune button depending on station selected or not
     int init_fm_list = ui->list_fm->currentRow();

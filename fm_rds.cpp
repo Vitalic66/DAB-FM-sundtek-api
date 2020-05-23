@@ -38,9 +38,9 @@ void FM_rds::receiveForSize(int _forsize)
 //int MyJob::rds(const char *device){
 int FM_rds::rds(){
 
-    qDebug() << "rds thread started";
+    //qDebug() << "rds thread started";
 
-    qDebug() << "stop before while: " << mStop_rds;
+    //qDebug() << "stop before while: " << mStop_rds;
 
     mStop_rds = false;
 
@@ -140,13 +140,13 @@ QThread::msleep(workSpeed);
 //                                        qDebug() << "radio program single char: " << rad_prog_single_char;
 
 //                                        prog_chars.append(rad_prog_single_char);
-                                        qDebug() << "radio program: " << prog_chars;
+                                        //qDebug() << "radio program: " << prog_chars;
 //                                    }
 
                                     //QString print_prog = print_program;
 
 
-                                    printf("PROGRAM: %s\n", print_program);
+                                    //printf("PROGRAM: %s\n", print_program);
 
                                     //char irgendwas = static_cast<char>(print_program);
 

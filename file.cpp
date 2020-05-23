@@ -46,7 +46,7 @@ void File::dab_read_file(){
        g_dab_vec_vec.push_back(dab_vec);
     }
 
-    qDebug() << "g_dab_vec_vec before fav:" << g_dab_vec_vec;
+    //qDebug() << "g_dab_vec_vec before fav:" << g_dab_vec_vec;
 
     while (!dab_fav_stream_in_file.atEnd()) {
 
@@ -63,7 +63,7 @@ void File::dab_read_file(){
        g_dab_vec_vec.push_back(dab_vec);
     }
 
-    qDebug() << "g_dab_vec_vec after fav:" << g_dab_vec_vec;
+    //qDebug() << "g_dab_vec_vec after fav:" << g_dab_vec_vec;
 
     QString dab_vec_vec_to_line;
     QStringList unsort_list;
@@ -91,7 +91,7 @@ void File::dab_read_file(){
 
         QVector<QString> dab_vec;
         QStringList split_sort_list = dab_line_sort.split(",");
-        qDebug() << "split sort list" << split_sort_list;
+        //qDebug() << "split sort list" << split_sort_list;
         dab_vec.push_back(split_sort_list.at(0)); //== name of station
         dab_vec.push_back(split_sort_list.at(1)); //== freq of station
         dab_vec.push_back(split_sort_list.at(2)); //== sid of station
@@ -220,7 +220,7 @@ void File::fm_read_file(){
        g_fm_vec_vec.push_back(fm_vec);
     }
 
-    qDebug() << "g_fm_vec_vec before fav:" << g_fm_vec_vec;
+    //qDebug() << "g_fm_vec_vec before fav:" << g_fm_vec_vec;
 
     while (!fm_fav_stream_in_file.atEnd()) {
 
@@ -236,7 +236,7 @@ void File::fm_read_file(){
        g_fm_vec_vec.push_back(fm_vec);
     }
 
-    qDebug() << "g_fm_vec_vec after fav:" << g_fm_vec_vec;
+    //qDebug() << "g_fm_vec_vec after fav:" << g_fm_vec_vec;
 
     QString fm_vec_vec_to_line;
     QStringList unsort_list;
@@ -258,7 +258,7 @@ void File::fm_read_file(){
 
         QVector<QString> fm_vec;
         QStringList split_sort_list = fm_line_sort.split(",");
-        qDebug() << "split sort list" << split_sort_list;
+        //qDebug() << "split sort list" << split_sort_list;
         fm_vec.push_back(split_sort_list.at(0)); //== name of station
         fm_vec.push_back(split_sort_list.at(1)); //== freq of station
         fm_vec.push_back(split_sort_list.at(2)); //== is favorit?

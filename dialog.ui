@@ -345,7 +345,7 @@ STATIONS</string>
       </rect>
      </property>
      <property name="text">
-      <string>v1.0.4</string>
+      <string>v1.0.5</string>
      </property>
     </widget>
     <widget class="QSlider" name="sliderWorkSpeed">

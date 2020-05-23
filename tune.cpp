@@ -19,7 +19,7 @@ int Tune::set_dab_freq(int fd, uint32_t frequency) {
         printf("Tuning: %d\n", frequency);
 
         dabf.frequency = frequency;
-        qDebug() << "dabf.frequency: " << dabf.frequency;
+        //qDebug() << "dabf.frequency: " << dabf.frequency;
 
         net_ioctl(fd, DAB_SET_FREQUENCY, &dabf);
         return 0;
@@ -38,14 +38,14 @@ int Tune::set_dab_channel(int fd, uint32_t frequency, uint32_t sid, uint8_t sid_
         QProcess::execute("/opt/bin/mediaclient -m DAB -f " + freq_as_string);
     }
 
-    qDebug() << "last_tuned_freq: " << g_last_tuned_freq_dab;
+    //qDebug() << "last_tuned_freq: " << g_last_tuned_freq_dab;
 
        //sid_set = -1;
 
-        qDebug() << "sid: " << sid;
-        qDebug() << "sid_set: " << sid_set;
-        qDebug() << "comp: " << comp;
-        qDebug() << "comp_set: " << comp_set;
+//        qDebug() << "sid: " << sid;
+//        qDebug() << "sid_set: " << sid_set;
+//        qDebug() << "comp: " << comp;
+//        qDebug() << "comp_set: " << comp_set;
 
         struct dab_frequency dabf;
         memset(&dabf, 0x0, sizeof(struct dab_frequency));
@@ -60,7 +60,7 @@ int Tune::set_dab_channel(int fd, uint32_t frequency, uint32_t sid, uint8_t sid_
                 printf("Tuning: %d\n", frequency);
 
         dabf.frequency = frequency;
-        qDebug() << "dabf.frequency: " << dabf.frequency;
+        //qDebug() << "dabf.frequency: " << dabf.frequency;
 
         if (sid_set) {
                 dabf.sid_set = 1;
@@ -85,12 +85,12 @@ int Tune::set_radio_channel(int fd, uint32_t frequency) {
         memset(&freq, 0x0, sizeof(struct v4l2_frequency));
         freq.frequency = frequency/1000*16;
         //freq.frequency = frequency/1000;
-        qDebug() << "freq.frequency: " << freq.frequency;
+        //qDebug() << "freq.frequency: " << freq.frequency;
         freq.type = V4L2_TUNER_RADIO;
-        qDebug() << "freq.type: " << freq.type;
+        //qDebug() << "freq.type: " << freq.type;
         freq.tuner = tuner;
-        qDebug() << "freq.tuner: " << freq.tuner;
-        qDebug() <<"FD: " << fd;
+        //qDebug() << "freq.tuner: " << freq.tuner;
+        //qDebug() <<"FD: " << fd;
 
         net_ioctl(fd, VIDIOC_S_FREQUENCY, &freq);
         return 0;
