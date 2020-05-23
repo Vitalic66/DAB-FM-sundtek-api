@@ -544,6 +544,8 @@ void Dialog::on_btn_scan_clicked()
     }
 
     if(g_tuner_mode == "FM"){
+        g_last_state_mute_unmute = "unmuted";
+        mMute.set_mute();
         emit start_scan_fm();
     }
 
@@ -987,19 +989,23 @@ void Dialog::on_btn_tune_clicked()
 
         //QThread::msleep(100);
 
-        ui->lbl_rds_stream->clear(); //clear rds output
-        ui->lbl_rds_station_stream->clear();
+        ui->lbl_rds_stream->setText(""); //clear rds output
+        ui->lbl_rds_station_stream->setText("");
 
         //Dialog::start_rds_stream(); //start rds streaming
 
         emit start_rds();
 
-        fd = net_open("/dev/radio0", O_RDWR);
+
 
         g_last_state_mute_unmute = "muted";
         g_tuner_mode = "FM";
 
+
+        fd = net_open("/dev/radio0", O_RDWR);
         int marked_row = (ui->list_fm->currentRow()); //marked row from fm list
+
+
         uint32_t frequency = (g_fm_vec_vec[marked_row][1]).toUInt();
 
         mMute.set_mute();
@@ -1016,8 +1022,8 @@ void Dialog::on_btn_tune_clicked()
 
         //QThread::msleep(100);
 
-        ui->lbl_rds_stream->clear(); //clear rds output
-        ui->lbl_rds_station_stream->clear();
+        ui->lbl_rds_stream->setText(""); //clear rds output
+        ui->lbl_rds_station_stream->setText("");
 
         int marked_row = (ui->list_dab->currentRow()); //marked row from dab list
 
@@ -1028,6 +1034,8 @@ void Dialog::on_btn_tune_clicked()
     //    uint frequency = (g_dab_vec_vec[marked_row][1]).toUInt();
 
     //    QString sid_string = g_dab_vec_vec[marked_row][2];
+
+        fd = net_open("/dev/dab0", O_RDWR);
         bool ok;
         uint sid = sid_string.toUInt(&ok, 16);
         //qDebug() << "als int:" << sid;
@@ -1051,14 +1059,14 @@ void Dialog::on_btn_tune_clicked()
 
 void Dialog::tune_dab_wrapper(int btn_id)
 { 
-    fd = net_open("/dev/dab0", O_RDWR);
+
 
     emit stop_rds(); //stop rds_stream
 
     //QThread::msleep(100);
 
-    ui->lbl_rds_stream->clear();
-    ui->lbl_rds_station_stream->clear();
+    ui->lbl_rds_stream->setText("");
+    ui->lbl_rds_station_stream->setText("");
 
     Dialog::dab_btn_changer();
 
@@ -1069,6 +1077,8 @@ void Dialog::tune_dab_wrapper(int btn_id)
 
     g_last_state_mute_unmute = "muted";
     //qDebug() << "g_last_state_mute_unmute: : " << g_last_state_mute_unmute;
+
+    fd = net_open("/dev/dab0", O_RDWR);
     uint frequency = g_dab_vec_vec[dab_found_favs.at(btn_id)][1].toUInt();
     bool ok;
     uint sid = g_dab_vec_vec[dab_found_favs.at(btn_id)][2].toUInt(&ok, 16);
@@ -1091,8 +1101,8 @@ void Dialog::tune_fm_wrapper(int btn_id)
 
     //QThread::msleep(100);
 
-    ui->lbl_rds_stream->clear();
-    ui->lbl_rds_station_stream->clear();
+    ui->lbl_rds_stream->setText("");
+    ui->lbl_rds_station_stream->setText("");
 
     Dialog::fm_btn_changer();
 

@@ -66,8 +66,8 @@ int FM_rds::rds(){
                     while(1 && !mStop_rds) {
                             net_ioctl(rdsfd, FM_RDS_STATUS, &data);
 
-                                                rds_chars.clear();
-                                                prog_chars.clear();
+                                                //rds_chars.clear();
+                                                //prog_chars.clear();
 
                             //QString rds_chars;
 
