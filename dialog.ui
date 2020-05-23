@@ -398,6 +398,9 @@ STATIONS</string>
      <property name="maximum">
       <number>64</number>
      </property>
+     <property name="value">
+      <number>64</number>
+     </property>
      <property name="orientation">
       <enum>Qt::Vertical</enum>
      </property>
