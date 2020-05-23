@@ -51,7 +51,8 @@ signals:
     void tuner_mode_changed();
 
     //void on_btnTune_clicked();
-
+void sendWorkSpeed(int workSpeed);
+void sendForSize(int forsize);
 
 
 private slots:
@@ -59,7 +60,8 @@ private slots:
     //void onNumberChanged(int);
     void prog_bar_fm_valueChanged(int);
 
-
+void setWorkSpeed(int workSpeed);
+void setForSize(int forsize);
 
 
 

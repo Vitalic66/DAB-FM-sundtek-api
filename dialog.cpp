@@ -140,7 +140,19 @@ Dialog::~Dialog()
 //    connect(this, SIGNAL(tuner_mode_changed()), this, SLOT(on_btn_tuner_mode_clicked()));
 //    //connect(ui->btn_scan, SIGNAL(clicked()), this, SLOT(setThreadState()));
 //}
+void Dialog::setWorkSpeed(int workSpeed)
+{
+    int _workSpeed = workSpeed * 10;
+    //ui->progressBarWork->setFormat(QString::number(ui->progressBarWork->value()) + " out of " + QString::number(ui->progressBarWork->maximum()) + " | [time per chunk : " + QString::number(_workSpeed) + "ms]");
+    emit sendWorkSpeed(_workSpeed);
+}
 
+void Dialog::setForSize(int forsize)
+{
+    int _forsize = forsize;
+    //ui->progressBarWork->setFormat(QString::number(ui->progressBarWork->value()) + " out of " + QString::number(ui->progressBarWork->maximum()) + " | [time per chunk : " + QString::number(_workSpeed) + "ms]");
+    emit sendWorkSpeed(_forsize);
+}
 
 /*
 void Dialog::setup_connections_fm_scan()
@@ -261,6 +273,8 @@ void Dialog::setup_connections_scan()
     // Move worker to thread
     scan->moveToThread(thread_scan);
 
+
+
     // Start main event loop of thread
     thread_scan->start();
 }
@@ -295,6 +309,9 @@ void Dialog::setup_connections_fm_rds()
     //connect(ui->spinBoxWorkAmount, SIGNAL(valueChanged(int)), this, SLOT(setWorkAmount(int)));
     //connect(ui->sliderWorkSpeed, SIGNAL(valueChanged(int)), this, SLOT(setWorkSpeed(int)));
 
+connect(ui->sliderWorkSpeed, SIGNAL(valueChanged(int)), this, SLOT(setWorkSpeed(int)));
+connect(ui->sliderForSize, SIGNAL(valueChanged(int)), this, SLOT(setForSize(int)));
+
     // Create thread, worker and timer
     thread_rds = new QThread();
     // Important that both the worker and timer are NOT members of this widget class otherwise thread affinity will not change at all!
@@ -316,6 +333,9 @@ void Dialog::setup_connections_fm_rds()
         connect(this, SIGNAL(stop_rds()), rds, SLOT(stop_rds_reading())); //stop rds streaming
 
 
+
+        connect(this, SIGNAL(sendWorkSpeed(int)), rds, SLOT(receiveWorkSpeed(int)));
+        connect(this, SIGNAL(sendForSize(int)), rds, SLOT(receiveForSize(int)));
     // Mark timer and worker for deletion ones the thread is stopped
     //connect(thread_rds, SIGNAL(finished()), rds, SLOT(deleteLater()));
     //connect(thread_rds, SIGNAL(finished()), thread_rds, SLOT(deleteLater()));
@@ -323,6 +343,9 @@ void Dialog::setup_connections_fm_rds()
     // Move worker to thread
     rds->moveToThread(thread_rds);
 
+
+    emit sendWorkSpeed(ui->sliderWorkSpeed->value() * 10);
+    emit sendForSize(ui->sliderForSize->value());
     // Start main event loop of thread
     thread_rds->start();
 }

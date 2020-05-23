@@ -23,6 +23,18 @@ void FM_rds::stop_rds_reading()
    mStop_rds = true;
 }
 
+void FM_rds::receiveWorkSpeed(int _workSpeed)
+{
+    //QMutexLocker locker(&lock);
+    workSpeed = _workSpeed;
+}
+
+void FM_rds::receiveForSize(int _forsize)
+{
+    //QMutexLocker locker(&lock);
+    forsize = _forsize;
+}
+
 //int MyJob::rds(const char *device){
 int FM_rds::rds(){
 
@@ -60,7 +72,7 @@ int FM_rds::rds(){
                             //char irgendwas;
                             //QStringList irgendwas_list;
                             //QString irgendwas_line;
-
+QThread::msleep(workSpeed);
 
                             if (data.rdssync) {
                                     if (memcmp(rdsdata, data.data, 8)==0)
@@ -141,8 +153,8 @@ int FM_rds::rds(){
 
                                     rds_chars.clear();
 
-                                    for (i=0;i<64;i++) {
-
+                                    //for (i=0;i<64;i++) {
+for (i = 0; i < forsize; i++) {
                                         //if(mStop) return 0;
 
                                         if(radiotext[i] != 0){

@@ -37,9 +37,13 @@ public slots:
     int rds();
     void stop_rds_reading();
 
+void receiveWorkSpeed(int _workSpeed);
+void receiveForSize(int _forsize);
+
 private:
 
-
+    int workSpeed;
+    int forsize;
     int fd;
 };
 
