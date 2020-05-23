@@ -218,10 +218,13 @@ for (i = 0; i < forsize; i++) {
                                                             //qDebug() << dst;
                                      //QString buch = dst;
                                             }
-                                           emit rds_out(rds_chars);
-                                           emit rds_prog_out(prog_chars);
+//                                           emit rds_out(rds_chars);
+//                                           emit rds_prog_out(prog_chars);
 
                                     }
+emit rds_out(rds_chars);
+emit rds_prog_out(prog_chars);
+
                                     //printf("\n");
 
                                     //ui->label_2->setText(test);

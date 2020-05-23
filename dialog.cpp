@@ -142,7 +142,7 @@ Dialog::~Dialog()
 //}
 void Dialog::setWorkSpeed(int workSpeed)
 {
-    int _workSpeed = workSpeed * 10;
+    int _workSpeed = workSpeed * 100;
     //ui->progressBarWork->setFormat(QString::number(ui->progressBarWork->value()) + " out of " + QString::number(ui->progressBarWork->maximum()) + " | [time per chunk : " + QString::number(_workSpeed) + "ms]");
     emit sendWorkSpeed(_workSpeed);
 }
@@ -347,7 +347,7 @@ connect(ui->sliderForSize, SIGNAL(valueChanged(int)), this, SLOT(setForSize(int)
     emit sendWorkSpeed(ui->sliderWorkSpeed->value() * 10);
     emit sendForSize(ui->sliderForSize->value());
     // Start main event loop of thread
-    thread_rds->start();
+    thread_rds->start(QThread::HighestPriority);
 }
 /*
 void Dialog::receiveProgress(int workDone)
