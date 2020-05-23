@@ -7,7 +7,10 @@
 int main(int argc, char *argv[])
 {
     QApplication a(argc, argv);
+    QThread::currentThread()->setPriority(QThread::HighestPriority);
+
     Dialog w;
+
     w.show();
 
 //    QThread cThread;
