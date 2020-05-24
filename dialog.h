@@ -34,8 +34,10 @@ public:
     explicit Dialog(QWidget *parent = nullptr);
     ~Dialog();
 
-    //Scan *mScan;
 
+
+    //Scan *mScan;
+    //FM_rds *mFM_rds; //m1
 
 
 signals:
@@ -51,8 +53,8 @@ signals:
     void tuner_mode_changed();
 
     //void on_btnTune_clicked();
-void sendWorkSpeed(int workSpeed);
-void sendForSize(int forsize);
+    void sendWorkSpeed(int workSpeed);
+    void sendForSize(int forsize);
 
 
 private slots:
@@ -60,8 +62,8 @@ private slots:
     //void onNumberChanged(int);
     void prog_bar_fm_valueChanged(int);
 
-void setWorkSpeed(int workSpeed);
-void setForSize(int forsize);
+    void setWorkSpeed(int workSpeed);
+    void setForSize(int forsize);
 
 
 
@@ -153,6 +155,8 @@ void setForSize(int forsize);
 
     void on_list_dab_itemSelectionChanged();
 
+    void on_btn_stop_rds_clicked();
+
 public slots:
 
     //void newNumber(QString name, int number);
@@ -179,14 +183,16 @@ private:
 //    QThread *thread_fm_scan;
 //    QThread *thread_dab_scan;
 
-    QThread *thread_scan, *thread_rds;
+    //QThread *thread_scan, *thread_rds;
 
+    QThread *thread_scan;
+    QThread *thread_rds; //m1
 
 //    void setup_connections_fm_scan();
 //    void setup_connections_dab_scan();
 
     void setup_connections_scan();
-    void setup_connections_fm_rds();
+    void setup_connections_fm_rds(); //m1
     //void setup_button_connections();
 
     void dab_btn_changer();
@@ -201,6 +207,7 @@ private:
     Mute mMute;
     File mFile;
     DabData mDabData;
+    //FM_rds *mFM_rds;
 
 
     //QString tuner_mode = ""; //dab or fm

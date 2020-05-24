@@ -1,9 +1,56 @@
 #include "fm_rds.h"
+#include "globals.h"
+//#include <QMutexLocker>
 
-FM_rds::FM_rds(QObject *parent) : QObject(parent)
+//bool g_mStop_rds;
+FM_rds::FM_rds(QObject *parent) :
+
+    //QThread(parent) //m2
+
+    QObject(parent)
+  ,
+    mStop_rds(false),
+    workSpeed(0),
+    forsize(64)/*,
+    prog_chars(),
+    rds_chars()*/
+
+
 {
-    mStop_rds = false;
+    //mStop_rds = false;
+    //g_mStop_rds = false;
+
 }
+
+/*
+void FM_rds::run()
+{
+    for(int i=0;i<1000;i++){
+        QMutex mutex;
+        mutex.lock();
+        if(this->mStop_rds) break;
+
+        mutex.unlock();
+
+        //emit...
+    }
+}
+*/
+
+
+
+
+
+
+/*
+Worker::Worker(QObject *parent) :
+    QObject(parent),
+    active(false),
+    progressToggleTerminal(false),
+    workAmount(0),
+    workDone(0),
+    workSpeed(10)
+*/
 
 //void MyJob::start(QString name)
 //{
@@ -17,11 +64,46 @@ FM_rds::FM_rds(QObject *parent) : QObject(parent)
 //        QThread::currentThread()->msleep(100);
 //    }
 //}
+//void FM_rds::doWork()
+//{
+//    if(mStop_rds){
+//        rds();
+//    }
+//}
+
+
+void FM_rds::start_rds_reading()
+{
+    //QMutexLocker locker(&lock);
+   mStop_rds = false;
+
+   //if(mStop_rds){
+       //QMutexLocker locker(&lock);
+       rds();
+   //}
+   //g_mStop_rds = true;
+   qDebug() << "mstop from function start: " << mStop_rds;
+
+   //rds();
+
+//   prog_chars.clear();
+//   rds_chars.clear();
+
+   //FM_rds::rds();
+}
+
+
 
 void FM_rds::stop_rds_reading()
 {
+    //QMutexLocker locker(&lock);
+   //mStop_rds = true;
+
+    //QMutexLocker locker(&lock);
    mStop_rds = true;
+   qDebug() << "mstop from function stop ...: " << mStop_rds;
 }
+
 
 void FM_rds::receiveWorkSpeed(int _workSpeed)
 {
@@ -36,19 +118,29 @@ void FM_rds::receiveForSize(int _forsize)
 }
 
 //int MyJob::rds(const char *device){
+
+
+
 int FM_rds::rds(){
+//void FM_rds::run(){ //m2
 
     //qDebug() << "rds thread started";
 
     //qDebug() << "stop before while: " << mStop_rds;
 
-    mStop_rds = false;
+    //mStop_rds = false;
+    //g_mStop_rds = false;
+
+    //while(!mStop_rds){
 
     int i;
     struct rds_data *rdsd;
     struct fm_rds_data data;
     int rdsfd;
+    //mStop_rds;
 
+//QMutexLocker locker(&lock);
+    //if (strstr("/dev/radio0", "radio") && !mStop_rds) {
     if (strstr("/dev/radio0", "radio")) {
             rdsfd = net_open("/dev/radio0", O_RDWR);
             if (rdsfd >= 0) {
@@ -61,9 +153,26 @@ int FM_rds::rds(){
                     memset(program, 0x0, 9);
                     memset(print_program, 0x0, 9);
                     int x=0;
-                    QString prog_chars;
-                    QString rds_chars;
-                    while(1 && !mStop_rds) {
+                    //QString prog_chars;
+                    //QString rds_chars;
+
+                    while(1) {
+
+                        QApplication::processEvents();
+
+//                        QMutex mutex; //m2
+//                        mutex.lock(); //m2
+                        if(this->mStop_rds) break;
+
+
+
+
+
+
+                        //while(mStop_rds) {
+
+                            //do{
+                    //while(1 && mStop_rds) {
                             net_ioctl(rdsfd, FM_RDS_STATUS, &data);
 
                                                 //rds_chars.clear();
@@ -223,7 +332,7 @@ for (i = 0; i < forsize; i++) {
                                             }
 //                                           emit rds_out(rds_chars);
 //                                           emit rds_prog_out(prog_chars);
-
+qDebug() << "mStop before end of for loop: " << mStop_rds;
                                     } //end for loop
 emit rds_out(rds_chars);
 emit rds_prog_out(prog_chars);
@@ -233,15 +342,30 @@ emit rds_prog_out(prog_chars);
                                     //ui->label_2->setText(test);
 
                                     fflush(stdout);
+                                    qDebug() << "mStop after end of for loop: " << mStop_rds;
                             } //end if loop
                             //QThread::currentThread()->msleep(5000);
-                    } //end while loop
-                    emit finished_rds_reading();
-//                    rds_chars.clear();
-//                    prog_chars.clear();
-                    mStop_rds = false;
+                            qDebug() << "mStop before end of while loop: " << mStop_rds;
+
+                            //mutex.unlock(); //m2
+                   } //end while loop
+
+//                            emit rds_out(rds_chars);
+//                            emit rds_prog_out(prog_chars);
+                    //}while(mStop_rds);
+                    //emit finished_rds_reading();
+                    rds_chars.clear();
+                    prog_chars.clear();
+                    //mStop_rds = false;
+                    //mStop_rds = true;
+
+                    qDebug() << "mStop after end of while loop: " << mStop_rds;
             }
+            //emit finished_rds_reading();
+            //g_mStop_rds = false;
+            //qDebug() << "thread rds stopped";
     net_close(rdsfd);
+    //}
     }
-    return 0;
+    return 0; //m1
 }
