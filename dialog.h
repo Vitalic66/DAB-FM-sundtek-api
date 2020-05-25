@@ -53,8 +53,8 @@ signals:
     void tuner_mode_changed();
 
     //void on_btnTune_clicked();
-    void sendWorkSpeed(int workSpeed);
-    void sendForSize(int forsize);
+    //void sendWorkSpeed(int workSpeed);
+    //void sendForSize(int forsize);
 
 
 private slots:
@@ -62,8 +62,8 @@ private slots:
     //void onNumberChanged(int);
     void prog_bar_fm_valueChanged(int);
 
-    void setWorkSpeed(int workSpeed);
-    void setForSize(int forsize);
+    //void setWorkSpeed(int workSpeed);
+    //void setForSize(int forsize);
 
 
 
@@ -155,8 +155,6 @@ private slots:
 
     void on_list_dab_itemSelectionChanged();
 
-    void on_btn_stop_rds_clicked();
-
 public slots:
 
     //void newNumber(QString name, int number);
@@ -175,7 +173,7 @@ public slots:
 
     void show_progbars(bool vis);
 
-    void clear_rds_labels();
+    //void clear_rds_labels();
 
 
 
@@ -219,7 +217,7 @@ private:
 
     QString path_dab_icons = "../stationlogos/";
 
-    uint set_sleep_delay;
+    //uint set_sleep_delay;
 
     //stylesheets
     QString btn_default_rounded = ("border: 1px solid #ababab;border-radius: 20px;background: qlineargradient(x1:0 y1:0, x2:0 y2:1, stop:0 #ffffff, stop:1 #efefef);");

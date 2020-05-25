@@ -4,11 +4,10 @@
 #include <QObject>
 #include <QDebug>
 #include <QThread>
-#include <QMutex>
+//#include <QMutex>
 #include <QApplication>
 
 #include </opt/include/mediaclient.h>
-//#include <iostream>
 #include <fcntl.h>  //for O_RDWR
 #include <unistd.h> //for usleep
 
@@ -20,53 +19,30 @@ class FM_rds : public QObject
 
 private:
 
-
-    int workSpeed;
-    int forsize;
     int fd;
+    bool mStop_rds;
+    QString prog_chars;
+    QString rds_chars;
 
+    int rds();
 
-
-
-    QMutex lock;
+    //QMutex lock;
 
 
 public:
     explicit FM_rds(QObject *parent = nullptr);
 
-    //void start(QString name);
-
-    //int rds(const char *device);
-
-    //void run(); //m2
-    bool mStop_rds;
-
-    QString prog_chars;
-    QString rds_chars;
-    //char rds_single_char = 32;
-
 signals:
-
-    //void on_number(QString name, int number);
 
     void rds_out(QString rds_stream);
     void rds_prog_out(QString rds_prog);
     void finished_rds_reading();
-    void clear_lbl(QString);
+    //void clear_lbl(QString);
 
 public slots:
 
-    int rds();
-
-    //void doWork();
-
-    void start_rds_reading(); //m2
-    void stop_rds_reading(); //m2
-
-    void receiveWorkSpeed(int _workSpeed); //m2
-    void receiveForSize(int _forsize); //m2
-
-
+    void start_rds_reading();
+    void stop_rds_reading();
 };
 
 #endif // MYJOB_H

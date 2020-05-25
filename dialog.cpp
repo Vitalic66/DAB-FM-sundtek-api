@@ -1,11 +1,7 @@
 #include "dialog.h"
 #include "ui_dialog.h"
 
-//#include <QThread> //new
-//#include <scan.h> //new
-
 QString g_tuner_mode = "FM";
-
 QString g_last_state_mute_unmute;
 
 int fd;
@@ -15,21 +11,6 @@ Dialog::Dialog(QWidget *parent) :
     ui(new Ui::Dialog)
 {
     ui->setupUi(this);
-
-//    mFM_rds = new FM_rds(this);  //m2
-//    connect(mFM_rds, SIGNAL(rds_out(QString)), this, SLOT(rds_stream(QString))); //m2
-//    connect(mFM_rds, SIGNAL(rds_prog_out(QString)), this, SLOT(rds_prog(QString))); //m2
-
-    //mScan = new Scan(this);
-    //connect(mScan,SIGNAL(NumberChanged(int)),this,SLOT(onNumberChanged(int)));
-
-    //connect(mScan,SIGNAL(progress_scan_fm(int)),this,SLOT(prog_bar_fm_valueChanged(int)));
-    //connect(mScan,SIGNAL(progress_scan_fm(int)),this,&Dialog::prog_bar_dab_valueChanged(prog_bar_value));
-
-
-
-
-
 
     //start mediaclient in case it did not...
     QProcess::execute("/opt/bin/mediaclient --shutdown");
@@ -42,12 +23,6 @@ Dialog::Dialog(QWidget *parent) :
 
     Dialog::dab_fill_list(); //dab_vec_vec to dab_list
     Dialog::fm_fill_list(); //fm_vec_vec to fm_list
-
-//    net_open("/dev/dab0", O_RDWR);
-//    net_close(fd);
-
-//    fd = net_open("/dev/dab0", O_RDWR);
-//    mMute.set_mute(fd, "off");
 
     Dialog::dab_show_fav_btn();
     Dialog::fm_show_fav_btn();
@@ -77,20 +52,8 @@ Dialog::Dialog(QWidget *parent) :
     ui->prog_bar_dab->setVisible(false);
     ui->prog_bar_fm->setVisible(false);
 
-    //qDebug() << "g_tuner_mode: " << g_tuner_mode;
-
-
-
-//    setup_connections_fm_scan();
-//    setup_connections_dab_scan();
-
     setup_connections_scan();
-    setup_connections_fm_rds(); //m1
-    //setup_button_connections();
-
-
-
-
+    setup_connections_fm_rds();
 }
 
 Dialog::~Dialog()
@@ -130,144 +93,29 @@ Dialog::~Dialog()
     // Delete thread and UI
     delete thread_rds;
 */
-
-    //emit on_Stop();
-    //emit on_StopScan();
     QProcess::execute("/opt/bin/mediaclient --shutdown");
     delete ui;
 }
 
-//void Dialog::setup_button_connections() //connect some buttons to change behaviour
-//{
-//    connect(this, SIGNAL(tuner_mode_changed()), this, SLOT(on_btn_tuner_mode_clicked()));
-//    //connect(ui->btn_scan, SIGNAL(clicked()), this, SLOT(setThreadState()));
-//}
-void Dialog::setWorkSpeed(int workSpeed)
-{
-    int _workSpeed = workSpeed * 100;
-    //ui->progressBarWork->setFormat(QString::number(ui->progressBarWork->value()) + " out of " + QString::number(ui->progressBarWork->maximum()) + " | [time per chunk : " + QString::number(_workSpeed) + "ms]");
-    emit sendWorkSpeed(_workSpeed);
-}
-
-void Dialog::setForSize(int forsize)
-{
-    int _forsize = forsize;
-    //ui->progressBarWork->setFormat(QString::number(ui->progressBarWork->value()) + " out of " + QString::number(ui->progressBarWork->maximum()) + " | [time per chunk : " + QString::number(_workSpeed) + "ms]");
-    emit sendWorkSpeed(_forsize);
-}
-
-/*
-void Dialog::setup_connections_fm_scan()
-{
-    // Slots and signals
-    // Connect buttons to slots
-    //connect(ui->btn_scan, SIGNAL(clicked()), this, SLOT(setThreadState()));
-    //connect(ui->buttonToggleWorker, SIGNAL(clicked()), this, SLOT(setThreadState()));
-    //connect(ui->spinBoxWorkAmount, SIGNAL(valueChanged(int)), this, SLOT(setWorkAmount(int)));
-    //connect(ui->sliderWorkSpeed, SIGNAL(valueChanged(int)), this, SLOT(setWorkSpeed(int)));
-
-    // Create thread, worker and timer
-    thread_fm_scan = new QThread();
-    // Important that both the worker and timer are NOT members of this widget class otherwise thread affinity will not change at all!
-    //Worker *worker = new Worker();
-    Scan *scan_fm = new Scan();
-
-    //QTimer *timer = new QTimer();
-    //timer->setInterval(0);  // Timer's inteveral set to 0 means that timer will trigger an event as soon as there are no other events to be processed
-
-    // Connect worker to widget and vice verser (buttons, progressBarWork)
-
-    connect(scan_fm, SIGNAL(enable_buttons(bool)), this, SLOT(enable_disable_btn(bool))); //enable/disable some buttons during scan
-    connect(scan_fm, SIGNAL(show_progbar_fm(bool)), this, SLOT(show_progbars(bool))); //hide/unhide progbars
-    connect(scan_fm, SIGNAL(finished_scan_fm()), this, SLOT(fm_refresh_after_scan()));  //when finished do save and refresh
-    connect(scan_fm, SIGNAL(progress_scan_fm(int)), this, SLOT(prog_bar_fm_valueChanged(int)));  //progress of scan fm for progressbar
-    connect(this, SIGNAL(start_scan_fm()), scan_fm, SLOT(fm_scan_wrapper())); //start scanning
-
-    // Mark timer and worker for deletion ones the thread is stopped
-    connect(thread_fm_scan, SIGNAL(finished()), scan_fm, SLOT(deleteLater()));
-    connect(thread_fm_scan, SIGNAL(finished()), thread_fm_scan, SLOT(deleteLater()));
-
-    // Move worker to thread
-    scan_fm->moveToThread(thread_fm_scan);
-
-    // Start main event loop of thread
-    thread_fm_scan->start();
-}
-
-void Dialog::setup_connections_dab_scan()
-{
-    // Slots and signals
-    // Connect buttons to slots
-    //connect(ui->btn_scan, SIGNAL(clicked()), this, SLOT(setThreadState()));
-    //connect(ui->buttonToggleWorker, SIGNAL(clicked()), this, SLOT(setThreadState()));
-    //connect(ui->spinBoxWorkAmount, SIGNAL(valueChanged(int)), this, SLOT(setWorkAmount(int)));
-    //connect(ui->sliderWorkSpeed, SIGNAL(valueChanged(int)), this, SLOT(setWorkSpeed(int)));
-
-    // Create thread, worker and timer
-    thread_dab_scan = new QThread();
-    // Important that both the worker and timer are NOT members of this widget class otherwise thread affinity will not change at all!
-    //Worker *worker = new Worker();
-    Scan *scan_dab = new Scan();
-
-    //QTimer *timer = new QTimer();
-    //timer->setInterval(0);  // Timer's inteveral set to 0 means that timer will trigger an event as soon as there are no other events to be processed
-
-    // Connect worker to widget and vice verser (buttons, progressBarWork)
-
-    connect(scan_dab, SIGNAL(enable_buttons(bool)), this, SLOT(enable_disable_btn(bool))); //enable/disable some buttons during scan
-    connect(scan_dab, SIGNAL(show_progbar_dab(bool)), this, SLOT(show_progbars(bool))); //hide/unhide progbars
-    connect(scan_dab, SIGNAL(finished_scan_dab()), this, SLOT(dab_refresh_after_scan()));  //when finished do save and refresh
-    connect(scan_dab, SIGNAL(progress_scan_dab(int)), this, SLOT(prog_bar_dab_valueChanged(int)));  //progress of scan fm for progressbar
-    connect(this, SIGNAL(start_scan_dab()), scan_dab, SLOT(dab_scan_wrapper())); //start scanning
-
-    // Mark timer and worker for deletion ones the thread is stopped
-    connect(thread_dab_scan, SIGNAL(finished()), scan_dab, SLOT(deleteLater()));
-    connect(thread_dab_scan, SIGNAL(finished()), thread_dab_scan, SLOT(deleteLater()));
-
-    // Move worker to thread
-    scan_dab->moveToThread(thread_dab_scan);
-
-    // Start main event loop of thread
-    thread_dab_scan->start();
-}
-*/
-
 void Dialog::setup_connections_scan()
 {
-    // Slots and signals
-    // Connect buttons to slots
-    //connect(ui->btn_scan, SIGNAL(clicked()), this, SLOT(setThreadState()));
-    //connect(ui->buttonToggleWorker, SIGNAL(clicked()), this, SLOT(setThreadState()));
-    //connect(ui->spinBoxWorkAmount, SIGNAL(valueChanged(int)), this, SLOT(setWorkAmount(int)));
-    //connect(ui->sliderWorkSpeed, SIGNAL(valueChanged(int)), this, SLOT(setWorkSpeed(int)));
-
-    // Create thread, worker and timer
+    // Create thread, worker
     thread_scan = new QThread();
-    // Important that both the worker and timer are NOT members of this widget class otherwise thread affinity will not change at all!
-    //Worker *worker = new Worker();
+
     Scan *scan = new Scan();
-
-    //QTimer *timer = new QTimer();
-    //timer->setInterval(0);  // Timer's inteveral set to 0 means that timer will trigger an event as soon as there are no other events to be processed
-
-    // Connect worker to widget and vice verser (buttons, progressBarWork)
 
     connect(scan, SIGNAL(enable_buttons(bool)), this, SLOT(enable_disable_btn(bool))); //enable/disable some buttons during scan
 
+    connect(scan, SIGNAL(show_progbar_dab(bool)), this, SLOT(show_progbars(bool))); //hide/unhide progbars
+    connect(scan, SIGNAL(finished_scan_dab()), this, SLOT(dab_refresh_after_scan()));  //when finished do save and refresh
+    connect(scan, SIGNAL(progress_scan_dab(int)), this, SLOT(prog_bar_dab_valueChanged(int)));  //progress of scan fm for progressbar
+    connect(this, SIGNAL(start_scan_dab()), scan, SLOT(dab_scan_wrapper())); //start scanning
 
+    connect(scan, SIGNAL(show_progbar_fm(bool)), this, SLOT(show_progbars(bool))); //hide/unhide progbars
+    connect(scan, SIGNAL(finished_scan_fm()), this, SLOT(fm_refresh_after_scan()));  //when finished do save and refresh
+    connect(scan, SIGNAL(progress_scan_fm(int)), this, SLOT(prog_bar_fm_valueChanged(int)));  //progress of scan fm for progressbar
+    connect(this, SIGNAL(start_scan_fm()), scan, SLOT(fm_scan_wrapper())); //start scanning
 
-    //if(g_tuner_mode == "DAB"){
-        connect(scan, SIGNAL(show_progbar_dab(bool)), this, SLOT(show_progbars(bool))); //hide/unhide progbars
-        connect(scan, SIGNAL(finished_scan_dab()), this, SLOT(dab_refresh_after_scan()));  //when finished do save and refresh
-        connect(scan, SIGNAL(progress_scan_dab(int)), this, SLOT(prog_bar_dab_valueChanged(int)));  //progress of scan fm for progressbar
-        connect(this, SIGNAL(start_scan_dab()), scan, SLOT(dab_scan_wrapper())); //start scanning
-    //}
-    //if(g_tuner_mode == "FM"){
-        connect(scan, SIGNAL(show_progbar_fm(bool)), this, SLOT(show_progbars(bool))); //hide/unhide progbars
-        connect(scan, SIGNAL(finished_scan_fm()), this, SLOT(fm_refresh_after_scan()));  //when finished do save and refresh
-        connect(scan, SIGNAL(progress_scan_fm(int)), this, SLOT(prog_bar_fm_valueChanged(int)));  //progress of scan fm for progressbar
-        connect(this, SIGNAL(start_scan_fm()), scan, SLOT(fm_scan_wrapper())); //start scanning
-    //}
 
     // Mark timer and worker for deletion ones the thread is stopped
     //connect(thread_scan, SIGNAL(finished()), scan, SLOT(deleteLater()));
@@ -275,179 +123,47 @@ void Dialog::setup_connections_scan()
 
     // Move worker to thread
     scan->moveToThread(thread_scan);
-
-
-
-    // Start main event loop of thread
     thread_scan->start();
 }
 
-/*
-void Dialog::start_rds_stream(){
-
-    emit start_rds();
-
-    //connect(&mRds,&FM_rds::rds_out,this,&Dialog::rds_stream);
-    //connect(this,&Dialog::on_Stop,&mRds,&FM_rds::stop);
-    //QFuture<void> test_rds = QtConcurrent::run(&this->mRds,&FM_rds::rds);
-}
-*/
-
-
 void Dialog::setup_connections_fm_rds()
 {
-    // Slots and signals
-    // Connect buttons to slots
-    //connect(ui->btn_scan, SIGNAL(clicked()), this, SLOT(setThreadState()));
-    //connect(ui->buttonToggleWorker, SIGNAL(clicked()), this, SLOT(setThreadState()));
-    //connect(ui->spinBoxWorkAmount, SIGNAL(valueChanged(int)), this, SLOT(setWorkAmount(int)));
-    //connect(ui->sliderWorkSpeed, SIGNAL(valueChanged(int)), this, SLOT(setWorkSpeed(int)));
-
-connect(ui->sliderWorkSpeed, SIGNAL(valueChanged(int)), this, SLOT(setWorkSpeed(int)));
-connect(ui->sliderForSize, SIGNAL(valueChanged(int)), this, SLOT(setForSize(int)));
-
-    // Create thread, worker and timer
+    // Create thread, worker
     thread_rds = new QThread();
-    // Important that both the worker and timer are NOT members of this widget class otherwise thread affinity will not change at all!
-    //Worker *worker = new Worker();
+
     FM_rds *rds = new FM_rds();
 
-    //QTimer *timer = new QTimer();
-    //timer->setInterval(0);  // Timer's inteveral set to 0 means that timer will trigger an event as soon as there are no other events to be processed
+    connect(rds, SIGNAL(rds_out(QString)), this, SLOT(rds_stream(QString)));  //rds data stream
+    connect(rds, SIGNAL(rds_prog_out(QString)), this, SLOT(rds_prog(QString)));  //rds data stream
 
-    // Connect worker to widget and vice verser (buttons, progressBarWork)
+    connect(this, SIGNAL(start_rds()), rds, SLOT(start_rds_reading())); //start rds streaming
+    connect(this, SIGNAL(stop_rds()), rds, SLOT(stop_rds_reading())); //stop rds streaming
 
-    //connect(rds, SIGNAL(enable_buttons(bool)), this, SLOT(enable_disable_btn(bool))); //enable/disable some buttons during scan
-
-        //connect(scan, SIGNAL(show_progbar_dab(bool)), this, SLOT(show_progbars(bool))); //hide/unhide progbars
-        //connect(scan, SIGNAL(finished_scan_dab()), this, SLOT(dab_refresh_after_scan()));  //when finished do save and refresh
-
-
-        connect(rds, SIGNAL(rds_out(QString)), this, SLOT(rds_stream(QString)));  //rds data stream
-        connect(rds, SIGNAL(rds_prog_out(QString)), this, SLOT(rds_prog(QString)));  //rds data stream
-
-
-
-
-        //connect(rds, SIGNAL(clear_lbl()), this, SLOT(clear_rds_labels()));
-
-
-
-        connect(rds, SIGNAL(clear_lbl(QString)), this, SLOT(rds_stream(QString)));
-        connect(rds, SIGNAL(clear_lbl(QString)), this, SLOT(rds_prog(QString)));
-
-
-        connect(this, SIGNAL(start_rds()), rds, SLOT(start_rds_reading())); //start rds streaming
-        //connect(this, SIGNAL(start_rds()), rds, SLOT(rds())); //start rds streaming
-        connect(this, SIGNAL(stop_rds()), rds, SLOT(stop_rds_reading())); //stop rds streaming
-
-        //connect(timer, SIGNAL(timeout()), rds, SLOT(doWork()));
-
-
-//        connect(timer, SIGNAL(timeout()), rds, SLOT(doWork()));
-//        connect(thread_rds, SIGNAL(started()), timer, SLOT(start()));
-
-
-        //connect(this, SIGNAL(start_rds()), rds, SLOT(rds())); //start rds streaming
-        //qDebug() << connect(this, SIGNAL(start_rds()), rds, SLOT(rds()));
-        //qDebug() << connect(this, SIGNAL(stop_rds()), rds, SLOT(stop_rds_reading()));
-
-        //connect(ui->btn_stop_rds, SIGNAL(clicked()), rds, SLOT(stop_rds_reading()));
-
-        connect(this, SIGNAL(sendWorkSpeed(int)), rds, SLOT(receiveWorkSpeed(int)));
-        connect(this, SIGNAL(sendForSize(int)), rds, SLOT(receiveForSize(int)));
     // Mark timer and worker for deletion ones the thread is stopped
     //connect(thread_rds, SIGNAL(finished()), rds, SLOT(deleteLater()));
     //connect(thread_rds, SIGNAL(finished()), thread_rds, SLOT(deleteLater()));
 
-
-        // Start timer and move to thread
-        //timer->moveToThread(thread_rds);
     // Move worker to thread
     rds->moveToThread(thread_rds);
-
-
-    emit sendWorkSpeed(ui->sliderWorkSpeed->value() * 100);
-    emit sendForSize(ui->sliderForSize->value());
-    // Start main event loop of thread
-    //thread_rds->start(QThread::HighestPriority);
     thread_rds->start();
 }
-
-void Dialog::clear_rds_labels()
-{
-    ui->lbl_rds_station_stream->clear();
-    ui->lbl_rds_stream->clear();
-}
-
-
 
 void Dialog::rds_stream(QString data)
 {
     ui->lbl_rds_stream->setWordWrap(true);
     ui->lbl_rds_stream->setText(data);
-    qDebug()<<"data from rds_stream function: "<<data;
 }
 
 void Dialog::rds_prog(QString prog)
 {
-    //ui->lbl_rds_stream->setWordWrap(true);
-    ui->lbl_rds_station_stream->setText(prog);
-    qDebug()<<"prog from rds_prog function: "<<prog;
+    ui->lbl_rds_station_stream->setText(prog);    
 }
-
-/*
-void Dialog::receiveProgress(int workDone)
-{
-    ui->prog_bar_fm->setValue(workDone);
-    //ui->progressBar->setValue(workDone);
-    ui->label->setText(QString::number(workDone));
-    //ui->progressBarWork->setFormat(QString::number(workDone) + " out of " + QString::number(ui->progressBarWork->maximum()) + " | [time per chunk : " + QString::number(workSpeed) + "ms]");
-}
-*/
-
-/*
-void Dialog::on_btnStart_clicked()  //start rds streaming
-{
-
-
-    //connect(&mJob,&MyJob::on_number,this,&Dialog::newNumber); //signal on_number (in other h) , slot newNumber (in this cpp)
-    //connect(this,&Dialog::on_Stop, &mJob, &MyJob::stop); //signal on_stop (in this h) , slo stop (in other cpp)
-
-    connect(&mRds,&FM_rds::rds_out,this,&Dialog::rds_stream);
-    connect(this,&Dialog::on_Stop,&mRds,&FM_rds::stop);
-
-
-    //QFuture<void> test = QtConcurrent::run(&this->mJob,&MyJob::start,QString("katzen"));
-
-    QFuture<void> test_rds = QtConcurrent::run(&this->mRds,&FM_rds::rds);
-}
-*/
-
-
-
-/*
-void Dialog::on_btnStop_clicked()  //stop rds streaming
-{
-    emit on_Stop(); //rds stop
-    emit on_StopScan(); //dab fm scan progressbar stop
-}
-*/
-
-//void Dialog::newNumber(QString name, int number)
-//{
-//    qDebug() << "From Dialog: " << name << " " << number;
-//    ui->lineEdit->setText(name + " " + QString::number(number));
-//}
-
-
 
 void Dialog::prog_bar_dab_valueChanged(int prog_bar_value)
 {
     ui->prog_bar_dab->setValue(prog_bar_value);
 }
 
-//void Dialog::prog_bar_fm_valueChanged(int prog_bar_value)
 void Dialog::prog_bar_fm_valueChanged(int prog_bar_value)
 {
     ui->prog_bar_fm->setValue(prog_bar_value);
@@ -545,44 +261,6 @@ void Dialog::show_progbars(bool visibility){
     }
 }
 
-
-//void Dialog::on_btnMute_clicked()
-//{
-//    fd = net_open("/dev/radio0", O_RDWR); // open device node
-
-//    Dialog::set_mute(fd, "on");
-//}
-
-//void Dialog::on_btnUnmute_clicked()
-//{
-//    fd = net_open("/dev/radio0", O_RDWR); // open device node
-
-//    Dialog::set_mute(fd, "off");
-//}
-
-//int Dialog::set_mute(int fd, const char *arg) {
-//        //int type = 0;
-//        struct v4l2_control control;
-//        if (strcmp(arg, "off") == 0) {
-//                control.id = V4L2_CID_AUDIO_MUTE;
-//                control.value = 0;
-//                fprintf(stdout, "Enabling audiostream\n");
-//                net_ioctl(fd, VIDIOC_S_CTRL, &control);
-//        } else if (strcmp(arg, "on") == 0) {
-//                fprintf(stdout, "Disabling audiostream\n");
-//                control.id = V4L2_CID_AUDIO_MUTE;
-//                control.value = 1;
-//                net_ioctl(fd, VIDIOC_S_CTRL, &control);
-//        } else
-//                fprintf(stdout, "Wrong argument [%s] choose between on|off\n", arg);
-
-//        return 0;
-//}
-
-
-
-//void Dialog::on_btnDabTune_clicked()
-
 void Dialog::on_btn_scan_clicked()
 {
     if(g_tuner_mode == "DAB"){
@@ -594,66 +272,6 @@ void Dialog::on_btn_scan_clicked()
         mMute.set_mute();
         emit start_scan_fm();
     }
-
-
-
-
-    /*
-    if(g_tuner_mode == "DAB"){
-
-        mScan.mStop_dab_scan = false; //for new scan set false
-        ui->list_dab->clear();
-
-        //test3
-        //connect(&mScan,&Scan::progress_scan_dab,this,&Dialog::prog_bar_dab_valueChanged); //feedback from scan to progressbar
-        //connect(&mScan,&Scan::progress_scan_dab,this,&Dialog::fill_dab_list); //feedback from scan to dab list
-        //test3
-        //connect(&mScan,&Scan::enable_buttons,this,&Dialog::enable_disable_btn);
-        //test1
-        //connect(&mScan,&Scan::show_progbar_dab,this,&Dialog::show_progbars);
-        //connect(&mScan,&Scan::write_to_file,&mFile,&File::dab_write_file);
-
-        QFuture<void> scan_dab = QtConcurrent::run(&this->mScan,&Scan::dab_scan_wrapped); //create new thread for scan
-
-        //QFuture<void> stop_scan = QtConcurrent::
-        //test1
-        //connect(this,&Dialog::on_StopScan,&mScan,&Scan::stop_scan_dab);
-
-        //mFile.dab_write_file();
-
-        //connect(&mScan,&Scan::finished_scan,this,&Dialog::dab_refresh_all);
-        //test2
-        //connect(&mScan,&Scan::finished_scan,this,&Dialog::dab_refresh_after_scan);
-    }
-
-    if(g_tuner_mode == "FM"){
-
-        mScan.mStop_fm_scan = false; //for new scan set false
-        ui->list_fm->clear();
-        //test3
-        //connect(&mScan,&Scan::progress_scan_fm,this,&Dialog::prog_bar_fm_valueChanged); //feedback from scan to progressbar
-
-        //connect(&mScan,&Scan::progress_scan_dab,this,&Dialog::fill_dab_list); //feedback from scan to dab list
-        //test3
-        //connect(&mScan,&Scan::enable_buttons,this,&Dialog::enable_disable_btn);
-        //test1
-        //connect(&mScan,&Scan::show_progbar_fm,this,&Dialog::show_progbars);
-        //connect(&mScan,&Scan::write_to_file,&mFile,&File::dab_write_file);
-
-        QFuture<void> scan_fm = QtConcurrent::run(&this->mScan,&Scan::fm_scan_wrapped); //create new thread for scan
-
-        //QFuture<void> stop_scan = QtConcurrent::
-        //test1
-        //connect(this,&Dialog::on_StopScan,&mScan,&Scan::stop_scan_fm);
-
-        //mFile.dab_write_file();
-
-        //connect(&mScan,&Scan::finished_scan,this,&Dialog::dab_refresh_all);
-        //test2
-        //connect(&mScan,&Scan::finished_scan_fm,this,&Dialog::fm_refresh_after_scan);
-    }
-*/
-
 }
 
 void Dialog::on_btn_add_fav_clicked()
@@ -789,9 +407,6 @@ QPixmap Dialog::logo_dab(QString in)
 
 void Dialog::dab_show_fav_btn()
 {
-
-    //QVector<int> fm_found_favs;
-
     dab_found_favs.clear();
 
     for(int i = 0; i < g_dab_vec_vec.size(); i++){
@@ -957,9 +572,6 @@ void Dialog::dab_show_fav_btn()
 
 void Dialog::fm_show_fav_btn()
 {
-
-    //QVector<int> fm_found_favs;
-
     fm_found_favs.clear();
 
     for(int i = 0; i < g_fm_vec_vec.size(); i++){
@@ -1027,39 +639,13 @@ void Dialog::fm_show_fav_btn()
 
 void Dialog::on_btn_tune_clicked()
 {
-
-    //mFM_rds->mStop_rds = true; //m2
     emit stop_rds(); //stop rds stream
-    //qDebug() << "emited stop_rds from btn_tune";
-
-    set_sleep_delay  = ui->ln_set_delay->text().toUInt();
-
-    QThread::msleep(set_sleep_delay);
-//    ui->lbl_rds_stream->clear();
-//    qDebug() << "lbl_rds_stream from btn_tune: " << ui->lbl_rds_stream->text();
-//    ui->lbl_rds_station_stream->clear();
-//    qDebug() << "lbl_rds_station_stream from btn_tune: " << ui->lbl_rds_station_stream->text();
 
     if(g_tuner_mode == "FM"){
 
         g_last_tuned_freq_dab = 0;
 
-        //emit stop_rds(); //stop rds stream
-
-        //QThread::msleep(100);
-
-        //ui->lbl_rds_stream->setText(""); //clear rds output
-        //ui->lbl_rds_station_stream->setText("");
-
-        //Dialog::start_rds_stream(); //start rds streaming
-
         emit start_rds();
-//mFM_rds->mStop_rds = false; //m2
-        //mFM_rds->start(); //m2
-
-
-        //qDebug() << "emited start_rds from btn_tune";
-
 
         g_last_state_mute_unmute = "muted";
         g_tuner_mode = "FM";
@@ -1080,23 +666,11 @@ void Dialog::on_btn_tune_clicked()
         g_last_state_mute_unmute = "muted";
         g_tuner_mode = "DAB";
 
-
-        //emit stop_rds(); //stop rds stream
-
-        //QThread::msleep(100);
-
-        //ui->lbl_rds_stream->setText(""); //clear rds output
-        //ui->lbl_rds_station_stream->setText("");
-
         int marked_row = (ui->list_dab->currentRow()); //marked row from dab list
 
         uint frequency = (g_dab_vec_vec[marked_row][1]).toUInt();
 
         QString sid_string = g_dab_vec_vec[marked_row][2];
-
-    //    uint frequency = (g_dab_vec_vec[marked_row][1]).toUInt();
-
-    //    QString sid_string = g_dab_vec_vec[marked_row][2];
 
         fd = net_open("/dev/dab0", O_RDWR);
         bool ok;
@@ -1107,15 +681,8 @@ void Dialog::on_btn_tune_clicked()
         uint8_t comp = 1;
         uint8_t comp_set = 1;
 
-
-        //mTune.set_dab_channel_pretune(fd,frequency);
-        //mTune.set_dab_freq(fd,frequency);
-        //QThread::msleep(4000);
         mMute.set_mute();
         mTune.set_dab_channel(fd,frequency,sid,sid_set,comp,comp_set);
-
-        //QThread::msleep(200);
-        //Dialog::set_mute(fd, "off");
     }
 
 }
@@ -1124,24 +691,10 @@ void Dialog::tune_dab_wrapper(int btn_id)
 { 
 
 
-    emit stop_rds(); //stop rds_stream
-    //qDebug() << "emited stop_rds from tune_dab_wrapper";
-
-    //QThread::msleep(250);
-
-
-//mFM_rds->mStop_rds = true; //m2
-
-
-    //ui->lbl_rds_stream->clear();
-    //qDebug() << "lbl_rds_stream from tune_dab_wrapper: " << ui->lbl_rds_stream->text();
-    //ui->lbl_rds_station_stream->clear();
-    //qDebug() << "lbl_rds_station_stream from tune_dab_wrapper: " << ui->lbl_rds_station_stream->text();
+    emit stop_rds();
 
     Dialog::dab_btn_changer();
 
-
-    //g_last_state_dab_fm = "DAB";
     g_tuner_mode = "DAB";
     //qDebug() << "g_tuner_mode: " << g_tuner_mode;
 
@@ -1163,45 +716,13 @@ void Dialog::tune_dab_wrapper(int btn_id)
 
 void Dialog::tune_fm_wrapper(int btn_id)
 {
-    //stop run
+    emit stop_rds();
 
-    //mFM_rds->mStop_rds = true; //m2
-
-
-
-    emit stop_rds(); //stop rds_stream
-    //mFM_rds->mStop_rds = true;
-    //qDebug() << "emited stop_rds from tune_fm_wrapper";
-
-
-    set_sleep_delay = ui->ln_set_delay->text().toUInt();
-
-    QThread::msleep(set_sleep_delay);
-
-//    mFM_rds->rds_chars.clear();
-//    mFM_rds->prog_chars.clear();
-
-    //ui->lbl_rds_stream->clear();
-    //qDebug() << "lbl_rds_stream from tune_fm_wrapper: " << ui->lbl_rds_stream->text();
-    //ui->lbl_rds_station_stream->clear();
-    //qDebug() << "lbl_rds_station_stream from tune_fm_wrapper: " << ui->lbl_rds_station_stream->text();
-
-
-    //start
-
-    //mFM_rds->mStop_rds = false; //m1
-
-    //mFM_rds->start(); //m2
-
-     g_last_tuned_freq_dab = 0; //reset in case dab is chosen again
+    g_last_tuned_freq_dab = 0; //reset in case dab is chosen again
 
     Dialog::fm_btn_changer();
 
-    //start rds stream
-    //Dialog::start_rds_stream(); //start rds streaming
-
     emit start_rds();
-    //qDebug() << "emited start_rds from tune_fm_wrapper";
 
     //g_last_state_dab_fm = "DAB";
     g_tuner_mode = "FM";
@@ -1211,8 +732,6 @@ void Dialog::tune_fm_wrapper(int btn_id)
     fd = net_open("/dev/radio0", O_RDWR);
     uint frequency = g_fm_vec_vec[fm_found_favs.at(btn_id)][1].toUInt();
 
-
-    //mMute.set_mute(fd, "off");
     mMute.set_mute();
     mTune.set_radio_channel(fd,frequency);
 }
@@ -1327,42 +846,6 @@ void Dialog::on_btn_tuner_mode_clicked()
     if(init_dab_list != -1 && g_tuner_mode == "DAB"){
         ui->btn_tune->setDisabled(false);
     }
-
- /*
-    if(ui->btn_tuner_mode->text() == "FM\nMODE"){
-        ui->btn_tuner_mode->setText("DAB\nMODE");
-        tuner_mode = "FM";
-        ui->lst_dab->setVisible(false);
-        ui->lst_fm->setVisible(true);
-        //ui->btn_rename->setVisible(true);
-        //ui->ln_man_tune->setVisible(true);
-        //ui->label->setVisible(true);
-        ui->btn_add->setEnabled(true);
-        //ui->btn_man_tune->setVisible(true);
-        ui->btn_add->setEnabled(true);
-        ui->btn_rename_station->setEnabled(true);
-        ui->ln_add_station->setEnabled(true);
-        ui->lst_fm->setCurrentRow(-1);
-
-        MainWindow::fm_refresh_all();
-    } else {
-        ui->btn_tuner_mode->setText("FM\nMODE");
-        tuner_mode = "DAB";
-        ui->lst_dab->setVisible(true);
-        ui->lst_fm->setVisible(false);
-        //ui->btn_rename->setVisible(false);
-        //ui->ln_man_tune->setVisible(false);
-        //ui->label->setVisible(false);
-        ui->btn_add->setEnabled(false);
-        //ui->btn_man_tune->setVisible(false);
-        ui->btn_add->setEnabled(false);
-        ui->btn_rename_station->setEnabled(false);
-        ui->ln_add_station->setEnabled(false);
-        ui->lst_dab->setCurrentRow(-1);
-
-        MainWindow::dab_refresh_all();
-    }
-*/
 }
 
 void Dialog::on_btn_testbutton_clicked()
@@ -1495,33 +978,12 @@ void Dialog::fm_btn_changer()
     ui->list_fm->setCurrentRow(-1);
     ui->lbl_rds_stream->setVisible(true);
     //ui->lbl_rds_stream->clear();
-    ui->lbl_rds_stream->setText("");
-    qDebug()<<"lbl_rds_stream fm_btn_changer: "<<ui->lbl_rds_stream->text();
+    //ui->lbl_rds_stream->setText("");
+    //qDebug()<<"lbl_rds_stream fm_btn_changer: "<<ui->lbl_rds_stream->text();
     ui->lbl_rds->setVisible(true);
     ui->lbl_rds_station->setVisible(true);
     ui->lbl_rds_station_stream->setVisible(true);
     //ui->lbl_rds_station_stream->clear();
-    ui->lbl_rds_station_stream->setText("");
-    qDebug()<<"lbl_rds_station_stream fm_btn_changer: "<<ui->lbl_rds_station_stream->text();
-}
-
-void Dialog::on_btn_stop_rds_clicked()
-{
-    //thread_rds->mStop
-
-    //g_mStop_rds = true;
-
-    //mFM_rds->mStop_rds = true; //m2
-
-    emit stop_rds();
-
-    //ui->lbl_rds_station_stream->clear();
-    //ui->lbl_rds_stream->clear();
-
-//    mFM_rds->mStop_rds = true;
-//    mFM_rds->rds_chars.clear();
-//    mFM_rds->prog_chars.clear();
-
-
-
+    //ui->lbl_rds_station_stream->setText("");
+    //qDebug()<<"lbl_rds_station_stream fm_btn_changer: "<<ui->lbl_rds_station_stream->text();
 }
