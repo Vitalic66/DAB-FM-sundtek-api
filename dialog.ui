@@ -431,6 +431,19 @@ STATIONS</string>
       <string>stop rds</string>
      </property>
     </widget>
+    <widget class="QLineEdit" name="ln_set_delay">
+     <property name="geometry">
+      <rect>
+       <x>380</x>
+       <y>20</y>
+       <width>51</width>
+       <height>25</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>0</string>
+     </property>
+    </widget>
    </widget>
    <widget class="QWidget" name="page_2">
     <widget class="QPushButton" name="btn_add_fav">

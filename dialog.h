@@ -175,6 +175,8 @@ public slots:
 
     void show_progbars(bool vis);
 
+    void clear_rds_labels();
+
 
 
 private:
@@ -216,6 +218,8 @@ private:
     QVector<int> dab_found_favs;
 
     QString path_dab_icons = "../stationlogos/";
+
+    uint set_sleep_delay;
 
     //stylesheets
     QString btn_default_rounded = ("border: 1px solid #ababab;border-radius: 20px;background: qlineargradient(x1:0 y1:0, x2:0 y2:1, stop:0 #ffffff, stop:1 #efefef);");

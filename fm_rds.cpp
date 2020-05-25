@@ -75,7 +75,15 @@ Worker::Worker(QObject *parent) :
 void FM_rds::start_rds_reading()
 {
     //QMutexLocker locker(&lock);
+
    mStop_rds = false;
+   prog_chars = "";
+   qDebug() << "prog_chars from function start: " << prog_chars;
+   rds_chars = "";
+   qDebug() << "rds_chars from function start: " << rds_chars;
+   emit rds_out(rds_chars);
+   emit rds_prog_out(prog_chars);
+   QThread::msleep(500);
 
    //if(mStop_rds){
        //QMutexLocker locker(&lock);
@@ -101,6 +109,9 @@ void FM_rds::stop_rds_reading()
 
     //QMutexLocker locker(&lock);
    mStop_rds = true;
+   //prog_chars = "";
+   //rds_chars = "";
+
    qDebug() << "mstop from function stop ...: " << mStop_rds;
 }
 
@@ -158,33 +169,16 @@ int FM_rds::rds(){
 
                     while(1) {
 
+                  // while(!mStop_rds){
+                    //do{
+
                         QApplication::processEvents();
 
-//                        QMutex mutex; //m2
-//                        mutex.lock(); //m2
-                        if(this->mStop_rds) break;
+                        if(mStop_rds) break;
 
-
-
-
-
-
-                        //while(mStop_rds) {
-
-                            //do{
-                    //while(1 && mStop_rds) {
                             net_ioctl(rdsfd, FM_RDS_STATUS, &data);
 
-                                                //rds_chars.clear();
-                                                //prog_chars.clear();
-
-                            //QString rds_chars;
-
-
-                            //char irgendwas;
-                            //QStringList irgendwas_list;
-                            //QString irgendwas_line;
-QThread::msleep(workSpeed);
+//QThread::msleep(workSpeed);
 
                             if (data.rdssync) {
                                     if (memcmp(rdsdata, data.data, 8)==0)
@@ -209,157 +203,121 @@ QThread::msleep(workSpeed);
                                     usleep(10000);
 
                                     if (isprint(program[0]) && isprint(program[1])) {
-                                            memcpy(print_program, program, 9);
-//                                            prog_chars = static_cast<char>(program[0]) + static_cast<char>(program[1]) + static_cast<char>(program[2])
-//                                                    +    static_cast<char>(program[3]) + static_cast<char>(program[4]) + static_cast<char>(program[5])
-//                                                    +    static_cast<char>(program[6]) + static_cast<char>(program[7]) + static_cast<char>(program[8])
-//                                                    +    static_cast<char>(program[9]);
-                                            //prog_chars = program[0]+program[1]+program[2];
+                                        memcpy(print_program, program, 9);
 
-                                            //if(prog_chars.length() < ){
-                                                prog_chars.clear();
-                                                for(int i = 0; i < 9; i++){
-                                                prog_chars = prog_chars.append(static_cast<char>(program[i]));
-                                                }
-                                                if(prog_chars.contains('\0')){
-                                                    prog_chars = prog_chars.replace('\0', "");
-                                                }
-                                            //}
+                                        //prog_chars = program[0]+program[1]+program[2];
 
-//                                            + static_cast<char>(program[1]) + static_cast<char>(program[2])
-//                                                                                                +    static_cast<char>(program[3]) + static_cast<char>(program[4]) + static_cast<char>(program[5])
-//                                                                                                +    static_cast<char>(program[6]) + static_cast<char>(program[7]) + static_cast<char>(program[8])
-//                                                                                                +    static_cast<char>(program[9]);
+                                        //if(prog_chars.length() < ){
+                                        prog_chars.clear();
+                                        for(int i = 0; i < 9; i++){
+                                        prog_chars = prog_chars.append(static_cast<char>(program[i]));
+
+                                        if(mStop_rds){
+                                            prog_chars.clear();
+                                            //emit clear_lbl("");
+                                        }
+                                        //qDebug()<<"prog_chars in for loop: "<<prog_chars;
+
+                                        }
+                                        if(prog_chars.contains('\0')){
+                                            prog_chars = prog_chars.replace('\0', "");
+                                        }
                                     }
-
-//                                    QByteArray prog_chars;
-//                                    for(int i = 0; i < 9; i++){
-//                                        char rad_prog_single_char = 32;
-//                                        rad_prog_single_char = static_cast<char>(program[i]);
-//                                        prog_chars.append(rad_prog_single_char);
-//                                    }
-
-
-
-//                                    for(int i = 0; i < 9; i++){
-//                                        char rad_prog_single_char = 32;
-//                                        rad_prog_single_char = static_cast<char>(program[i]);
-
-//                                    //qDebug() << "rdaio program: " << print_program;
-//                                        qDebug() << "radio program single char: " << rad_prog_single_char;
-
-//                                        prog_chars.append(rad_prog_single_char);
-                                        //qDebug() << "radio program: " << prog_chars;
-//                                    }
-
-                                    //QString print_prog = print_program;
-
-
-                                    //printf("PROGRAM: %s\n", print_program);
-
-                                    //char irgendwas = static_cast<char>(print_program);
-
-                                    //emit rds_out(print_program);
-
-                                    //printf("RADIOTEXT: ");
 
                                     rds_chars.clear();
 
-                                    //for (i=0;i<64;i++) {
-for (i = 0; i < forsize; i++) {
-                                        //if(mStop) return 0;
+                                    for (i=0;i<64;i++) {
 
                                         if(radiotext[i] != 0){
 
-                                        //char irgendwas = static_cast<char>(radiotext[i]);
-                                        //test.append(irgendwas);
-                                        //qDebug() << test;
-                                                }
                                            switch(radiotext[i]) {
-                                                    case 0x19:
-                                                            printf("ue");
-                                                            //qDebug() << radiotext[i];
-                                                            break;
-                                                    default:
-                                                            //printf("%c", radiotext[i]);
-                                                            //qDebug() << i;
-                                                            //QString buch = radiotext[i];
-                                                            //ui->label_2->setText(buch);
-                                                             //qDebug() << radiotext[i];
+                                                case 0x19:
+                                                        //printf("ue");
 
-                                                            char rds_single_char = 32; //init with space
-                                                            if(radiotext[i] != 127){ //remove white rectangles (ascii del)
-//qDebug() << "single rds char: " << radiotext[i];
-                                                                rds_single_char = static_cast<char>(radiotext[i]);
+                                                        break;
+                                                default:
 
-                                                            }
-                                                            //QChar char(radiotext[i]);
-                                                            //qDebug() << irgendwas;
+                                                        char rds_single_char = 32; //init with space
+                                                        if(radiotext[i] != 127){ //remove white rectangles (ascii del)
 
-                                                            rds_chars.append(rds_single_char);
+                                                            rds_single_char = static_cast<char>(radiotext[i]);
 
-                                                            if(rds_chars.contains('\0')){
-                                                                rds_chars = rds_chars.replace('\0', "");
-                                                            }
+                                                        }
+                                                        //QChar char(radiotext[i]);
+                                                        //qDebug() << irgendwas;
 
-                                                            //qDebug() << test;
+                                                rds_chars.append(rds_single_char);
 
+                                                if(rds_chars.contains('\0')){
+                                                    rds_chars = rds_chars.replace('\0', "");
+                                                }
+                                            } //end switch
 
-                                                             //if(irgendwas != "\u0000"){
-//                                                                for(int j = 0; j < 20; j++){
+                                           //if(mStop_rds){
+                                               //rds_chars.clear();
+                                               //emit clear_lbl("");
+                                           //}
 
-//                                                                    irgendwas_line.append(irgendwas);
-//                                                                }
-                                                            //}
-                                                            //irgendwas_list.append(irgendwas_line);
-                                                            //ui->label_2->setText(test);
-                                                            //qDebug() << irgendwas_list;
-
-
-                                //QString buch = QString::fromLocal8Bit();
-                                // const char* dst = reinterpret_cast<const char*>(radiotext[i]);
-
-                                // test.append(dst);
-
-                                 //qDebug() << test;
-
-                                //QTextStream stream = dst;
-                                 //QString buch;
-                                 //buch = dst;
-                                                            //ui->label_2->setText(dst);
-                                                            //qDebug() << dst;
-                                     //QString buch = dst;
-                                            }
-//                                           emit rds_out(rds_chars);
-//                                           emit rds_prog_out(prog_chars);
-qDebug() << "mStop before end of for loop: " << mStop_rds;
+                                       }
+                                       //qDebug()<<"prog_chars for loop: " << prog_chars;
                                     } //end for loop
-emit rds_out(rds_chars);
-emit rds_prog_out(prog_chars);
 
-                                    //printf("\n");
+                                    //if(mStop_rds){
+                                    //    rds_chars.clear();
+                                    //    prog_chars.clear();
+                                    //}
 
-                                    //ui->label_2->setText(test);
+
+                                    //if(!mStop_rds){
+                                    emit rds_out(rds_chars);
+                                    emit rds_prog_out(prog_chars);
+                                    //} else {
+
+                                    //rds_single_char = ' ';
+                                    //emit rds_out("");
+                                    //emit rds_out("");
+//                                    emit clear_lbl("");
+                                    //}
 
                                     fflush(stdout);
-                                    qDebug() << "mStop after end of for loop: " << mStop_rds;
+
+
+                                    //qDebug() << "mStop after end of for loop: " << mStop_rds;
                             } //end if loop
                             //QThread::currentThread()->msleep(5000);
-                            qDebug() << "mStop before end of while loop: " << mStop_rds;
-
+                            //qDebug() << "mStop before end of while loop: " << mStop_rds;
+//qDebug()<<"ping after if loop";
                             //mutex.unlock(); //m2
-                   } //end while loop
+
+
+//if(mStop_rds) break;
+                  } //end while loop
+
+                    //rds_chars="";
+                    //prog_chars="";
+
+//                    emit rds_out(rds_chars);
+//                    qDebug()<<"rds_chars after while: " <<rds_chars;
+//                    emit rds_prog_out(prog_chars);
+//                    qDebug()<<"prog_chars after while: " <<prog_chars;
+
+//qDebug()<<"ping after while";
 
 //                            emit rds_out(rds_chars);
 //                            emit rds_prog_out(prog_chars);
-                    //}while(mStop_rds);
+                   // }while(!mStop_rds);
                     //emit finished_rds_reading();
-                    rds_chars.clear();
-                    prog_chars.clear();
+//                    rds_chars.clear();
+//                    prog_chars.clear();
+                    //rds_chars = "";
+                    //qDebug()<<"rds_chars after while: "<<rds_chars;
+                   // prog_chars = "";
+                    //qDebug()<<"prog_chars after while: "<<prog_chars;
+                    //emit clear_lbl("");
                     //mStop_rds = false;
                     //mStop_rds = true;
 
-                    qDebug() << "mStop after end of while loop: " << mStop_rds;
+                    //qDebug() << "mStop after end of while loop: " << mStop_rds;
             }
             //emit finished_rds_reading();
             //g_mStop_rds = false;

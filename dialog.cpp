@@ -321,9 +321,20 @@ connect(ui->sliderForSize, SIGNAL(valueChanged(int)), this, SLOT(setForSize(int)
 
         //connect(scan, SIGNAL(show_progbar_dab(bool)), this, SLOT(show_progbars(bool))); //hide/unhide progbars
         //connect(scan, SIGNAL(finished_scan_dab()), this, SLOT(dab_refresh_after_scan()));  //when finished do save and refresh
+
+
         connect(rds, SIGNAL(rds_out(QString)), this, SLOT(rds_stream(QString)));  //rds data stream
         connect(rds, SIGNAL(rds_prog_out(QString)), this, SLOT(rds_prog(QString)));  //rds data stream
 
+
+
+
+        //connect(rds, SIGNAL(clear_lbl()), this, SLOT(clear_rds_labels()));
+
+
+
+        connect(rds, SIGNAL(clear_lbl(QString)), this, SLOT(rds_stream(QString)));
+        connect(rds, SIGNAL(clear_lbl(QString)), this, SLOT(rds_prog(QString)));
 
 
         connect(this, SIGNAL(start_rds()), rds, SLOT(start_rds_reading())); //start rds streaming
@@ -341,7 +352,7 @@ connect(ui->sliderForSize, SIGNAL(valueChanged(int)), this, SLOT(setForSize(int)
         //qDebug() << connect(this, SIGNAL(start_rds()), rds, SLOT(rds()));
         //qDebug() << connect(this, SIGNAL(stop_rds()), rds, SLOT(stop_rds_reading()));
 
-        connect(ui->btn_stop_rds, SIGNAL(clicked()), rds, SLOT(stop_rds_reading()));
+        //connect(ui->btn_stop_rds, SIGNAL(clicked()), rds, SLOT(stop_rds_reading()));
 
         connect(this, SIGNAL(sendWorkSpeed(int)), rds, SLOT(receiveWorkSpeed(int)));
         connect(this, SIGNAL(sendForSize(int)), rds, SLOT(receiveForSize(int)));
@@ -363,16 +374,26 @@ connect(ui->sliderForSize, SIGNAL(valueChanged(int)), this, SLOT(setForSize(int)
     thread_rds->start();
 }
 
+void Dialog::clear_rds_labels()
+{
+    ui->lbl_rds_station_stream->clear();
+    ui->lbl_rds_stream->clear();
+}
+
+
+
 void Dialog::rds_stream(QString data)
 {
     ui->lbl_rds_stream->setWordWrap(true);
     ui->lbl_rds_stream->setText(data);
+    qDebug()<<"data from rds_stream function: "<<data;
 }
 
 void Dialog::rds_prog(QString prog)
 {
     //ui->lbl_rds_stream->setWordWrap(true);
     ui->lbl_rds_station_stream->setText(prog);
+    qDebug()<<"prog from rds_prog function: "<<prog;
 }
 
 /*
@@ -1010,17 +1031,20 @@ void Dialog::on_btn_tune_clicked()
     //mFM_rds->mStop_rds = true; //m2
     emit stop_rds(); //stop rds stream
     //qDebug() << "emited stop_rds from btn_tune";
-    QThread::msleep(250);
-    ui->lbl_rds_stream->clear();
-    qDebug() << "lbl_rds_stream from btn_tune: " << ui->lbl_rds_stream->text();
-    ui->lbl_rds_station_stream->clear();
-    qDebug() << "lbl_rds_station_stream from btn_tune: " << ui->lbl_rds_station_stream->text();
+
+    set_sleep_delay  = ui->ln_set_delay->text().toUInt();
+
+    QThread::msleep(set_sleep_delay);
+//    ui->lbl_rds_stream->clear();
+//    qDebug() << "lbl_rds_stream from btn_tune: " << ui->lbl_rds_stream->text();
+//    ui->lbl_rds_station_stream->clear();
+//    qDebug() << "lbl_rds_station_stream from btn_tune: " << ui->lbl_rds_station_stream->text();
 
     if(g_tuner_mode == "FM"){
 
         g_last_tuned_freq_dab = 0;
 
-        emit stop_rds(); //stop rds stream
+        //emit stop_rds(); //stop rds stream
 
         //QThread::msleep(100);
 
@@ -1109,10 +1133,10 @@ void Dialog::tune_dab_wrapper(int btn_id)
 //mFM_rds->mStop_rds = true; //m2
 
 
-    ui->lbl_rds_stream->clear();
-    qDebug() << "lbl_rds_stream from tune_dab_wrapper: " << ui->lbl_rds_stream->text();
-    ui->lbl_rds_station_stream->clear();
-    qDebug() << "lbl_rds_station_stream from tune_dab_wrapper: " << ui->lbl_rds_station_stream->text();
+    //ui->lbl_rds_stream->clear();
+    //qDebug() << "lbl_rds_stream from tune_dab_wrapper: " << ui->lbl_rds_stream->text();
+    //ui->lbl_rds_station_stream->clear();
+    //qDebug() << "lbl_rds_station_stream from tune_dab_wrapper: " << ui->lbl_rds_station_stream->text();
 
     Dialog::dab_btn_changer();
 
@@ -1149,15 +1173,18 @@ void Dialog::tune_fm_wrapper(int btn_id)
     //mFM_rds->mStop_rds = true;
     //qDebug() << "emited stop_rds from tune_fm_wrapper";
 
-    QThread::msleep(250);
+
+    set_sleep_delay = ui->ln_set_delay->text().toUInt();
+
+    QThread::msleep(set_sleep_delay);
 
 //    mFM_rds->rds_chars.clear();
 //    mFM_rds->prog_chars.clear();
 
-    ui->lbl_rds_stream->clear();
-    qDebug() << "lbl_rds_stream from tune_fm_wrapper: " << ui->lbl_rds_stream->text();
-    ui->lbl_rds_station_stream->clear();
-    qDebug() << "lbl_rds_station_stream from tune_fm_wrapper: " << ui->lbl_rds_station_stream->text();
+    //ui->lbl_rds_stream->clear();
+    //qDebug() << "lbl_rds_stream from tune_fm_wrapper: " << ui->lbl_rds_stream->text();
+    //ui->lbl_rds_station_stream->clear();
+    //qDebug() << "lbl_rds_station_stream from tune_fm_wrapper: " << ui->lbl_rds_station_stream->text();
 
 
     //start
@@ -1467,9 +1494,15 @@ void Dialog::fm_btn_changer()
     ui->ln_add_station->setEnabled(true);
     ui->list_fm->setCurrentRow(-1);
     ui->lbl_rds_stream->setVisible(true);
+    //ui->lbl_rds_stream->clear();
+    ui->lbl_rds_stream->setText("");
+    qDebug()<<"lbl_rds_stream fm_btn_changer: "<<ui->lbl_rds_stream->text();
     ui->lbl_rds->setVisible(true);
     ui->lbl_rds_station->setVisible(true);
     ui->lbl_rds_station_stream->setVisible(true);
+    //ui->lbl_rds_station_stream->clear();
+    ui->lbl_rds_station_stream->setText("");
+    qDebug()<<"lbl_rds_station_stream fm_btn_changer: "<<ui->lbl_rds_station_stream->text();
 }
 
 void Dialog::on_btn_stop_rds_clicked()
@@ -1482,8 +1515,8 @@ void Dialog::on_btn_stop_rds_clicked()
 
     emit stop_rds();
 
-    ui->lbl_rds_station_stream->clear();
-    ui->lbl_rds_stream->clear();
+    //ui->lbl_rds_station_stream->clear();
+    //ui->lbl_rds_stream->clear();
 
 //    mFM_rds->mStop_rds = true;
 //    mFM_rds->rds_chars.clear();

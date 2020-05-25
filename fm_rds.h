@@ -43,6 +43,7 @@ public:
 
     QString prog_chars;
     QString rds_chars;
+    //char rds_single_char = 32;
 
 signals:
 
@@ -51,6 +52,7 @@ signals:
     void rds_out(QString rds_stream);
     void rds_prog_out(QString rds_prog);
     void finished_rds_reading();
+    void clear_lbl(QString);
 
 public slots:
 
