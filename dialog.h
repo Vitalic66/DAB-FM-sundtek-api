@@ -141,6 +141,8 @@ private slots:
 
     void on_btn_scan_mute_clicked();
 
+    void on_btn_settings_mute_clicked();
+
     void on_btn_tuner_mode_clicked();
 
     void on_btn_testbutton_clicked();
@@ -154,6 +156,20 @@ private slots:
     void on_list_fm_itemSelectionChanged();
 
     void on_list_dab_itemSelectionChanged();
+
+    void on_tabWidget_currentChanged(int index);
+
+    void on_btn_settings_to_main_clicked();
+
+    void on_btn_settings_to_scan_clicked();
+
+
+
+    void on_btn_main_to_settings_clicked();
+
+    void on_btn_scan_to_settings_clicked();
+
+    void setup_connections_btn_mute();
 
 public slots:
 

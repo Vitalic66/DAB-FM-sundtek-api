@@ -1,5 +1,6 @@
 #include "file.h"
 
+QString g_tuner_mode;
 
 File::File(QObject *parent) : QObject(parent)
 {
@@ -346,4 +347,92 @@ QStringList File::sort_list(QStringList list){
     std::sort(list.begin(), list.end(), [&](const QString& s1, const QString& s2){ return coll.compare(s1, s2) < 0; });
 
     return list;
+}
+
+void File::read_settings_file(){
+
+    /* File style:
+     * #0->tuner mode,  DAB | FM
+     * #1->autoplay,    on | off
+     * #2->last tuned,  tunertype,freq,sid
+     * #3
+     *
+     *
+     *
+    */
+
+    //read lines from fm.txt to qVectorVector
+
+    QFile file_settings(path_settings);
+    if(!file_settings.open(QFile::ReadOnly | QFile::Text)){
+//        QMessageBox::warning(this,"..","keine datei gefunden");
+//        ui->warn_no_dab_list->setVisible(true);
+        return;
+    }
+
+    //g_dab_vec_vec.clear();
+
+    QTextStream settings_stream_in_file(&file_settings);
+    QString settings_stream_in_line;
+    QStringList read_lines_from_Stream;
+
+    while (!settings_stream_in_file.atEnd()) {
+
+
+
+       QString single_line = settings_stream_in_file.readLine();
+
+       read_lines_from_Stream.append(single_line);
+    }
+
+    //startmode
+    g_tuner_mode = read_lines_from_Stream.at(0);
+    //autoplay
+    set_autoplay = read_lines_from_Stream.at(1);
+    //last played
+    QString last_played = read_lines_from_Stream.at(2);
+    QStringList last_played_split = last_played.split(",");
+    last_played_tuner_type = last_played_split.at(0);
+    last_played_freq = last_played_split.at(1);
+    last_played_sid = last_played_split.at(2);
+
+
+
+qDebug()<<read_lines_from_Stream;
+
+qDebug()<<"line 1: " << read_lines_from_Stream.at(1);
+qDebug()<<"line 2: " << read_lines_from_Stream.at(2);
+qDebug()<<"line 3: " << read_lines_from_Stream.at(3);
+qDebug()<<"tunertype: " << last_played_tuner_type;
+qDebug()<<"freq: " << last_played_freq;
+qDebug()<<"sid: " << last_played_sid;
+    //qDebug() << "g_dab_vec_vec before fav:" << g_dab_vec_vec;
+
+
+
+    file_settings.close();
+}
+
+void File::write_settings_file(){
+
+    //writes lines from qVectorVector to file
+
+    QFile file_settings(path_settings);
+    if(!file_settings.open(QFile::WriteOnly | QFile::Text)){
+        //QMessageBox::warning(this,"..","keine datei gefunden");
+        //ui->warn_no_dab_list->setVisible(true);
+        return;
+    }
+
+    file_settings.resize(0);
+
+
+
+    QTextStream settings_write_to_file(&file_settings);
+    settings_write_to_file << g_tuner_mode << "\n"; //start in tuner mode
+    settings_write_to_file << set_autoplay << "\n";
+    settings_write_to_file << last_played_tuner_type << "," << last_played_freq << "," << last_played_sid << "\n";
+
+    file_settings.flush();
+    file_settings.close();
 }

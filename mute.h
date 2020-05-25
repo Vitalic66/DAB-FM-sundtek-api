@@ -18,13 +18,14 @@ public:
     explicit Mute(QObject *parent = nullptr);
 
     //int set_mute(int fd, const char *arg);
-    int set_mute();
+
+    //Mute *cMute;
 
 signals:
 
 public slots:
 
-
+    int set_mute();
 
 };
 

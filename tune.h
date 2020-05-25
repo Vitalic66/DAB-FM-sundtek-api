@@ -14,6 +14,10 @@ class Tune : public QObject
 public:
     explicit Tune(QObject *parent = nullptr);
 
+//    QString last_played_tuner_type;
+//    QString last_played_freq;
+//    QString last_played_sid;
+
 signals:
 
 public slots:

@@ -8,7 +8,8 @@
 #include <QDebug>
 
 
-#include <scan.h>
+//#include <scan.h>
+#include <tune.h>
 #include <globals.h>
 
 
@@ -24,7 +25,18 @@ public:
 
     void fm_read_file();
 
-    Scan mScan;
+    void read_settings_file();
+
+    void write_settings_file();
+
+    QString set_autoplay;
+
+    QString last_played_tuner_type;
+    QString last_played_freq;
+    QString last_played_sid;
+
+    //Scan mScan;
+    Tune mTune;
 
 signals:
 
@@ -47,6 +59,10 @@ private:
 
     QString path_fm = "../.fm.txt";
     QString path_fm_fav = "../.fm_fav.txt";
+
+    QString path_settings = "../.dabfm_settings.txt";
+
+
 
 
 

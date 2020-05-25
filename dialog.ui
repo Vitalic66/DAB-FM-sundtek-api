@@ -23,7 +23,7 @@
     </rect>
    </property>
    <property name="currentIndex">
-    <number>0</number>
+    <number>2</number>
    </property>
    <widget class="QWidget" name="page">
     <property name="minimumSize">
@@ -58,7 +58,7 @@
       <string notr="true">QTabBar::tab{width: 200px; height: 60px;};</string>
      </property>
      <property name="currentIndex">
-      <number>1</number>
+      <number>0</number>
      </property>
      <widget class="QWidget" name="tab">
       <attribute name="title">
@@ -281,7 +281,7 @@ STATIONS</string>
     <widget class="QPushButton" name="btn_main_mute">
      <property name="geometry">
       <rect>
-       <x>90</x>
+       <x>180</x>
        <y>0</y>
        <width>90</width>
        <height>60</height>
@@ -335,17 +335,17 @@ STATIONS</string>
       <string/>
      </property>
     </widget>
-    <widget class="QLabel" name="label">
+    <widget class="QPushButton" name="btn_main_to_settings">
      <property name="geometry">
       <rect>
-       <x>270</x>
-       <y>20</y>
-       <width>67</width>
-       <height>17</height>
+       <x>90</x>
+       <y>0</y>
+       <width>90</width>
+       <height>60</height>
       </rect>
      </property>
      <property name="text">
-      <string>v1.0.5</string>
+      <string>SETTINGS</string>
      </property>
     </widget>
    </widget>
@@ -461,7 +461,7 @@ FAVORITE</string>
     <widget class="QPushButton" name="btn_scan_mute">
      <property name="geometry">
       <rect>
-       <x>90</x>
+       <x>180</x>
        <y>0</y>
        <width>90</width>
        <height>60</height>
@@ -616,10 +616,172 @@ STATION</string>
 STATION</string>
      </property>
     </widget>
+    <widget class="QPushButton" name="btn_scan_to_settings">
+     <property name="geometry">
+      <rect>
+       <x>90</x>
+       <y>0</y>
+       <width>90</width>
+       <height>60</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>SETTINGS</string>
+     </property>
+    </widget>
+   </widget>
+   <widget class="QWidget" name="page_3">
+    <widget class="QLabel" name="label">
+     <property name="geometry">
+      <rect>
+       <x>670</x>
+       <y>430</y>
+       <width>67</width>
+       <height>17</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>v1.0.5</string>
+     </property>
+    </widget>
+    <widget class="QPushButton" name="btn_settings_to_main">
+     <property name="geometry">
+      <rect>
+       <x>0</x>
+       <y>0</y>
+       <width>90</width>
+       <height>60</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>MAIN</string>
+     </property>
+    </widget>
+    <widget class="QPushButton" name="btn_settings_to_scan">
+     <property name="geometry">
+      <rect>
+       <x>90</x>
+       <y>0</y>
+       <width>90</width>
+       <height>60</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>ALL
+STATIONS</string>
+     </property>
+    </widget>
+    <widget class="QPushButton" name="btn_settings_mute">
+     <property name="geometry">
+      <rect>
+       <x>180</x>
+       <y>0</y>
+       <width>90</width>
+       <height>60</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>MUTE</string>
+     </property>
+    </widget>
+    <widget class="QLabel" name="lbl_set_tuner_mode">
+     <property name="geometry">
+      <rect>
+       <x>40</x>
+       <y>110</y>
+       <width>150</width>
+       <height>25</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <pointsize>19</pointsize>
+      </font>
+     </property>
+     <property name="text">
+      <string>Startmode</string>
+     </property>
+    </widget>
+    <widget class="QRadioButton" name="set_tuner_mode_dab">
+     <property name="geometry">
+      <rect>
+       <x>300</x>
+       <y>110</y>
+       <width>112</width>
+       <height>25</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <pointsize>15</pointsize>
+      </font>
+     </property>
+     <property name="text">
+      <string>DAB </string>
+     </property>
+     <attribute name="buttonGroup">
+      <string notr="true">buttonGroup</string>
+     </attribute>
+    </widget>
+    <widget class="QRadioButton" name="set_tuner_mode_fm">
+     <property name="geometry">
+      <rect>
+       <x>380</x>
+       <y>110</y>
+       <width>112</width>
+       <height>25</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <pointsize>15</pointsize>
+      </font>
+     </property>
+     <property name="text">
+      <string>FM</string>
+     </property>
+     <attribute name="buttonGroup">
+      <string notr="true">buttonGroup</string>
+     </attribute>
+    </widget>
+    <widget class="QLabel" name="lbl_autoplay">
+     <property name="geometry">
+      <rect>
+       <x>40</x>
+       <y>150</y>
+       <width>241</width>
+       <height>25</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <pointsize>19</pointsize>
+      </font>
+     </property>
+     <property name="text">
+      <string>Autoplay last station</string>
+     </property>
+    </widget>
+    <widget class="QCheckBox" name="chkbx_settings_autoplay">
+     <property name="geometry">
+      <rect>
+       <x>300</x>
+       <y>150</y>
+       <width>92</width>
+       <height>23</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string/>
+     </property>
+    </widget>
    </widget>
   </widget>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
  <resources/>
  <connections/>
+ <buttongroups>
+  <buttongroup name="buttonGroup"/>
+ </buttongroups>
 </ui>
