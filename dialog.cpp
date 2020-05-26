@@ -32,9 +32,11 @@ Dialog::Dialog(QWidget *parent) :
         ui->chkbx_settings_autoplay->setChecked(true);
         if(!mFile.last_played_tuner_type.isEmpty() && !mFile.last_played_freq.isEmpty()){
             //QThread::msleep(5000);
-
-            QTimer::singleShot(5000, this, &Dialog::tune_autoplay);
-
+            if(mFile.last_played_tuner_type == "DAB"){
+                QTimer::singleShot(mFile.delay_autoplay_dab.toInt(), this, &Dialog::tune_autoplay);
+            } else {
+                QTimer::singleShot(mFile.delay_autoplay_fm.toInt(), this, &Dialog::tune_autoplay);
+            }
 
             //Dialog::tune_autoplay();
         }
@@ -81,6 +83,11 @@ Dialog::Dialog(QWidget *parent) :
 
     ui->prog_bar_dab->setVisible(false);
     ui->prog_bar_fm->setVisible(false);
+
+    ui->ho_sl_settings_delay_autoplay_fm->setValue(mFile.delay_autoplay_fm.toInt());
+    ui->lbl_delay_value_fm->setText(mFile.delay_autoplay_fm);
+    ui->ho_sl_settings_delay_autoplay_dab->setValue(mFile.delay_autoplay_dab.toInt());
+    ui->lbl_delay_value_dab->setText(mFile.delay_autoplay_dab);
 
     setup_connections_scan();
     setup_connections_fm_rds();
@@ -1164,13 +1171,15 @@ qDebug()<<sid;
     }
 
     if(mFile.last_played_tuner_type == "FM"){
-        //QThread::msleep(5000);
-        //usleep(5000000);
-        //timer->start(5000);
-        g_tuner_mode = "FM";
-        g_last_state_mute_unmute = "muted";
-        fd = net_open("/dev/radio0", O_RDWR);
+
         emit start_rds();
+
+
+        g_last_state_mute_unmute = "muted";
+
+        g_tuner_mode = "FM";
+        fd = net_open("/dev/radio0", O_RDWR);
+
 
         uint frequency = mFile.last_played_freq.toUInt();
 qDebug()<<frequency;
@@ -1185,3 +1194,16 @@ qDebug()<<frequency;
 
 
 
+
+void Dialog::on_ho_sl_settings_delay_autoplay_fm_valueChanged(int value)
+{
+    mFile.delay_autoplay_fm = QString::number(value);
+    ui->lbl_delay_value_fm->setText(mFile.delay_autoplay_fm);
+}
+
+
+void Dialog::on_ho_sl_settings_delay_autoplay_dab_valueChanged(int value)
+{
+    mFile.delay_autoplay_dab = QString::number(value);
+    ui->lbl_delay_value_dab->setText(mFile.delay_autoplay_dab);
+}

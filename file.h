@@ -35,6 +35,9 @@ public:
     QString last_played_freq;
     QString last_played_sid;
 
+    QString delay_autoplay_fm;
+    QString delay_autoplay_dab;
+
     //Scan mScan;
     Tune mTune;
 

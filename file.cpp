@@ -356,8 +356,8 @@ void File::read_settings_file(){
      * #0->tuner mode,  DAB | FM
      * #1->autoplay,    on | off
      * #2->last tuned,  tunertype,freq,sid
-     * #3
-     *
+     * #3->delay fm,    value (min 2000)
+     * #4->delay dab,   value (min 2000)
      *
      *
     */
@@ -366,11 +366,12 @@ void File::read_settings_file(){
 
     QFile file_settings(path_settings);
     if(!file_settings.open(QFile::ReadOnly | QFile::Text)){
-//        QMessageBox::warning(this,"..","keine datei gefunden");
-//        ui->warn_no_dab_list->setVisible(true);
+
+        //init some value for first start of program
 
         g_tuner_mode = "DAB";
-        qDebug()<<g_tuner_mode;
+        delay_autoplay_fm = "2000";
+        delay_autoplay_dab = "2000";
 
         return;
     }
@@ -400,7 +401,9 @@ void File::read_settings_file(){
     last_played_tuner_type = last_played_split.at(0);
     last_played_freq = last_played_split.at(1);
     last_played_sid = last_played_split.at(2);
-
+    //delay
+    delay_autoplay_fm = read_lines_from_Stream.at(3);
+    delay_autoplay_dab = read_lines_from_Stream.at(4);
 
 
 qDebug()<<read_lines_from_Stream;
@@ -437,6 +440,8 @@ void File::write_settings_file(){
     settings_write_to_file << g_tuner_mode << "\n"; //start in tuner mode
     settings_write_to_file << set_autoplay << "\n";
     settings_write_to_file << last_played_tuner_type << "," << last_played_freq << "," << last_played_sid << "\n";
+    settings_write_to_file << delay_autoplay_fm << "\n";
+    settings_write_to_file << delay_autoplay_dab;
 
     file_settings.flush();
     file_settings.close();

@@ -705,7 +705,7 @@ STATIONS</string>
     <widget class="QRadioButton" name="set_tuner_mode_dab">
      <property name="geometry">
       <rect>
-       <x>300</x>
+       <x>350</x>
        <y>110</y>
        <width>112</width>
        <height>25</height>
@@ -726,7 +726,7 @@ STATIONS</string>
     <widget class="QRadioButton" name="set_tuner_mode_fm">
      <property name="geometry">
       <rect>
-       <x>380</x>
+       <x>430</x>
        <y>110</y>
        <width>112</width>
        <height>25</height>
@@ -765,11 +765,138 @@ STATIONS</string>
     <widget class="QCheckBox" name="chkbx_settings_autoplay">
      <property name="geometry">
       <rect>
-       <x>300</x>
+       <x>350</x>
        <y>150</y>
        <width>92</width>
        <height>23</height>
       </rect>
+     </property>
+     <property name="text">
+      <string/>
+     </property>
+    </widget>
+    <widget class="QSlider" name="ho_sl_settings_delay_autoplay_fm">
+     <property name="geometry">
+      <rect>
+       <x>350</x>
+       <y>195</y>
+       <width>251</width>
+       <height>16</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <pointsize>11</pointsize>
+      </font>
+     </property>
+     <property name="minimum">
+      <number>2000</number>
+     </property>
+     <property name="maximum">
+      <number>10000</number>
+     </property>
+     <property name="singleStep">
+      <number>200</number>
+     </property>
+     <property name="pageStep">
+      <number>500</number>
+     </property>
+     <property name="orientation">
+      <enum>Qt::Horizontal</enum>
+     </property>
+    </widget>
+    <widget class="QLabel" name="lbl_autoplay_delay_fm">
+     <property name="geometry">
+      <rect>
+       <x>40</x>
+       <y>190</y>
+       <width>301</width>
+       <height>25</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <pointsize>19</pointsize>
+      </font>
+     </property>
+     <property name="text">
+      <string>Delay autoplay FM (mSec)</string>
+     </property>
+    </widget>
+    <widget class="QLabel" name="lbl_delay_value_fm">
+     <property name="geometry">
+      <rect>
+       <x>620</x>
+       <y>190</y>
+       <width>100</width>
+       <height>25</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <pointsize>19</pointsize>
+      </font>
+     </property>
+     <property name="text">
+      <string/>
+     </property>
+    </widget>
+    <widget class="QLabel" name="lbl_autoplay_delay_dab">
+     <property name="geometry">
+      <rect>
+       <x>40</x>
+       <y>230</y>
+       <width>311</width>
+       <height>25</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <pointsize>19</pointsize>
+      </font>
+     </property>
+     <property name="text">
+      <string>Delay autoplay DAB (mSec)</string>
+     </property>
+    </widget>
+    <widget class="QSlider" name="ho_sl_settings_delay_autoplay_dab">
+     <property name="geometry">
+      <rect>
+       <x>350</x>
+       <y>235</y>
+       <width>251</width>
+       <height>16</height>
+      </rect>
+     </property>
+     <property name="minimum">
+      <number>2000</number>
+     </property>
+     <property name="maximum">
+      <number>10000</number>
+     </property>
+     <property name="singleStep">
+      <number>200</number>
+     </property>
+     <property name="pageStep">
+      <number>500</number>
+     </property>
+     <property name="orientation">
+      <enum>Qt::Horizontal</enum>
+     </property>
+    </widget>
+    <widget class="QLabel" name="lbl_delay_value_dab">
+     <property name="geometry">
+      <rect>
+       <x>620</x>
+       <y>230</y>
+       <width>100</width>
+       <height>25</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <pointsize>19</pointsize>
+      </font>
      </property>
      <property name="text">
       <string/>

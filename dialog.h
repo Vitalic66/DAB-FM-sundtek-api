@@ -172,6 +172,12 @@ private slots:
 
     void setup_connections_btn_mute();
 
+    void on_ho_sl_settings_delay_autoplay_fm_valueChanged(int value);
+
+
+
+    void on_ho_sl_settings_delay_autoplay_dab_valueChanged(int value);
+
 public slots:
 
     //void newNumber(QString name, int number);
