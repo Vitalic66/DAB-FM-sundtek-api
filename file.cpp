@@ -313,6 +313,7 @@ void File::fm_write_file(){
     if(!file_fm.open(QFile::WriteOnly | QFile::Text)){
         //QMessageBox::warning(this,"..","keine datei gefunden");
         //ui->warn_no_dab_list->setVisible(true);
+
         return;
     }
 
@@ -367,6 +368,10 @@ void File::read_settings_file(){
     if(!file_settings.open(QFile::ReadOnly | QFile::Text)){
 //        QMessageBox::warning(this,"..","keine datei gefunden");
 //        ui->warn_no_dab_list->setVisible(true);
+
+        g_tuner_mode = "DAB";
+        qDebug()<<g_tuner_mode;
+
         return;
     }
 
@@ -400,9 +405,9 @@ void File::read_settings_file(){
 
 qDebug()<<read_lines_from_Stream;
 
-qDebug()<<"line 1: " << read_lines_from_Stream.at(1);
-qDebug()<<"line 2: " << read_lines_from_Stream.at(2);
-qDebug()<<"line 3: " << read_lines_from_Stream.at(3);
+qDebug()<<"line 1: " << read_lines_from_Stream.at(0);
+qDebug()<<"line 2: " << read_lines_from_Stream.at(1);
+qDebug()<<"line 3: " << read_lines_from_Stream.at(2);
 qDebug()<<"tunertype: " << last_played_tuner_type;
 qDebug()<<"freq: " << last_played_freq;
 qDebug()<<"sid: " << last_played_sid;

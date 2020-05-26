@@ -11,6 +11,7 @@
 #include <QInputDialog>
 //#include <QThread> //new
 //#include <QtCore>
+#include <QTimer>
 
 #include <fm_rds.h>
 #include <scan.h>
@@ -213,6 +214,8 @@ private:
 
     void dab_btn_changer();
     void fm_btn_changer();
+
+    void tune_autoplay();
 
 
 
