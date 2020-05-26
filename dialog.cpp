@@ -900,42 +900,30 @@ void Dialog::on_btn_fm_st06_clicked()
     Dialog::tune_fm_wrapper(5);
 }
 
-void Dialog::on_btn_main_mute_clicked()
-{
-    mMute.set_mute();
-
-//    if(g_last_state_mute_unmute == "muted"){
-//        ui->btn_main_mute->setText("UNMUTE");
-//    }
-//    if(g_last_state_mute_unmute == "unmuted"){
-//        ui->btn_main_mute->setText("MUTE");
-//    }
-}
-
-void Dialog::on_btn_scan_mute_clicked()
-{
-    mMute.set_mute();
-
-//    if(g_last_state_mute_unmute == "muted"){
-//        ui->btn_main_mute->setText("UNMUTE");
-//    }
-//    if(g_last_state_mute_unmute == "unmuted"){
-//        ui->btn_main_mute->setText("MUTE");
-//    }
-}
-
-void Dialog::on_btn_settings_mute_clicked()
-{
-    mMute.set_mute();
-}
-
 void Dialog::setup_connections_btn_mute()
 {
-    //connect(ui->btn_main_mute, SIGNAL(clicked()), mMute, SLOT(mMute.set_mute());
-    //connect(ui->btn_scan_mute, SIGNAL(clicked()), mMute, SLOT(set_Mute()));
-    //connect(ui->btn_settings_mute, SIGNAL(clicked()), mMute, SLOT(set_Mute()));
+    connect(ui->btn_main_mute, &QPushButton::clicked, &mMute, &Mute::set_mute);
+    connect(ui->btn_scan_mute, &QPushButton::clicked, &mMute, &Mute::set_mute);
+    connect(ui->btn_settings_mute, &QPushButton::clicked, &mMute, &Mute::set_mute);
+
+    connect(ui->btn_main_mute, &QPushButton::clicked, this, &Dialog::btn_mute_change_text);
+    connect(ui->btn_scan_mute, &QPushButton::clicked, this, &Dialog::btn_mute_change_text);
+    connect(ui->btn_settings_mute, &QPushButton::clicked, this, &Dialog::btn_mute_change_text);
 
     //connect(ui->btn_main_mute, SIGNAL(clicked()), &mMute, &mMute.set_mute()));
+}
+
+void Dialog::btn_mute_change_text()
+{
+    if(g_last_state_mute_unmute == "muted"){
+        ui->btn_main_mute->setText("UNMUTE");
+        ui->btn_scan_mute->setText("UNMUTE");
+        ui->btn_settings_mute->setText("UNMUTE");
+    } else {
+        ui->btn_main_mute->setText("MUTE");
+        ui->btn_scan_mute->setText("MUTE");
+        ui->btn_settings_mute->setText("MUTE");
+    }
 }
 
 void Dialog::on_btn_tuner_mode_clicked()

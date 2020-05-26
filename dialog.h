@@ -138,11 +138,11 @@ private slots:
     void tune_dab_wrapper(int btn_id);
     void tune_fm_wrapper(int btn_id);
 
-    void on_btn_main_mute_clicked();
+    //void on_btn_main_mute_clicked();
 
-    void on_btn_scan_mute_clicked();
+    //void on_btn_scan_mute_clicked();
 
-    void on_btn_settings_mute_clicked();
+    //void on_btn_settings_mute_clicked();
 
     void on_btn_tuner_mode_clicked();
 
@@ -247,6 +247,7 @@ private:
     //stylesheets
     QString btn_default_rounded = ("border: 1px solid #ababab;border-radius: 20px;background: qlineargradient(x1:0 y1:0, x2:0 y2:1, stop:0 #ffffff, stop:1 #efefef);");
 
+    void btn_mute_change_text();
 };
 
 
