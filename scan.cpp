@@ -43,7 +43,7 @@ void Scan::fm_scan_wrapper()
 
         int devfd = -1;
 
-        Scan::media_scan_fm_frequencies("/dev/radio0",devfd);
+        Scan::media_scan_fm_frequencies(strdup("/dev/radio0"),devfd);
 }
 
 int Scan::media_scan_fm_frequencies(char *device, int devfd) {
@@ -173,7 +173,7 @@ void Scan::dab_scan_wrapper()
     int console = -1;
     int running = -1;
 
-    Scan::media_scan_dabfrequencies("/dev/dab0",devfd,console,running);
+    Scan::media_scan_dabfrequencies(strdup("/dev/dab0"),devfd,console,running);
 }
 
 int Scan::media_scan_dabfrequencies(char *device, int devfd, int console, int running)
@@ -194,10 +194,10 @@ int Scan::media_scan_dabfrequencies(char *device, int devfd, int console, int ru
                 fd = net_open(device, O_RDWR);
 
         if (fd>=0) {
-                struct dab_frequency dabf;
-                struct dab_tuner dabt;
-                int i;
-                int e;
+//                struct dab_frequency dabf;
+//                struct dab_tuner dabt;
+//                int i;
+//                int e;
                 int current_scan_index=-1;
                 struct dab_scan_setup setup;
                 struct dab_scan_parameters parameters;

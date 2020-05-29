@@ -2,7 +2,7 @@
 //#include "tune.h"
 #include <QApplication>
 #include <QThread> //new
-#include <scan.h> //new
+#include <globals.h> //new
 
 int main(int argc, char *argv[])
 {
@@ -11,15 +11,12 @@ int main(int argc, char *argv[])
 
     Dialog w;
 
+
+
+    w.setWindowFlags(Qt::Window | Qt::FramelessWindowHint);
     w.show();
 
-//    QThread cThread;
-//    Scan cObject;
 
-//    cObject.DoSetup(cThread);
-//    cObject.moveToThread(&cThread);
-
-//    cThread.start();
 
     return a.exec();
 }

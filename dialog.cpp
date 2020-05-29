@@ -2,7 +2,7 @@
 #include "ui_dialog.h"
 
 //QString g_tuner_mode = "FM";
-QString g_last_state_mute_unmute;
+QString g_last_state_mute_unmute = "unmuted";
 
 int fd;
 
@@ -51,6 +51,10 @@ Dialog::Dialog(QWidget *parent) :
     Dialog::dab_show_fav_btn();
     Dialog::fm_show_fav_btn();
 
+    connect(&mTune, &Tune::dab_hide_unhide, this, &Dialog::gui_dab_hide_unhide);
+    connect(this, &Dialog::dab_hide_unhide, this, &Dialog::gui_dab_hide_unhide);
+
+
     // init some GUI buttons
     if(g_tuner_mode == "DAB"){
         ui->list_dab->setVisible(true);
@@ -62,11 +66,13 @@ Dialog::Dialog(QWidget *parent) :
         ui->btn_rename_station->setEnabled(false);
         ui->ln_add_station->setEnabled(false);
         ui->btn_tune->setEnabled(false);
-        ui->lbl_rds->setVisible(false);
-        ui->lbl_rds_stream->setVisible(false);
-        ui->lbl_rds_station->setVisible(false);
-        ui->lbl_rds_station_stream->setVisible(false);
+        //ui->lbl_rds->setVisible(false);
+        //ui->lbl_rds_stream->setVisible(false);
+        //ui->lbl_rds_station->setVisible(false);
+        //ui->lbl_rds_station_stream->setVisible(false);
         ui->tabWidget->setCurrentIndex(0);
+
+        emit dab_hide_unhide(true);
     }
 
     if(g_tuner_mode == "FM"){
@@ -79,6 +85,9 @@ Dialog::Dialog(QWidget *parent) :
 //        ui->lbl_rds_station->setVisible(false);   //label dab station not implemented yet
 //        ui->lbl_rds_station_stream->setVisible(false); //label dab station stream not implemented yet
         ui->tabWidget->setCurrentIndex(1);
+        //ui->frame_dab_strength->setVisible(false);
+
+        emit dab_hide_unhide(false);
     }
 
     ui->prog_bar_dab->setVisible(false);
@@ -91,7 +100,19 @@ Dialog::Dialog(QWidget *parent) :
 
     setup_connections_scan();
     setup_connections_fm_rds();
+    setup_connections_dab_sig();
     setup_connections_btn_mute();
+    setup_connections_btn_exit();
+
+
+
+    //setup_connections_btn_tuner_mode();
+
+    //setup_connections_btn_scan();
+
+
+    //connect(this, &Dialog::tuner_mode_changed, &Dialog::btn_tuner_mode, click)
+
 }
 
 Dialog::~Dialog()
@@ -116,6 +137,7 @@ Dialog::~Dialog()
     mFile.write_settings_file();
 
     emit stop_rds();
+    emit stop_dab_sig();
     emit stop_scan();
 
 
@@ -192,6 +214,7 @@ void Dialog::setup_connections_fm_rds()
     FM_rds *rds = new FM_rds();
 
     connect(rds, SIGNAL(rds_out(QString)), this, SLOT(rds_stream(QString)));  //rds data stream
+    //connect(&rds, &FM_rds::rds_prog_out(QString), this, Dialog::rds_prog(QString));
     connect(rds, SIGNAL(rds_prog_out(QString)), this, SLOT(rds_prog(QString)));  //rds data stream
 
     connect(this, SIGNAL(start_rds()), rds, SLOT(start_rds_reading())); //start rds streaming
@@ -206,6 +229,30 @@ void Dialog::setup_connections_fm_rds()
     thread_rds->start();
 }
 
+void Dialog::setup_connections_dab_sig()
+{
+    // Create thread, worker
+    thread_dab_sig = new QThread();
+
+    DabStrength *dab_sig = new DabStrength();
+
+    //connect(dab_sig, SIGNAL(sig_out(uint32_t, uint32_t, uint8_t, uint8_t)), this, SLOT(dab_sig_stream(uint32_t, uint32_t, uint8_t, uint8_t)));
+    connect(dab_sig, SIGNAL(sig_out(QString, QString, QString, QString)), this, SLOT(dab_sig_stream(QString, QString, QString, QString)));
+    //connect(&rds, &FM_rds::rds_prog_out(QString), this, Dialog::rds_prog(QString));
+    //connect(rds, SIGNAL(rds_prog_out(QString)), this, SLOT(rds_prog(QString)));
+
+    connect(this, SIGNAL(start_dab_sig()), dab_sig, SLOT(start_sig_reading())); //start
+    connect(this, SIGNAL(stop_dab_sig()), dab_sig, SLOT(stop_sig_reading())); //stop
+
+    // Mark timer and worker for deletion ones the thread is stopped
+    //connect(thread_rds, SIGNAL(finished()), rds, SLOT(deleteLater()));
+    //connect(thread_rds, SIGNAL(finished()), thread_rds, SLOT(deleteLater()));
+
+    // Move worker to thread
+    dab_sig->moveToThread(thread_dab_sig);
+    thread_dab_sig->start();
+}
+
 void Dialog::rds_stream(QString data)
 {
     ui->lbl_rds_stream->setWordWrap(true);
@@ -214,7 +261,49 @@ void Dialog::rds_stream(QString data)
 
 void Dialog::rds_prog(QString prog)
 {
-    ui->lbl_rds_station_stream->setText(prog);    
+    ui->lbl_rds_station_stream->setText(prog);
+}
+
+//void Dialog::dab_sig_stream(uint32_t dab_strength, uint32_t dab_status, uint8_t dab_rssi, uint8_t dab_fic)
+void Dialog::dab_sig_stream(QString dab_strength, QString dab_status, QString dab_rssi, QString dab_fic)
+{
+    /*
+    ui->lbl_dab_strength->setText(QString::number(dab_strength));
+    qDebug() <<"strength: " << dab_strength;
+    ui->lbl_dab_status->setText(QString::number(dab_status));
+    ui->lbl_dab_rssi->setText(QString::number(dab_rssi));
+    ui->lbl_dab_fic->setText(QString::number(dab_fic));
+    */
+    //ui->lbl_dab_strength->setText(dab_strength);
+    //qDebug() <<"strength: " << dab_strength;
+    //ui->lbl_dab_status->setText(dab_status);
+    //ui->lbl_dab_rssi->setText(dab_rssi);
+    //ui->lbl_dab_fic->setText(dab_fic);
+
+
+    //QString green = "QProgressBar::chunk {background: QLinearGradient( x1: 0, y1: 0, x2: 1, y2: 0,stop: 0 #FF0350,stop: 0.4999 #FF0020,stop: 0.5 #FF0019,stop: 1 #FF0000 );border-bottom-right-radius: 5px;border-bottom-left-radius: 5px;border: .px solid black;}";
+    //QString green = "QProgressBar::chunk {background: qlineargradient(x1: 0, y1: 0.5, x2: 1, y2: 0.5, stop: 0 green, stop: 1 green)}";
+    //QString yellow = "QProgressBar::chunk {background: qlineargradient(x1: 0, y1: 0.5, x2: 1, y2: 0.5, stop: 0 yellow, stop: 1 yellow)}";
+    //QString red = "QProgressBar::chunk {background: qlineargradient(x1: 0, y1: 0.5, x2: 1, y2: 0.5, stop: 0 red, stop: 1 red)}";
+
+    if(dab_fic.toInt() > 97){
+
+        //QPalette p = palette();
+        //p.setColor(QPalette::Highlight, Qt::green);
+        //setPalette(p);
+        //ui->prog_bar_dab_fic->setStyleSheet("background: qlineargradient(x1: 0, y1: 0.5, x2: 1, y2: 0.5, stop: 0 green, stop: 1 white)");
+        //ui->prog_bar_dab_fic->setStyleSheet(green);
+        ui->frame_dab_strength->setStyleSheet("background-color: rgb(0,255,0); border-radius: 5px;");
+//    } else if (dab_fic.toInt() <= 97 && dab_fic.toInt() > 80) {
+//        ui->prog_bar_dab_fic->setStyleSheet(yellow);
+    } else {
+        //ui->prog_bar_dab_fic->setStyleSheet(red);
+        ui->frame_dab_strength->setStyleSheet("background-color: rgb(255,0,0); border-radius: 5px;");
+    }
+
+    //ui->prog_bar_dab_fic->setValue(dab_fic.toInt());
+    //ui->prog_bar_dab_fic->setValue(100);
+
 }
 
 void Dialog::prog_bar_dab_valueChanged(int prog_bar_value)
@@ -226,6 +315,12 @@ void Dialog::prog_bar_fm_valueChanged(int prog_bar_value)
 {
     ui->prog_bar_fm->setValue(prog_bar_value);
     //ui->label->setText(QString::number(prog_bar_value));
+}
+
+void Dialog::gui_dab_hide_unhide(bool vis)
+{
+    ui->frame_dab_strength->setVisible(vis);
+    ui->lbl_dab_strength->setVisible(vis);
 }
 
 void Dialog::dab_fill_list()
@@ -306,6 +401,15 @@ void Dialog::enable_disable_btn(bool btn_state){
     ui->btn_scan->setEnabled(btn_state);
     ui->btn_tune->setEnabled(btn_state);
     ui->btn_tuner_mode->setEnabled(btn_state);
+    ui->btn_add->setEnabled(btn_state);
+    ui->btn_delete->setEnabled(btn_state);
+    ui->btn_rename_station->setEnabled(btn_state);
+    ui->ln_add_station->setEnabled(btn_state);
+    ui->btn_scan_to_main->setEnabled(btn_state);
+    ui->btn_scan_to_settings->setEnabled(btn_state);
+    ui->btn_scan_mute->setEnabled(btn_state);
+    ui->btn_add_fav->setEnabled(btn_state);
+    ui->btn_rem_fav->setEnabled(btn_state);
 }
 
 void Dialog::show_progbars(bool visibility){
@@ -351,7 +455,7 @@ void Dialog::on_btn_add_fav_clicked()
     }
 }
 
-void Dialog::on_bnt_rem_fav_clicked()
+void Dialog::on_btn_rem_fav_clicked()
 {
     if(g_tuner_mode == "DAB"){
         int marked = ui->list_dab->currentRow();
@@ -722,6 +826,7 @@ void Dialog::fm_show_fav_btn()
 void Dialog::on_btn_tune_clicked()
 {
     emit stop_rds(); //stop rds stream
+    emit stop_dab_sig();
 
     if(g_tuner_mode == "FM"){
 
@@ -733,20 +838,23 @@ void Dialog::on_btn_tune_clicked()
         g_tuner_mode = "FM";
 
 
-        fd = net_open("/dev/radio0", O_RDWR);
+        //fd = net_open("/dev/radio0", O_RDWR);
         int marked_row = (ui->list_fm->currentRow()); //marked row from fm list
 
 
         uint32_t frequency = (g_fm_vec_vec[marked_row][1]).toUInt();
 
         mMute.set_mute();
-        mTune.set_radio_channel(fd, frequency);
+        //mTune.set_radio_channel(fd, frequency);
+        mTune.set_radio_channel(frequency);
 
         mFile.last_played_freq = g_fm_vec_vec[marked_row][1];
         mFile.last_played_sid = "";
     }
 
     if(g_tuner_mode == "DAB"){
+
+        emit start_dab_sig();
 
         g_last_state_mute_unmute = "muted";
         g_tuner_mode = "DAB";
@@ -757,17 +865,20 @@ void Dialog::on_btn_tune_clicked()
 
         QString sid_string = g_dab_vec_vec[marked_row][2];
 
-        fd = net_open("/dev/dab0", O_RDWR);
+        //fd = net_open("/dev/dab0", O_RDWR);
         bool ok;
         uint sid = sid_string.toUInt(&ok, 16);
         //qDebug() << "als int:" << sid;
 
-        uint8_t sid_set = 1;
-        uint8_t comp = 1;
-        uint8_t comp_set = 1;
+        //uint8_t sid_set = 1;
+        //uint8_t comp = 1;
+        //uint8_t comp_set = 1;
 
         mMute.set_mute();
-        mTune.set_dab_channel(fd,frequency,sid,sid_set,comp,comp_set);
+        //mTune.set_dab_channel(fd,frequency,sid,sid_set,comp,comp_set);
+        mTune.set_dab_channel(frequency,sid);
+
+        ui->lbl_rds_station_stream->setText(g_dab_vec_vec[marked_row][0]);
 
         mFile.last_played_freq = g_dab_vec_vec[marked_row][1];
         mFile.last_played_sid = sid_string;
@@ -780,32 +891,48 @@ void Dialog::on_btn_tune_clicked()
 
 void Dialog::tune_dab_wrapper(int btn_id)
 { 
-
+    if(g_tuner_mode != g_tuner_mode){
+        emit tuner_mode_changed();
+    }
 
     emit stop_rds();
+    emit stop_dab_sig();
 
     //if(ui->tabWidget->currentIndex() != 1){
 
         Dialog::dab_btn_changer();
     //}
+    emit start_dab_sig();
 
     g_tuner_mode = "DAB";
     //qDebug() << "g_tuner_mode: " << g_tuner_mode;
 
+
+
     g_last_state_mute_unmute = "muted";
     //qDebug() << "g_last_state_mute_unmute: : " << g_last_state_mute_unmute;
 
-    fd = net_open("/dev/dab0", O_RDWR);
+
+//btn_mute_change_text();
+
+
+
+
+
+    //fd = net_open("/dev/dab0", O_RDWR);
     uint frequency = g_dab_vec_vec[dab_found_favs.at(btn_id)][1].toUInt();
     bool ok;
     uint sid = g_dab_vec_vec[dab_found_favs.at(btn_id)][2].toUInt(&ok, 16);
-    uint8_t sid_set = 1;
-    uint8_t comp = 1;
-    uint8_t comp_set = 1;
+    //uint8_t sid_set = 1;
+    //uint8_t comp = 1;
+    //uint8_t comp_set = 1;
 
     //mMute.set_mute(fd, "off");
     mMute.set_mute();
-    mTune.set_dab_channel(fd,frequency,sid,sid_set,comp,comp_set);
+    //mTune.set_dab_channel(fd,frequency,sid,sid_set,comp,comp_set);
+    mTune.set_dab_channel(frequency, sid);
+
+    ui->lbl_rds_station_stream->setText(g_dab_vec_vec[dab_found_favs.at(btn_id)][0]);
 
     mFile.last_played_tuner_type = g_tuner_mode;
     mFile.last_played_freq = g_dab_vec_vec[dab_found_favs.at(btn_id)][1];
@@ -814,7 +941,12 @@ void Dialog::tune_dab_wrapper(int btn_id)
 
 void Dialog::tune_fm_wrapper(int btn_id)
 {
+    if(g_tuner_mode != g_tuner_mode){
+        emit tuner_mode_changed();
+    }
+
     emit stop_rds();
+    emit stop_dab_sig();
 
     g_last_tuned_freq_dab = 0; //reset in case dab is chosen again
 
@@ -830,11 +962,12 @@ void Dialog::tune_fm_wrapper(int btn_id)
     //qDebug() << "g_tuner_mode: " << g_tuner_mode;
     g_last_state_mute_unmute = "muted";
     //qDebug() << "g_last_state_mute_unmute: : " << g_last_state_mute_unmute;
-    fd = net_open("/dev/radio0", O_RDWR);
+    //fd = net_open("/dev/radio0", O_RDWR);
     uint frequency = g_fm_vec_vec[fm_found_favs.at(btn_id)][1].toUInt();
 
     mMute.set_mute();
-    mTune.set_radio_channel(fd,frequency);
+    //mTune.set_radio_channel(fd,frequency);
+    mTune.set_radio_channel(frequency);
 
     mFile.last_played_tuner_type = g_tuner_mode;
     mFile.last_played_freq = g_fm_vec_vec[fm_found_favs.at(btn_id)][1];
@@ -906,12 +1039,30 @@ void Dialog::setup_connections_btn_mute()
     connect(ui->btn_scan_mute, &QPushButton::clicked, &mMute, &Mute::set_mute);
     connect(ui->btn_settings_mute, &QPushButton::clicked, &mMute, &Mute::set_mute);
 
-    connect(ui->btn_main_mute, &QPushButton::clicked, this, &Dialog::btn_mute_change_text);
-    connect(ui->btn_scan_mute, &QPushButton::clicked, this, &Dialog::btn_mute_change_text);
-    connect(ui->btn_settings_mute, &QPushButton::clicked, this, &Dialog::btn_mute_change_text);
+    //connect(ui->btn_main_mute, &QPushButton::clicked, this, &Dialog::btn_mute_change_text);
+    //connect(ui->btn_scan_mute, &QPushButton::clicked, this, &Dialog::btn_mute_change_text);
+    //connect(ui->btn_settings_mute, &QPushButton::clicked, this, &Dialog::btn_mute_change_text);
 
     //connect(ui->btn_main_mute, SIGNAL(clicked()), &mMute, &mMute.set_mute()));
+
+    connect(&mMute, &Mute::mute_state_changed, this, & Dialog::btn_mute_change_text);
 }
+
+void Dialog::setup_connections_btn_exit()
+{
+    connect(ui->btn_main_exit, &QPushButton::clicked, this, &Dialog::close);
+    connect(ui->btn_scan_exit, &QPushButton::clicked, this, &Dialog::close);
+    connect(ui->btn_settings_exit, &QPushButton::clicked, this, &Dialog::close);
+}
+
+/*
+void Dialog::setup_connections_btn_tuner_mode()
+{
+    //qDebug()<<connect(ui->btn_tuner_mode, &QPushButton::clicked, ui->tabWidget, &QTabWidget::setCurrentIndex);
+    connect(ui->btn_tuner_mode, &QPushButton::clicked, this, &Dialog::change_tuner_mode);
+    connect(ui->tabWidget, &QTabWidget::currentChanged, this, &Dialog::change_tuner_mode);
+}
+*/
 
 void Dialog::btn_mute_change_text()
 {
@@ -928,13 +1079,14 @@ void Dialog::btn_mute_change_text()
 
 void Dialog::on_btn_tuner_mode_clicked()
 {
+
     QString tmp_tuner_mode;
 
     if(g_tuner_mode == "DAB"){ //activating FM mode
 
         Dialog::fm_btn_changer();
         ui->tabWidget->setCurrentIndex(1);
-qDebug()<<g_tuner_mode;
+//qDebug()<<g_tuner_mode;
         tmp_tuner_mode = "FM";
     }
 
@@ -942,7 +1094,7 @@ qDebug()<<g_tuner_mode;
 
         Dialog::dab_btn_changer();
         ui->tabWidget->setCurrentIndex(0);
-qDebug()<<g_tuner_mode;
+//qDebug()<<g_tuner_mode;
         tmp_tuner_mode = "DAB";
     }
 
@@ -969,12 +1121,10 @@ qDebug()<<g_tuner_mode;
     if(init_dab_list != -1 && g_tuner_mode == "DAB"){
         ui->btn_tune->setDisabled(false);
     }
+
 }
 
-void Dialog::on_btn_testbutton_clicked()
-{
-    mDabData.receive_dab_data();
-}
+
 
 void Dialog::on_btn_rename_station_clicked()
 {
@@ -1081,10 +1231,10 @@ void Dialog::dab_btn_changer()
     ui->btn_rename_station->setEnabled(false);
     ui->ln_add_station->setEnabled(false);
     ui->list_dab->setCurrentRow(-1);
-    ui->lbl_rds_stream->setVisible(false);
-    ui->lbl_rds->setVisible(false);
-    ui->lbl_rds_station->setVisible(false);
-    ui->lbl_rds_station_stream->setVisible(false);
+    //ui->lbl_rds_stream->setVisible(false);
+    //ui->lbl_rds->setVisible(false);
+    //ui->lbl_rds_station->setVisible(false);
+    //ui->lbl_rds_station_stream->setVisible(false);
 }
 
 void Dialog::fm_btn_changer()
@@ -1099,20 +1249,20 @@ void Dialog::fm_btn_changer()
     ui->btn_rename_station->setEnabled(true);
     ui->ln_add_station->setEnabled(true);
     ui->list_fm->setCurrentRow(-1);
-    ui->lbl_rds_stream->setVisible(true);
-    //ui->lbl_rds_stream->clear();
-    //ui->lbl_rds_stream->setText("");
-    //qDebug()<<"lbl_rds_stream fm_btn_changer: "<<ui->lbl_rds_stream->text();
-    ui->lbl_rds->setVisible(true);
-    ui->lbl_rds_station->setVisible(true);
-    ui->lbl_rds_station_stream->setVisible(true);
-    //ui->lbl_rds_station_stream->clear();
-    //ui->lbl_rds_station_stream->setText("");
-    //qDebug()<<"lbl_rds_station_stream fm_btn_changer: "<<ui->lbl_rds_station_stream->text();
+    //ui->lbl_rds_stream->setVisible(true);
+//    ui->lbl_rds->setVisible(true);
+//    ui->lbl_rds_station->setVisible(true);
+//    ui->lbl_rds_station_stream->setVisible(true);
+
 }
 
 void Dialog::on_tabWidget_currentChanged(int index)
 {
+    //if(index != index){
+    emit tuner_mode_changed();
+    //}
+
+
     //qDebug()<<index;
     //some bugfixes needed...
     /*
@@ -1141,19 +1291,20 @@ void Dialog::tune_autoplay()
         //timer->start(3000);
         g_tuner_mode = "DAB";
         g_last_state_mute_unmute = "muted";
-        fd = net_open("/dev/dab0", O_RDWR);
+        //fd = net_open("/dev/dab0", O_RDWR);
 
         uint frequency = mFile.last_played_freq.toUInt();
 qDebug()<<frequency;
         bool ok;
         uint sid = mFile.last_played_sid.toUInt(&ok, 16);
 qDebug()<<sid;
-        uint8_t sid_set = 1;
-        uint8_t comp = 1;
-        uint8_t comp_set = 1;
+        //uint8_t sid_set = 1;
+        //uint8_t comp = 1;
+        //uint8_t comp_set = 1;
 
         mMute.set_mute();
-        mTune.set_dab_channel(fd,frequency,sid,sid_set,comp,comp_set);
+        //mTune.set_dab_channel(fd,frequency,sid,sid_set,comp,comp_set);
+        mTune.set_dab_channel(frequency,sid);
 
 
     }
@@ -1166,14 +1317,15 @@ qDebug()<<sid;
         g_last_state_mute_unmute = "muted";
 
         g_tuner_mode = "FM";
-        fd = net_open("/dev/radio0", O_RDWR);
+        //fd = net_open("/dev/radio0", O_RDWR);
 
 
         uint frequency = mFile.last_played_freq.toUInt();
 qDebug()<<frequency;
 
         mMute.set_mute();
-        mTune.set_radio_channel(fd,frequency);
+        //mTune.set_radio_channel(fd,frequency);
+        mTune.set_radio_channel(frequency);
 
     }
 
@@ -1195,3 +1347,40 @@ void Dialog::on_ho_sl_settings_delay_autoplay_dab_valueChanged(int value)
     mFile.delay_autoplay_dab = QString::number(value);
     ui->lbl_delay_value_dab->setText(mFile.delay_autoplay_dab);
 }
+
+void Dialog::gui_mode_dab()
+{
+    //disable
+//    ui->lbl_rds->setVisible(false);
+//    ui->lbl_rds_stream->setVisible(false);
+//    ui->lbl_rds_station->setVisible(false);
+//    ui->lbl_rds_station_stream->setVisible(false);
+
+
+    //enable
+    ui->frame_dab_strength->setVisible(true);
+
+
+
+}
+
+void Dialog::gui_mode_fm()
+{
+    //disable
+    //ui->frame_dab_strength->setVisible(false);
+
+
+    //enable
+
+//    ui->lbl_rds->setVisible(true);
+//    ui->lbl_rds_stream->setVisible(true);
+//    ui->lbl_rds_station->setVisible(true);
+//    ui->lbl_rds_station_stream->setVisible(true);
+
+
+}
+
+//void Dialog::on_btn_start_dab_sig_clicked()
+//{
+//    mDabStrength.start_sig_reading();
+//}

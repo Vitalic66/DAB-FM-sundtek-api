@@ -33,7 +33,8 @@ SOURCES += \
     fm_rds.cpp \
     file.cpp \
     globals.cpp \
-    dabdata.cpp
+    dabdata.cpp \
+    dabstrength.cpp
 
 HEADERS += \
     dialog.h\
@@ -43,7 +44,8 @@ HEADERS += \
     fm_rds.h \
     file.h \
     globals.h \
-    dabdata.h
+    dabdata.h \
+    dabstrength.h
 
 FORMS += \
         dialog.ui

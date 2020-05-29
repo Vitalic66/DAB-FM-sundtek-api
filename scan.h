@@ -38,26 +38,6 @@ public:
     int media_scan_dabfrequencies(char *device, int devfd, int console, int running);
     int media_scan_dabservices(char *device);
 
-/*
-    int media_scan_dabfrequencies(char *device, int devfd, int console, int running);
-
-    int media_scan_dabservices(char *device);
-
-    int dab_scan_wrapped();
-
-    int fm_scan_wrapped();
-
-    //int media_scan_fm_frequencies(char *device, int devfd, int console, int running);
-    int media_scan_fm_frequencies(char *device, int devfd);
-
-    QVector<QString> dab_vec;
-    QVector<QString> fm_vec;
-
-    bool mStop_dab_scan;
-    bool mStop_fm_scan;
-*/
-   // void DoSetup(QThread &cThread); //new
-
 signals:
 
     //void sendProgress(int workDone);

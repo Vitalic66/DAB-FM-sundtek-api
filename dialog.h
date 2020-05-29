@@ -20,6 +20,7 @@
 #include <file.h>
 #include <globals.h>
 #include <dabdata.h>
+#include <dabstrength.h>
 
 #include </opt/include/mediaclient.h>
 
@@ -41,6 +42,7 @@ public:
     //FM_rds *mFM_rds; //m1
 
 
+
 signals:
     //void on_Stop(); //rds streaming stop fm_rds.cpp
 
@@ -51,7 +53,13 @@ signals:
     void stop_scan();
     void start_rds();
     void stop_rds();
+
     void tuner_mode_changed();
+
+    void start_dab_sig();
+    void stop_dab_sig();
+
+    void dab_hide_unhide(bool vis);
 
     //void on_btnTune_clicked();
     //void sendWorkSpeed(int workSpeed);
@@ -62,6 +70,8 @@ private slots:
 
     //void onNumberChanged(int);
     void prog_bar_fm_valueChanged(int);
+
+
 
     //void setWorkSpeed(int workSpeed);
     //void setForSize(int forsize);
@@ -96,7 +106,7 @@ private slots:
 
     void on_btn_add_fav_clicked();
 
-    void on_bnt_rem_fav_clicked();
+    void on_btn_rem_fav_clicked();
 
     void dab_refresh_all();
 
@@ -146,7 +156,7 @@ private slots:
 
     void on_btn_tuner_mode_clicked();
 
-    void on_btn_testbutton_clicked();
+
 
     void on_btn_rename_station_clicked();
 
@@ -172,11 +182,22 @@ private slots:
 
     void setup_connections_btn_mute();
 
+    void setup_connections_btn_exit();
+
+    //void setup_connections_btn_tuner_mode();
+
+    //void setup_connections_btn_scan();
+
     void on_ho_sl_settings_delay_autoplay_fm_valueChanged(int value);
 
 
 
     void on_ho_sl_settings_delay_autoplay_dab_valueChanged(int value);
+
+    //void on_btn_start_dab_sig_clicked();
+
+    void gui_mode_dab();
+    void gui_mode_fm();
 
 public slots:
 
@@ -185,6 +206,9 @@ public slots:
     void rds_stream(QString rds_data);
 
     void rds_prog(QString prog);
+
+    //void dab_sig_stream(uint32_t strength, uint32_t status, uint8_t rssi, uint8_t fic);
+    void dab_sig_stream(QString strength, QString status, QString rssi, QString fic);
 
     void prog_bar_dab_valueChanged(int prog_bar_value);
 
@@ -198,6 +222,10 @@ public slots:
 
     //void clear_rds_labels();
 
+    //void change_tuner_mode();
+
+    void gui_dab_hide_unhide(bool vis);
+
 
 
 private:
@@ -209,13 +237,16 @@ private:
     //QThread *thread_scan, *thread_rds;
 
     QThread *thread_scan;
-    QThread *thread_rds; //m1
+    QThread *thread_rds;
+    QThread *thread_dab_sig;
 
 //    void setup_connections_fm_scan();
 //    void setup_connections_dab_scan();
 
     void setup_connections_scan();
-    void setup_connections_fm_rds(); //m1
+    void setup_connections_fm_rds();
+    void setup_connections_dab_sig();
+
     //void setup_button_connections();
 
     void dab_btn_changer();
@@ -232,6 +263,7 @@ private:
     Mute mMute;
     File mFile;
     DabData mDabData;
+    DabStrength mDabStrength;
     //FM_rds *mFM_rds;
 
 
@@ -248,6 +280,7 @@ private:
     QString btn_default_rounded = ("border: 1px solid #ababab;border-radius: 20px;background: qlineargradient(x1:0 y1:0, x2:0 y2:1, stop:0 #ffffff, stop:1 #efefef);");
 
     void btn_mute_change_text();
+
 };
 
 

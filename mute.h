@@ -23,6 +23,8 @@ public:
 
 signals:
 
+    void mute_state_changed();
+
 public slots:
 
     int set_mute();

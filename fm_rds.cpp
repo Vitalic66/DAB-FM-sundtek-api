@@ -3,74 +3,12 @@
 //#include <QMutexLocker>
 
 //bool g_mStop_rds;
-FM_rds::FM_rds(QObject *parent) :
-
-    //QThread(parent) //m2
-
-    QObject(parent)
-  ,
+FM_rds::FM_rds(QObject *parent) : QObject(parent),
     mStop_rds(false)
-   // workSpeed(0),
-   // forsize(64)/*,
-   // prog_chars(),
-   // rds_chars()*/
-
 
 {
-    //mStop_rds = false;
-    //g_mStop_rds = false;
 
 }
-
-/*
-void FM_rds::run()
-{
-    for(int i=0;i<1000;i++){
-        QMutex mutex;
-        mutex.lock();
-        if(this->mStop_rds) break;
-
-        mutex.unlock();
-
-        //emit...
-    }
-}
-*/
-
-
-
-
-
-
-/*
-Worker::Worker(QObject *parent) :
-    QObject(parent),
-    active(false),
-    progressToggleTerminal(false),
-    workAmount(0),
-    workDone(0),
-    workSpeed(10)
-*/
-
-//void MyJob::start(QString name)
-//{
-//    mStop = false;
-
-//    for(int i = 0; i < 99999; i++)
-//    {
-//        if(mStop) return;
-//        qDebug() << "From thread: " << i;
-//        emit on_number(name, i);
-//        QThread::currentThread()->msleep(100);
-//    }
-//}
-//void FM_rds::doWork()
-//{
-//    if(mStop_rds){
-//        rds();
-//    }
-//}
-
 
 void FM_rds::start_rds_reading()
 {
@@ -97,30 +35,15 @@ void FM_rds::stop_rds_reading()
    //qDebug() << "mstop from function stop ...: " << mStop_rds;
 }
 
-/*
-void FM_rds::receiveWorkSpeed(int _workSpeed)
-{
-    workSpeed = _workSpeed;
-}
-
-void FM_rds::receiveForSize(int _forsize)
-{
-    forsize = _forsize;
-}
-*/
-//int MyJob::rds(const char *device){
-
-
-
 int FM_rds::rds(){
 
     int i;
-    struct rds_data *rdsd;
+    //struct rds_data *rdsd;
     struct fm_rds_data data;
     int rdsfd;
 
     if (strstr("/dev/radio0", "radio")) {
-            rdsfd = net_open("/dev/radio0", O_RDWR);
+            rdsfd = net_open(strdup("/dev/radio0"), O_RDWR);
             if (rdsfd >= 0) {
                     uint8_t brkstat = 0;
                     uint8_t radiotext[150];

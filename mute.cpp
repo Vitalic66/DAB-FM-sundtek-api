@@ -12,10 +12,10 @@ int Mute::set_mute() {
         QString tmp_mute_unmute_state;
 
         if(g_tuner_mode == "DAB"){
-            fd = net_open("/dev/dab0", O_RDWR);
+            fd = net_open(strdup("/dev/dab0"), O_RDWR);
         }
         if(g_tuner_mode == "FM"){
-            fd = net_open("/dev/radio0", O_RDWR);
+            fd = net_open(strdup("/dev/radio0"), O_RDWR);
         }
 
         if(g_last_state_mute_unmute == "unmuted"){
@@ -29,6 +29,8 @@ int Mute::set_mute() {
         }
 
         g_last_state_mute_unmute = tmp_mute_unmute_state;
+
+        emit mute_state_changed();
 
         struct v4l2_control control;
         //if (strcmp(arg, "off") == 0) {
