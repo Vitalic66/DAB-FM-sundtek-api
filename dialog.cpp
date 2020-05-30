@@ -879,6 +879,7 @@ void Dialog::on_btn_tune_clicked()
         mTune.set_dab_channel(frequency,sid);
 
         ui->lbl_rds_station_stream->setText(g_dab_vec_vec[marked_row][0]);
+        ui->lbl_rds_stream->setText("");
 
         mFile.last_played_freq = g_dab_vec_vec[marked_row][1];
         mFile.last_played_sid = sid_string;
@@ -933,6 +934,7 @@ void Dialog::tune_dab_wrapper(int btn_id)
     mTune.set_dab_channel(frequency, sid);
 
     ui->lbl_rds_station_stream->setText(g_dab_vec_vec[dab_found_favs.at(btn_id)][0]);
+    ui->lbl_rds_stream->setText("");
 
     mFile.last_played_tuner_type = g_tuner_mode;
     mFile.last_played_freq = g_dab_vec_vec[dab_found_favs.at(btn_id)][1];
