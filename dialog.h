@@ -54,6 +54,8 @@ signals:
     void start_rds();
     void stop_rds();
 
+    void start_mot();
+
     void tuner_mode_changed();
 
     void start_dab_sig();
@@ -199,6 +201,8 @@ private slots:
     void gui_mode_dab();
     void gui_mode_fm();
 
+    void on_pushButton_clicked();
+
 public slots:
 
     //void newNumber(QString name, int number);
@@ -226,6 +230,8 @@ public slots:
 
     void gui_dab_hide_unhide(bool vis);
 
+    //void dab_show_mot(const MOT_FILE &slide);
+void dab_show_mot(QImage MOTImage);
 
 
 private:
@@ -240,9 +246,14 @@ private:
     QThread *thread_rds;
     QThread *thread_dab_sig;
 
+    QThread *thread_mot;
+
+    //QImage motImage;
+
 //    void setup_connections_fm_scan();
 //    void setup_connections_dab_scan();
 
+    void setup_connections_mot();
     void setup_connections_scan();
     void setup_connections_fm_rds();
     void setup_connections_dab_sig();
@@ -262,7 +273,7 @@ private:
     Tune mTune;
     Mute mMute;
     File mFile;
-    DabData mDabData;
+    //DabData mDabData;
     DabStrength mDabStrength;
     //FM_rds *mFM_rds;
 

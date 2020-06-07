@@ -54,6 +54,9 @@ Dialog::Dialog(QWidget *parent) :
     connect(&mTune, &Tune::dab_hide_unhide, this, &Dialog::gui_dab_hide_unhide);
     connect(this, &Dialog::dab_hide_unhide, this, &Dialog::gui_dab_hide_unhide);
 
+    //connect(&mDabData, &DabData::MOTProcessData, this, &Dialog::dab_show_mot);
+
+
 
     // init some GUI buttons
     if(g_tuner_mode == "DAB"){
@@ -98,6 +101,7 @@ Dialog::Dialog(QWidget *parent) :
     ui->ho_sl_settings_delay_autoplay_dab->setValue(mFile.delay_autoplay_dab.toInt());
     ui->lbl_delay_value_dab->setText(mFile.delay_autoplay_dab);
 
+    setup_connections_mot();
     setup_connections_scan();
     setup_connections_fm_rds();
     setup_connections_dab_sig();
@@ -175,6 +179,27 @@ Dialog::~Dialog()
 */
     QProcess::execute("/opt/bin/mediaclient --shutdown");
     delete ui;
+}
+
+void Dialog::setup_connections_mot()
+{
+    thread_mot = new QThread();
+
+    DabData *dabdata = new DabData();
+
+    //connect(ui->btn_main_mute, &QPushButton::clicked, &mMute, &Mute::set_mute);
+
+    //connect(ui->pushButton, &QPushButton::clicked, dabdata, &DabData::MOTProcessData);
+
+    connect(this, SIGNAL(start_mot()), dabdata, SLOT(MOTProcessData())); //start
+
+    //connect(dabdata, SIGNAL(mot_finished(const MOT_FILE)), this, SLOT(dab_show_mot(const MOT_FILE)));
+    connect(dabdata, SIGNAL(new_mot(QImage)), this, SLOT(dab_show_mot(QImage)));
+
+    dabdata->moveToThread(thread_mot);
+    thread_mot->start();
+
+
 }
 
 void Dialog::setup_connections_scan()
@@ -1386,3 +1411,39 @@ void Dialog::gui_mode_fm()
 //{
 //    mDabStrength.start_sig_reading();
 //}
+
+void Dialog::on_pushButton_clicked()
+{
+    //mDabData.receive_dab_data();
+    //mDabData.MOTProcessData();
+
+    emit start_mot();
+
+}
+
+//void Dialog::dab_show_mot(const MOT_FILE &slide)
+void Dialog::dab_show_mot(QImage motImage)
+{
+//    for(int i = 0; i < blu.size(); i++){
+//        qDebug()<<i<<blu[i];
+//    }
+    /*
+    int subtype = slide.content_sub_type;                       qDebug()<<"main subtype"<<subtype;
+    const std::vector<uint8_t>& Data = slide.data;              qDebug()<<"main data"<<slide.data;
+
+    QByteArray qdata(reinterpret_cast<const char*>(Data.data()), static_cast<int>(Data.size()));
+
+                                                                qDebug()<<"main qdata"<<qdata;
+
+    motImage.loadFromData(qdata, subtype == 0 ? "GIF" : subtype == 1 ? "JPEG" : subtype == 2 ? "BMP" : "PNG");
+
+    if (motImage.isNull()) {
+        motImage = QImage(320, 240, QImage::Format_Alpha8);
+        motImage.fill(Qt::transparent);
+    }
+    //this->motImage->setPixmap(QPixmap::fromImage(MOTImage));
+*/
+    ui->lbl_dab_mot->setPixmap(QPixmap::fromImage(motImage));
+
+
+}

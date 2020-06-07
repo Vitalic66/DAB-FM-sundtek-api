@@ -4,7 +4,7 @@
 #
 #-------------------------------------------------
 
-QT       += core gui concurrent
+QT       += core gui concurrent quick
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
@@ -34,7 +34,13 @@ SOURCES += \
     file.cpp \
     globals.cpp \
     dabdata.cpp \
-    dabstrength.cpp
+    dabstrength.cpp \
+    charsets.cpp \
+    tools.cpp \
+    mot_manager.cpp \
+    mot_image_provider.cpp \
+    pad_decoder.cpp \
+    dabplus_decoder.cpp
 
 HEADERS += \
     dialog.h\
@@ -45,7 +51,14 @@ HEADERS += \
     file.h \
     globals.h \
     dabdata.h \
-    dabstrength.h
+    dabstrength.h \
+    charsets.h \
+    tools.h \
+    mot_manager.h \
+    mot_image_provider.h \
+    pad_decoder.h \
+    dabplus_decoder.h \
+    subchannel_sink.h
 
 FORMS += \
         dialog.ui

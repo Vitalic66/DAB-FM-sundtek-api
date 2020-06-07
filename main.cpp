@@ -13,7 +13,7 @@ int main(int argc, char *argv[])
 
 
 
-    w.setWindowFlags(Qt::Window | Qt::FramelessWindowHint);
+    //w.setWindowFlags(Qt::Window | Qt::FramelessWindowHint);
     w.show();
 
 
