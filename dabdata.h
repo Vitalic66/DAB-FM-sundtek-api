@@ -40,6 +40,22 @@ public slots:
     void MOTProcessData();
 
 private:
+
+    struct test {
+
+        uint8_t status;
+        uint8_t type;
+        uint16_t len;
+        //size_t len;
+        //uint8_t data[512];
+        //std::vector<uint8_t> data[0];
+        //const uint8_t data[0];
+        uint8_t data[512];
+        uint8_t bufq;
+
+    } *xdata;
+
+
     //QObject xdata;
     //struct xdata;
 //    MOTEntity mMOTEntity;

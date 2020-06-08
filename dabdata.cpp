@@ -1,4 +1,4 @@
-﻿#include "dabdata.h"
+#include "dabdata.h"
 
 DabData::DabData(QObject *parent) : QObject(parent), padDecoder(this, true)
   , superframefilter(this, false, false)
@@ -103,6 +103,12 @@ void DabData::MOTProcessData()
 {
     //std::vector<uint8_t> data_ar;
     bool mot_stop = false;
+    data_ar.clear();
+    free(xdata);
+    //free(data);
+
+
+
     do{
         receive_dab_data();
 
@@ -126,11 +132,11 @@ void DabData::MOTProcessData()
 
     if(show_slide){
         int subtype = new_slide.content_sub_type;                       qDebug()<<"main subtype"<<subtype;
-        const std::vector<uint8_t>& Data = new_slide.data;              qDebug()<<"main data"<<new_slide.data;
+        const std::vector<uint8_t>& Data = new_slide.data;              //qDebug()<<"main data"<<new_slide.data;
 
         QByteArray qdata(reinterpret_cast<const char*>(Data.data()), static_cast<int>(Data.size()));
 
-                                                                    qDebug()<<"main qdata"<<qdata;
+                                                                    //qDebug()<<"main qdata"<<qdata;
 
         motImage.loadFromData(qdata, subtype == 0 ? "GIF" : subtype == 1 ? "JPEG" : subtype == 2 ? "BMP" : "PNG");
 
@@ -147,42 +153,42 @@ void DabData::MOTProcessData()
 
 }
 
-
-
-
-
 void DabData::receive_dab_data()
 {
     struct dab_service_data data;
     data_ar.clear();
     //std::vector<uint8_t> data_ar;
 
-    struct test {
+//    struct test {
 
-        uint8_t status;
-        uint8_t type;
-        uint16_t len;
-        //size_t len;
-        //uint8_t data[512];
-        //std::vector<uint8_t> data[0];
-        //const uint8_t data[0];
-        uint8_t data[0];
-        uint8_t bufq;
+//        uint8_t status;
+//        uint8_t type;
+//        uint16_t len;
+//        //size_t len;
+//        //uint8_t data[512];
+//        //std::vector<uint8_t> data[0];
+//        //const uint8_t data[0];
+//        uint8_t data[0];
+//        uint8_t bufq;
 
-    } *xdata;
+//    } *xdata;
 
     int rv;
-    int radioFD;
-            radioFD = net_open(strdup("/dev/dab0"), O_RDWR);
+    int radioFD_data = net_open(strdup("/dev/dab0"), O_RDWR);
+    int radioFD_xdata = net_open(strdup("/dev/dab0"), O_RDWR);
 
     //memset(&ens, 0x0, sizeof(struct dab_ensemble_info));
     memset(&data, 0x0, sizeof(struct dab_service_data));
 
     data.status = 1;
 
-    //xdata = (struct test *) malloc(16384); //fixed 16mb else prog crashes
+    //data = (struct dab_service_data *) malloc(16384); //fixed 16mb else prog crashes
+    xdata = (struct test *) malloc(1024); //fixed 16mb else prog crashes
+
+
+
     //xdata = (struct test *) malloc(sizeof (test)); //crash double free
-    xdata = (struct test *) malloc(65536);
+    //xdata = (struct test *) malloc(65536);
 
     qDebug() << "xdata.status" << xdata->status << "data.status" << data.status;
     //qDebug() << "xdata.type" << xdata->type << "data.type" << data.type;
@@ -197,10 +203,12 @@ void DabData::receive_dab_data()
 
 
 
-    rv = net_ioctl(radioFD, DAB_GET_DIGITAL_SERVICE_DATA, &data);
+    rv = net_ioctl(radioFD_data, DAB_GET_DIGITAL_SERVICE_DATA, &data);
 //    qDebug() <<"rv"<<rv;
 //    qDebug()<<"data.len"<<data.len;
+    qDebug() <<"rv data"<<rv;
     if (rv == 0) {
+
         if (data.len > 0) {
             xdata->status = 0;
             xdata->type = 0;
@@ -209,8 +217,9 @@ void DabData::receive_dab_data()
             //xdata->data = data.data;
             xdata->bufq = data.bufq;
 
-            rv = net_ioctl(radioFD, DAB_GET_DIGITAL_SERVICE_DATA, xdata);
+            rv = net_ioctl(radioFD_xdata, DAB_GET_DIGITAL_SERVICE_DATA, xdata);
             //qDebug() <<"rv"<<rv;
+            qDebug() <<"rv xdata"<<rv;
             if (rv == 0) {
                 if (xdata->type == MOT) {
                     qDebug() << "MOT";
@@ -229,249 +238,13 @@ void DabData::receive_dab_data()
                     //}while(!mot_manager.HandleMOTDataGroup(data_ar));
 
                 }
+
+                //free(xdata);
+                //free(data);
             }
+            net_close(radioFD_xdata);
         }
+    net_close(radioFD_data);
+}
 }
 
-
-                    /*
-                    if(!mot_manager.HandleMOTDataGroup(data_ar)){   qDebug()<<mot_manager.HandleMOTDataGroup(data_ar);
-//receive_dab_data();
-mot_manager.HandleMOTDataGroup(data_ar);
-usleep(1000000);
-                    }
-                    */
-                    //rv = parse_msc(xdata->data, xdata->len);
-                    // please have a look at https://www.etsi.org/deliver/etsi_en/300400_300499/300401/02.01.01_60/en_300401v020101p.pdf how to parse the MSC data.
-                    //if (rv == 1)
-                        //emit finished();
-
-                }
-                /*
-                else if (xdata->type == DLS) {
-                    qDebug() << "DLS";
-                    //if (xdata->len>2) {
-                        //if (!(xdata->data[0] & 0x10)) {
-//                            qDebug() << "data.status" << data.status;
-//                            qDebug() << "xdata->status" << xdata->status;
-//                            qDebug() << "data.type" << data.type;
-//                            qDebug() << "xdata->type" << xdata->type;
-//                            qDebug() << "data.len" << data.len;
-//                            qDebug() << "xdata->len" << xdata->len;
-//                            qDebug() << "data.bufq" << data.bufq;
-//                            qDebug() << "xdata->bufq" << xdata->bufq;
-
-
-                            std::vector<uint8_t> data_ar;
-                            //QByteArray xdata_ar;
-                            for(int i = 0; i < xdata->len; i++){
-
-                                //printf("blub %d", i);
-                                //qDebug() << xdata->data[i];
-                                //xdata_ar.push_back(xdata->data[i]);
-                                data_ar.push_back(xdata->data[i]);
-
-                            }
-
-                            mot_manager.HandleMOTDataGroup(data_ar);
-
-
-
-
-//                            QString tmp;
-//                            unsigned char *d=reinterpret_cast<unsigned char*>(&xdata->data[1]);
-                            //for(int i=0;i<xdata->len-1;i++) {
-//                                tmp+=QString::fromUtf16((ushort*)&ebuLatinToUnicode[d[i]], 1);
-//                            }
-//                            dls = tmp;
-//                            emit dlsUpdated();
-                        //}
-                    //}
-
-                }
-*/
-
-
-/*
-    struct au {
-
-        uint8_t status;
-        uint8_t type;
-
-        ssize_t ka;
-        //void buffer;
-        size_t bufferlen;
-
-    } *au_data;
-
-    au_data = (struct au *) malloc(sizeof(struct au));
-
-    memset(&data, 0x0, sizeof(struct dab_service_data));
-*/
-    //qDebug() << "rv: " << rv;
-/*
-    int fd;
-    fd = net_open(strdup("/dev/dab0"), O_RDWR);
-    //net_close(fd);
-
-    //ssize_t net_read(int fd, void *buf, size_t nbytes);
-
-    ssize_t blub;
-    //void *buffer = 0;
-    //size_t buflen = 0;
-
-    blub = __net_read(fd, &buffer, buflen);
-
-
-    //au_data->ka = __net_read(fd)
-
-//    qDebug() << "ssize_t blub" << blub;
-//    qDebug() << "buffer" << buffer;
-//    qDebug() << "buflen" << buflen;
-
-//    xdata->type = data.type;
-//    xdata->len = data.len;
-
-*/
-
-/*
-rv = net_ioctl(radioFD, DAB_GET_DIGITAL_SERVICE_DATA, &data);
-
-    if (rv == 0) {
-        if (data.len > 0) {
-            xdata->status = 0;
-            //xdata->type = 0;
-            xdata->type = data.type;
-            xdata->len = data.len;
-
-
-//qDebug() << "xdata->type: " << xdata->type;
-//qDebug() << "data.type: " << data.type;
-//qDebug() << "data.len: " << data.len;
-//qDebug() << "xdata->len: " << xdata->len;
-
-
-            rv = net_ioctl(radioFD, DAB_GET_DIGITAL_SERVICE_DATA, xdata);
-            //qDebug()<<"rv: " << rv;
-            if (rv == 0){
-                if (xdata->type == MOT) {
-                    //void DecoderAdapter::ProcessPAD(const uint8_t *xpad_data, size_t xpad_len, bool exact_xpad_len, const uint8_t *fpad_data)
-                    //padDecoder.Process(xpad_data, xpad_len, exact_xpad_len, fpad_data);
-                    //padDecoder.Process(xdata->data, xdata->len, true, data.data);
-
-                    //observer->ProcessPAD(data + pad_start, pad_len - FPAD_LEN, true, data + pad_start + pad_len - FPAD_LEN);
-
-
-
-
-
-
-
-                    qDebug() << "MOT started";
-
-                    qDebug() << "xdata.len" << xdata->len;
-                    qDebug() << "xdata.bufq" << xdata->bufq;
-                    qDebug() << "xdata.data" << xdata->data;
-                    qDebug() << "xdata.status" << xdata->status;
-                    qDebug() << "xdata.type" << xdata->type;
-                    //rv = parse_msc(xdata->data, xdata->len);
-                    // please have a look at https://www.etsi.org/deliver/etsi_en/300400_300499/300401/02.01.01_60/en_300401v020101p.pdf how to parse the MSC data.
-
-                     //mMOTEntity.GetData();
-
-                    //if (!(xdata->data[0] & 0x10)) {
-                        QString tmp;
-                        QString tmp_utf;
-                        QString dls;
-                        QString dls_utf;
-                        QString tmp_ucs2;
-                        QString tmp_ucs2_2;
-                        QString tmp_utf8;
-                        int gr = 0;
-
-                        std::vector<uint8_t> tmp_vec;
-
-                        //unsigned char *d=reinterpret_cast<unsigned char*>(&xdata->data[1]);
-                        //qDebug() << " char *d: " << *d;
-                        //qDebug()<< "len: " << xdata->len;
-                        //for(int i=0;i<xdata->len-1;i++) { //?????????? warum -1
-                        //for(int i=0;i<xdata->len;i++) {
-                            //tmp+=QString::fromUtf16((ushort*)&ebuLatinToUnicode[d[i]], 1);
-                            //tmp_ucs2 =QString::fromUtf16((ushort*)&ebuLatinToUcs2[d[i]], 1);
-                            //tmp_utf8 =QString::fromUtf16((ushort*)&utf8_encoded_EBU_Latin[d[i]], 1);
-                            //tmp_ucs2_2 =QString::fromUtf16((ushort*)&ebuLatinToUcs2_2[d[i]], 1);
-                            //tmp_utf =QString::fromUtf16((ushort*)d[i], 1);
-                            //tmp+=d[i];
-                            //unsigned char *d=reinterpret_cast<unsigned char*>(&xdata->data[i]);
-                            //qDebug() << *d;
-
-                            //tmp_vec.push_back(*d);
-
-                            //tmp+=&xdata->data[i];
-                            //qDebug()<< "i d[i] ucs2 utf8 ucs2_2" << i << d[i] << tmp_ucs2 << tmp_utf8 << tmp_ucs2_2;
-                        //}
-
-                        //qDebug() << "size data" << tmp_vec.size();
-                        //qDebug() <<"mot d" << tmp_vec;
-
-
-                    //}
-
-
-
-
-//                    std::vector<uint8_t> result(size);
-//                    size_t offset = 0;
-
-                    // concatenate all segments
-//                    for(int i = 0; i <= last_seg_number; i++) {
-//                        seg_t& seg = segs[i];
-//                        memcpy(&result[offset], &seg[0], seg.size());
-//                        offset += seg.size();
-//                    }
-
-                    //return result;
-
-
-                    //if (rv == 1)
-                        //emit finished();
-
-                } else if (xdata->type == DLS) {
-                    qDebug() << "DLS started";
-                    if (xdata->len>2) {
-                        qDebug()<< "len: " << xdata->len;
-                        if (!(xdata->data[0] & 0x10)) {
-                            QString tmp;
-                            QString tmp_utf;
-                            QString dls;
-                            QString dls_utf;
-                            QString tmp_ucs2;
-                            QString tmp_ucs2_2;
-                            QString tmp_utf8;
-
-                            //unsigned char *d=reinterpret_cast<unsigned char*>(&xdata->data[1]);
-                            //qDebug() << " char *d: " << *d;
-                            //for(int i=0;i<xdata->len-1;i++) {
-                                //tmp+=QString::fromUtf16((ushort*)&ebuLatinToUnicode[d[i]], 1);
-                                //tmp_ucs2 =QString::fromUtf16((ushort*)&ebuLatinToUcs2[d[i]], 1);
-                                //tmp_utf8 =QString::fromUtf16((ushort*)&utf8_encoded_EBU_Latin[d[i]], 1);
-                                //tmp_ucs2_2 =QString::fromUtf16((ushort*)&ebuLatinToUcs2_2[d[i]], 1);
-                                //tmp_utf =QString::fromUtf16((ushort*)d[i], 1);
-                                //tmp+=d[i];
-                                //qDebug()<< "i d[i] ucs2 utf8 ucs2_2" << i << d[i] << tmp_ucs2 << tmp_utf8 << tmp_ucs2_2;
-                            //}
-                            //dls = tmp;
-                            //dls_utf = tmp_utf;
-                            //qDebug() << "dls string: " << dls;
-                            //qDebug() << "dls utf string: " << dls_utf;
-                            //emit dlsUpdated();
-                        }
-                    }
-                }
-
-
-            }
-        }
-    }
-*/
-//}

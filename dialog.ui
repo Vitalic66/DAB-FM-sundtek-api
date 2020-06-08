@@ -230,8 +230,8 @@
     <widget class="QLabel" name="lbl_rds_stream">
      <property name="geometry">
       <rect>
-       <x>30</x>
-       <y>380</y>
+       <x>20</x>
+       <y>110</y>
        <width>361</width>
        <height>91</height>
       </rect>
@@ -251,8 +251,8 @@
     <widget class="QFrame" name="frame_dab_strength">
      <property name="geometry">
       <rect>
-       <x>240</x>
-       <y>310</y>
+       <x>520</x>
+       <y>40</y>
        <width>20</width>
        <height>20</height>
       </rect>
@@ -299,7 +299,7 @@ STATIONS</string>
      <property name="geometry">
       <rect>
        <x>30</x>
-       <y>350</y>
+       <y>80</y>
        <width>101</width>
        <height>17</height>
       </rect>
@@ -311,8 +311,8 @@ STATIONS</string>
     <widget class="QLabel" name="lbl_rds_station">
      <property name="geometry">
       <rect>
-       <x>30</x>
-       <y>280</y>
+       <x>310</x>
+       <y>10</y>
        <width>111</width>
        <height>17</height>
       </rect>
@@ -324,8 +324,8 @@ STATIONS</string>
     <widget class="QLabel" name="lbl_rds_station_stream">
      <property name="geometry">
       <rect>
-       <x>30</x>
-       <y>300</y>
+       <x>310</x>
+       <y>30</y>
        <width>171</width>
        <height>31</height>
       </rect>
@@ -368,8 +368,8 @@ STATIONS</string>
     <widget class="QLabel" name="lbl_dab_strength">
      <property name="geometry">
       <rect>
-       <x>240</x>
-       <y>280</y>
+       <x>520</x>
+       <y>10</y>
        <width>111</width>
        <height>17</height>
       </rect>
@@ -381,8 +381,8 @@ STATIONS</string>
     <widget class="QPushButton" name="pushButton">
      <property name="geometry">
       <rect>
-       <x>380</x>
-       <y>20</y>
+       <x>710</x>
+       <y>50</y>
        <width>89</width>
        <height>25</height>
       </rect>
@@ -395,9 +395,9 @@ STATIONS</string>
      <property name="geometry">
       <rect>
        <x>30</x>
-       <y>80</y>
-       <width>251</width>
-       <height>181</height>
+       <y>200</y>
+       <width>320</width>
+       <height>240</height>
       </rect>
      </property>
      <property name="text">

@@ -21,6 +21,8 @@
 #include <globals.h>
 #include <dabdata.h>
 #include <dabstrength.h>
+#include <dab_mot.h>
+//#include <dab_mot_process.h>
 
 #include </opt/include/mediaclient.h>
 
@@ -55,6 +57,10 @@ signals:
     void stop_rds();
 
     void start_mot();
+    void stop_mot();
+
+    //void start_mot_process();
+    //void stop_mot_process();
 
     void tuner_mode_changed();
 
@@ -247,6 +253,8 @@ private:
     QThread *thread_dab_sig;
 
     QThread *thread_mot;
+    QThread *thread_dab_mot;
+    //QThread *thread_dab_mot_process;
 
     //QImage motImage;
 
@@ -254,6 +262,7 @@ private:
 //    void setup_connections_dab_scan();
 
     void setup_connections_mot();
+    //void setup_connections_mot_process();
     void setup_connections_scan();
     void setup_connections_fm_rds();
     void setup_connections_dab_sig();

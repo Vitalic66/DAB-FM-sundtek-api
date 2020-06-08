@@ -40,7 +40,8 @@ SOURCES += \
     mot_manager.cpp \
     mot_image_provider.cpp \
     pad_decoder.cpp \
-    dabplus_decoder.cpp
+    dabplus_decoder.cpp \
+    dab_mot.cpp
 
 HEADERS += \
     dialog.h\
@@ -58,7 +59,8 @@ HEADERS += \
     mot_image_provider.h \
     pad_decoder.h \
     dabplus_decoder.h \
-    subchannel_sink.h
+    subchannel_sink.h \
+    dab_mot.h
 
 FORMS += \
         dialog.ui

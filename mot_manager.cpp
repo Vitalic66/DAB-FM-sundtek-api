@@ -30,14 +30,14 @@ void MOTEntity::AddSeg(int seg_number, bool last_seg, const uint8_t* data, size_
 
 	// copy data
 	segs[seg_number] = seg_t(len);
-                                                                qDebug()<<"memcpy addseg Entity"<<memcpy(&segs[seg_number][0], data, len);
+                                                                //qDebug()<<"memcpy addseg Entity"<<memcpy(&segs[seg_number][0], data, len);
 	memcpy(&segs[seg_number][0], data, len);
 	size += len;
 }
 
 bool MOTEntity::IsFinished() {
                                                                 qDebug()<<"MOTEntity::IsFinished start";
-                                                                qDebug()<<"last_seg_number"<<last_seg_number;
+                                                                //qDebug()<<"last_seg_number"<<last_seg_number;
 	if(last_seg_number == -1)
 		return false;
 
@@ -46,7 +46,7 @@ bool MOTEntity::IsFinished() {
                                                                 //qDebug()<<"segs.find(i)"<<segs;
 		if(segs.find(i) == segs.end())
 			return false;
-                                                                qDebug()<<"return true MOTEntity::IsFinished() for reached";
+                                                                //qDebug()<<"return true MOTEntity::IsFinished() for reached";
 	return true;
 }
 
@@ -61,7 +61,7 @@ std::vector<uint8_t> MOTEntity::GetData() {
 		memcpy(&result[offset], &seg[0], seg.size());
 		offset += seg.size();
 	}
-                                                                qDebug()<<"result"<<result;
+                                                                //qDebug()<<"result"<<result;
 	return result;
 }
 
@@ -75,16 +75,16 @@ void MOTObject::AddSeg(bool dg_type_header, int seg_number, bool last_seg, const
 bool MOTObject::ParseCheckHeader(MOT_FILE& target_file) {
                                                                 qDebug()<<"MOTObject::ParseCheckHeader start";
 	MOT_FILE file = target_file;
-    std::vector<uint8_t> data = header.GetData();               qDebug()<<"data in MOTObject ParseCheckHeader"<<data;
+    std::vector<uint8_t> data = header.GetData();               //qDebug()<<"data in MOTObject ParseCheckHeader"<<data;
 
 	// parse/check header core
 	if(data.size() < 7)
 		return false;
 
-    size_t body_size = (data[0] << 20) | (data[1] << 12) | (data[2] << 4) | (data[3] >> 4); qDebug()<<"body_size"<<body_size;
-    size_t header_size = ((data[3] & 0x0F) << 9) | (data[4] << 1) | (data[5] >> 7);         qDebug()<<"header_size"<<header_size;
-    int content_type = (data[5] & 0x7F) >> 1;                                               qDebug()<<"content_type"<<content_type;
-    int content_sub_type = ((data[5] & 0x01) << 8) | data[6];                               qDebug()<<"conten_sub_type"<<content_sub_type;
+    size_t body_size = (data[0] << 20) | (data[1] << 12) | (data[2] << 4) | (data[3] >> 4); //qDebug()<<"body_size"<<body_size;
+    size_t header_size = ((data[3] & 0x0F) << 9) | (data[4] << 1) | (data[5] >> 7);         //qDebug()<<"header_size"<<header_size;
+    int content_type = (data[5] & 0x7F) >> 1;                                               //qDebug()<<"content_type"<<content_type;
+    int content_sub_type = ((data[5] & 0x01) << 8) | data[6];                               //qDebug()<<"conten_sub_type"<<content_sub_type;
 
     //type 2 == image, 5 == transport
     //subtype == 0 ? "GIF" : subtype == 1 ? "JPEG" : subtype == 2 ? "BMP" : "PNG"
@@ -95,23 +95,23 @@ bool MOTObject::ParseCheckHeader(MOT_FILE& target_file) {
 
 	if(header_size != header.GetSize())
 		return false;
-                                                                qDebug()<<"header_size != header.GetSize() passed";
+                                                                //qDebug()<<"header_size != header.GetSize() passed";
 	bool header_update =
 			content_type == MOT_FILE::CONTENT_TYPE_MOT_TRANSPORT &&
 			content_sub_type == MOT_FILE::CONTENT_SUB_TYPE_HEADER_UPDATE;
 
-                                                                qDebug()<<"content_type"<<content_type;
-                                                                qDebug()<<"content_sub_type"<<content_sub_type;
+                                                                //qDebug()<<"content_type"<<content_type;
+                                                                //qDebug()<<"content_sub_type"<<content_sub_type;
 
 	// abort, if neither none nor both conditions (header received/update) apply
 	if(header_received != header_update)
 		return false;
-                                                                qDebug()<<"header_received != header_update passed";
+                                                                //qDebug()<<"header_received != header_update passed";
 	if(!header_update) {
 		// store core info
-        file.body_size = body_size;                             qDebug()<<"file.body_size"<<file.body_size;
-        file.content_type = content_type;                       qDebug()<<"file.conten_type"<<file.content_type;
-        file.content_sub_type = content_sub_type;               qDebug()<<"file.content_sub_type"<<file.content_sub_type;
+        file.body_size = body_size;                             //qDebug()<<"file.body_size"<<file.body_size;
+        file.content_type = content_type;                       //qDebug()<<"file.conten_type"<<file.content_type;
+        file.content_sub_type = content_sub_type;               //qDebug()<<"file.content_sub_type"<<file.content_sub_type;
     }
 
     std::string old_content_name = file.content_name;
@@ -119,8 +119,8 @@ bool MOTObject::ParseCheckHeader(MOT_FILE& target_file) {
 
 	// parse/check header extension
 	for(size_t offset = 7; offset < data.size();) {
-        int pli = data[offset] >> 6;                            qDebug()<<"pli"<<pli;
-        int param_id = data[offset] & 0x3F;                     qDebug()<<"param_id"<<param_id;
+        int pli = data[offset] >> 6;                            //qDebug()<<"pli"<<pli;
+        int param_id = data[offset] & 0x3F;                     //qDebug()<<"param_id"<<param_id;
         offset++;
 
 		// get parameter len
@@ -244,47 +244,47 @@ void MOTManager::Reset() {
 
 bool MOTManager::ParseCheckDataGroupHeader(const std::vector<uint8_t>& dg, size_t& offset, int& dg_type) {
                                                                 qDebug()<<"MOTManager::ParseCheckDataGroupHeader start";
-                                                                qDebug()<<dg;
-                                                                qDebug()<<"offset"<<offset;
-                                                                qDebug()<<"dg.size"<<dg.size();
-                                                                qDebug()<<"offset+2"<<(offset + 2);
+                                                                //qDebug()<<dg;
+                                                                //qDebug()<<"offset"<<offset;
+                                                                //qDebug()<<"dg.size"<<dg.size();
+                                                                //qDebug()<<"offset+2"<<(offset + 2);
 	// parse/check Data Group header
 	if(dg.size() < (offset + 2))
 		return false;
 
-    bool extension_flag = dg[offset] & 0x80;                    qDebug()<<extension_flag << "dg[offset]" << dg[offset];
-    bool crc_flag = dg[offset] & 0x40;                          qDebug()<<crc_flag << "dg[offset]" << dg[offset];
-    bool segment_flag = dg[offset] & 0x20;                      qDebug()<<segment_flag << "dg[offset]" << dg[offset];
-    bool user_access_flag = dg[offset] & 0x10;                  qDebug()<<user_access_flag << "dg[offset]" << dg[offset];
-    dg_type = dg[offset] & 0x0F;                                qDebug()<<"dg_type = dg[offset] & 0x0F"<<dg_type<< "dg[offset]" << dg[offset];
-    offset += 2 + (extension_flag ? 2 : 0);                     qDebug()<<"offset"<<offset;
+    bool extension_flag = dg[offset] & 0x80;                    //qDebug()<<extension_flag << "dg[offset]" << dg[offset];
+    bool crc_flag = dg[offset] & 0x40;                          //qDebug()<<crc_flag << "dg[offset]" << dg[offset];
+    bool segment_flag = dg[offset] & 0x20;                      //qDebug()<<segment_flag << "dg[offset]" << dg[offset];
+    bool user_access_flag = dg[offset] & 0x10;                  //qDebug()<<user_access_flag << "dg[offset]" << dg[offset];
+    dg_type = dg[offset] & 0x0F;                                //qDebug()<<"dg_type = dg[offset] & 0x0F"<<dg_type<< "dg[offset]" << dg[offset];
+    offset += 2 + (extension_flag ? 2 : 0);                     //qDebug()<<"offset"<<offset;
 
-    //if(!crc_flag)
-    //    return false;                                   printf("1");//qDebug()<<"crc_flag";
-    //if(!segment_flag)
-    //    return false;                                   printf("2");//qDebug()<<"segment_flag";
-    //if(!user_access_flag)
-    //    return false;                                   printf("3");//qDebug()<<"user_acc";
+    if(!crc_flag)
+        return false;                                   //printf("1");//qDebug()<<"crc_flag";
+    if(!segment_flag)
+        return false;                                   //printf("2");//qDebug()<<"segment_flag";
+    if(!user_access_flag)
+        return false;                                   //printf("3");//qDebug()<<"user_acc";
 	if(dg_type != 3 && dg_type != 4)	// only accept MOT header/body
-        return false;                                   printf("4");//qDebug()<<"4te stufe";
+        return false;                                   //printf("4");//qDebug()<<"4te stufe";
 
 	return true;
 }
 
 bool MOTManager::ParseCheckSessionHeader(const std::vector<uint8_t>& dg, size_t& offset, bool& last_seg, int& seg_number, int& transport_id) {
                                                                 qDebug()<<"MOTManager::ParseCheckSessionHeader start";
-                                                                qDebug()<<"offset overload"<<offset;
-                                                                qDebug()<<"dg"<<dg;
+                                                                //qDebug()<<"offset overload"<<offset;
+                                                                //qDebug()<<"dg"<<dg;
     // parse/check session header
 	if(dg.size() < (offset + 3))
 		return false;
 
-    last_seg = dg[offset] & 0x80;                               qDebug()<<"last_seg"<<last_seg;
-    seg_number = ((dg[offset] & 0x7F) << 8) | dg[offset + 1];   qDebug()<<"seg_number"<<seg_number;  //qDebug()<<"seg_number"<<(seg_number > 0 ? (seg_number / 4096) : 0);
+    last_seg = dg[offset] & 0x80;                               //qDebug()<<"last_seg"<<last_seg;
+    seg_number = ((dg[offset] & 0x7F) << 8) | dg[offset + 1];   //qDebug()<<"seg_number"<<seg_number;  //qDebug()<<"seg_number"<<(seg_number > 0 ? (seg_number / 4096) : 0);
     //seg_number = (seg_number > 0 ? (seg_number / 4096) : 0);
-    bool transport_id_flag = dg[offset + 2] & 0x10;             qDebug()<<"transport_id_flag"<<transport_id_flag;
-    size_t len_indicator = dg[offset + 2] & 0x0F;               qDebug()<<"len_indicator"<<len_indicator;
-    offset += 3;                                                qDebug()<<"offset"<<offset;
+    bool transport_id_flag = dg[offset + 2] & 0x10;             //qDebug()<<"transport_id_flag"<<transport_id_flag;
+    size_t len_indicator = dg[offset + 2] & 0x0F;               //qDebug()<<"len_indicator"<<len_indicator;
+    offset += 3;                                                //qDebug()<<"offset"<<offset;
 
 	if(!transport_id_flag)
 		return false;
@@ -295,7 +295,7 @@ bool MOTManager::ParseCheckSessionHeader(const std::vector<uint8_t>& dg, size_t&
 	if(dg.size() < (offset + len_indicator))
 		return false;
 
-    transport_id = (dg[offset] << 8) | dg[offset + 1];          qDebug()<<"transport_id"<<transport_id;
+    transport_id = (dg[offset] << 8) | dg[offset + 1];          //qDebug()<<"transport_id"<<transport_id;
 	offset += len_indicator;
 
 	return true;
@@ -303,18 +303,18 @@ bool MOTManager::ParseCheckSessionHeader(const std::vector<uint8_t>& dg, size_t&
 
 bool MOTManager::ParseCheckSegmentationHeader(const std::vector<uint8_t>& dg, size_t& offset, size_t& seg_size) {
                                                                 qDebug()<<"MOTManager::ParseCheckSegmentationHeader start";
-                                                                qDebug()<<"offset overload2"<<offset;
+                                                                //qDebug()<<"offset overload2"<<offset;
     // parse/check segmentation header (MOT)
 	if(dg.size() < (offset + 2))
 		return false;
 
-    seg_size = ((dg[offset] & 0x1F) << 8) | dg[offset + 1];     qDebug()<<"seg_size"<<seg_size;
+    seg_size = ((dg[offset] & 0x1F) << 8) | dg[offset + 1];     //qDebug()<<"seg_size"<<seg_size;
 	offset += 2;
-                                                                qDebug()<<"offset"<<offset;
-                                                                qDebug()<<"calccrc"<<(seg_size != dg.size() - offset - CalcCRC::CRCLen + 1);
-                                                                qDebug()<<"dg.size()"<<dg.size();
-                                                                qDebug()<<"offset crc"<<offset;
-                                                                qDebug()<<"CRCLen"<<CalcCRC::CRCLen;
+                                                                //qDebug()<<"offset"<<offset;
+                                                                //qDebug()<<"calccrc"<<(seg_size != dg.size() - offset - CalcCRC::CRCLen + 1);
+                                                                //qDebug()<<"dg.size()"<<dg.size();
+                                                                //qDebug()<<"offset crc"<<offset;
+                                                                //qDebug()<<"CRCLen"<<CalcCRC::CRCLen;
 
 
 
@@ -326,7 +326,7 @@ bool MOTManager::ParseCheckSegmentationHeader(const std::vector<uint8_t>& dg, si
 }
 
 bool MOTManager::HandleMOTDataGroup(const std::vector<uint8_t>& dg) {
-    qDebug()<<"MOTManager::HandleMOTDataGroup start";
+                                                                qDebug()<<"MOTManager::HandleMOTDataGroup start";
     size_t offset = 0;
 
 	// parse/check headers
@@ -357,10 +357,10 @@ bool MOTManager::HandleMOTDataGroup(const std::vector<uint8_t>& dg) {
 		current_transport_id = transport_id;
 		object = MOTObject();
 	}
-                                                                qDebug()<<"seg_number"<<seg_number;
-                                                                qDebug()<<"last_seg"<<last_seg;
-                                                                qDebug()<<"dg[offset]"<<dg[offset];
-                                                                qDebug()<<"seg_size"<<seg_size;
+                                                                //qDebug()<<"seg_number"<<seg_number;
+                                                                //qDebug()<<"last_seg"<<last_seg;
+                                                                //qDebug()<<"dg[offset]"<<dg[offset];
+                                                                //qDebug()<<"seg_size"<<seg_size;
 
 	object.AddSeg(dg_type == 3, seg_number, last_seg, &dg[offset], seg_size);
 

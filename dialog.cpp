@@ -102,6 +102,7 @@ Dialog::Dialog(QWidget *parent) :
     ui->lbl_delay_value_dab->setText(mFile.delay_autoplay_dab);
 
     setup_connections_mot();
+    //setup_connections_mot_process();
     setup_connections_scan();
     setup_connections_fm_rds();
     setup_connections_dab_sig();
@@ -141,6 +142,7 @@ Dialog::~Dialog()
     mFile.write_settings_file();
 
     emit stop_rds();
+    emit stop_mot();
     emit stop_dab_sig();
     emit stop_scan();
 
@@ -183,6 +185,20 @@ Dialog::~Dialog()
 
 void Dialog::setup_connections_mot()
 {
+    thread_dab_mot = new QThread();
+
+    dab_mot *dabmot = new dab_mot();
+
+    connect(this, SIGNAL(start_mot()), dabmot, SLOT(dab_mot_start())); //start
+    connect(this, SIGNAL(stop_mot()), dabmot, SLOT(dab_mot_stop())); //stop
+
+    //connect(dabdata, SIGNAL(new_mot(QImage)), this, SLOT(dab_show_mot(QImage)));
+    connect(dabmot, SIGNAL(new_mot(QImage)), this, SLOT(dab_show_mot(QImage)));
+
+    dabmot->moveToThread(thread_dab_mot);
+    thread_dab_mot->start();
+
+/*
     thread_mot = new QThread();
 
     DabData *dabdata = new DabData();
@@ -198,10 +214,26 @@ void Dialog::setup_connections_mot()
 
     dabdata->moveToThread(thread_mot);
     thread_mot->start();
-
+*/
 
 }
+/*
+void Dialog::setup_connections_mot_process()
+{
+    thread_dab_mot_process = new QThread();
 
+    Dab_MOT_Process *dabmotprocess = new Dab_MOT_Process();
+
+    connect(this, SIGNAL(start_mot()), dabmotprocess, SLOT(dab_mot_process_start())); //start
+    connect(this, SIGNAL(stop_mot()), dabmotprocess, SLOT(dab_mot_process_stop())); //stop
+
+    //connect(dabdata, SIGNAL(new_mot(QImage)), this, SLOT(dab_show_mot(QImage)));
+    connect(dabmotprocess, SIGNAL(new_mot(QImage)), this, SLOT(dab_show_mot(QImage)));
+
+    dabmotprocess->moveToThread(thread_dab_mot_process);
+    thread_dab_mot_process->start();
+}
+*/
 void Dialog::setup_connections_scan()
 {
     // Create thread, worker
@@ -852,6 +884,7 @@ void Dialog::on_btn_tune_clicked()
 {
     emit stop_rds(); //stop rds stream
     emit stop_dab_sig();
+    //emit stop_mot();
 
     if(g_tuner_mode == "FM"){
 
@@ -974,6 +1007,7 @@ void Dialog::tune_fm_wrapper(int btn_id)
 
     emit stop_rds();
     emit stop_dab_sig();
+    emit stop_mot();
 
     g_last_tuned_freq_dab = 0; //reset in case dab is chosen again
 
