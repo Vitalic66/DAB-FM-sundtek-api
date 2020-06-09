@@ -67,7 +67,27 @@ void dab_mot::dab_read_mot()
 
                             mot_data.push_back(xdata->data[i]);
                         }
-                      //qDebug()<<mot_data;
+                        //qDebug()<<"MOT left #####################################################################################";
+                    } else if(xdata->type == DLS){
+
+                        //if (((!xdata->data[2]) & 0x10) && (xdata->len > 10)) {
+                        if(!(xdata->data[0] & 0x10)) {
+                            if(xdata->len > 10){ //length ox data must be bigger 10
+                                dls_data.clear();
+                                //qDebug()<<"0 1 2 3 4 5 6 7 8 9 10"<<xdata->data[0]<<xdata->data[1]<<xdata->data[2]<<xdata->data[3]<<xdata->data[4]<<xdata->data[5]<<xdata->data[6]<<xdata->data[7]<<xdata->data[8]<<xdata->data[9];
+                                len = xdata->len;
+                                //qDebug()<<"DLS!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"
+                                //          "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!";
+                                //qDebug()<<"xdata->len"<<xdata->len;
+                                for(int i = 3; i < xdata->len; i++){ //shift offset +1 in sundtek
+
+                                    dls_data.push_back(xdata->data[i]);
+                                    charset = 0;
+                                }
+
+
+                            }
+                        }
 
                     }
                 }
@@ -75,10 +95,8 @@ void dab_mot::dab_read_mot()
             //net_close(radioFD_xdata);
         }
 
-    //usleep(250000);
-    dab_process_mot_data();
-    //net_close(radioFD_data);
-    //qDebug()<<mot_data;
+    dab_process_mot_data();    
+    dab_process_dls_data();
 
     } //end while
 
@@ -90,7 +108,7 @@ void dab_mot::dab_process_mot_data()
     if(mot_manager.HandleMOTDataGroup(mot_data)){
 
         const MOT_FILE new_slide = mot_manager.GetFile();
-        // check file type
+
         bool show_slide = true;
         if(new_slide.content_type != MOT_FILE::CONTENT_TYPE_IMAGE)
             show_slide = false;
@@ -103,26 +121,30 @@ void dab_mot::dab_process_mot_data()
         }
 
         if(show_slide){
-            int subtype = new_slide.content_sub_type;                       //qDebug()<<"main subtype"<<subtype;
-            const std::vector<uint8_t>& Data = new_slide.data;              //qDebug()<<"main data"<<new_slide.data;
+            int subtype = new_slide.content_sub_type;
+            const std::vector<uint8_t>& Data = new_slide.data;
 
             QByteArray qdata(reinterpret_cast<const char*>(Data.data()), static_cast<int>(Data.size()));
 
-                                                                        //qDebug()<<"main qdata"<<qdata;
-
             motImage.loadFromData(qdata, subtype == 0 ? "GIF" : subtype == 1 ? "JPEG" : subtype == 2 ? "BMP" : "PNG");
-//QImage small;
+
             if (motImage.isNull()) {
                 motImage = QImage(320, 240, QImage::Format_Alpha8);
                 motImage.fill(Qt::transparent);
-                //small = motImage.scaled(240, 180, Qt::KeepAspectRatio);
-                //
             }
 
-            emit new_mot(motImage);
-            //emit new_mot(small);
-
+            emit new_mot(motImage); //emit new_mot(small);
         }
     }
 }
 
+void dab_mot::dab_process_dls_data()
+{
+    if(dls_data.size()>0){
+
+        std::string label = toUtf8StringUsingCharset(dls_data.data(), (CharacterSet) 0, dls_data.size());
+        QString qlabel = QString::fromUtf8(label.c_str());
+        qDebug()<<qlabel;
+        emit new_label(qlabel);
+    }
+}

@@ -194,6 +194,7 @@ void Dialog::setup_connections_mot()
 
     //connect(dabdata, SIGNAL(new_mot(QImage)), this, SLOT(dab_show_mot(QImage)));
     connect(dabmot, SIGNAL(new_mot(QImage)), this, SLOT(dab_show_mot(QImage)));
+    connect(dabmot, SIGNAL(new_label(QString)), this, SLOT(rds_stream(QString)));
 
     dabmot->moveToThread(thread_dab_mot);
     thread_dab_mot->start();

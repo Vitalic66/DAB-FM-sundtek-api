@@ -19,23 +19,25 @@ class dab_mot : public QObject
 public:
     explicit dab_mot(QObject *parent = nullptr);
     std::vector<uint8_t> mot_data;
+    std::vector<uint8_t> dls_data;
+    size_t len;
+    int charset;
 
 signals:
 
     void new_mot(QImage MOTImage);
+    void new_label(QString);
 
 public slots:
 
     void dab_mot_start();
     void dab_mot_stop();
-    //std::vector<uint8_t> GetMOTData();
 
 private:
 
     void dab_read_mot();
     void dab_process_mot_data();
-
-    //size_t mot_len;
+    void dab_process_dls_data();
 
     struct mot_xdata {
 
