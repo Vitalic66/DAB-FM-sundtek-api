@@ -9,8 +9,6 @@
 #include <QBitmap>
 #include <QPixmap>
 #include <QInputDialog>
-//#include <QThread> //new
-//#include <QtCore>
 #include <QTimer>
 
 #include <fm_rds.h>
@@ -19,11 +17,8 @@
 #include <mute.h>
 #include <file.h>
 #include <globals.h>
-#include <dabdata.h>
 #include <dabstrength.h>
 #include <dab_mot.h>
-//#include <dab_mot_process.h>
-
 #include </opt/include/mediaclient.h>
 
 namespace Ui {
@@ -206,8 +201,6 @@ private slots:
 
     void gui_mode_dab();
     void gui_mode_fm();
-
-    void on_pushButton_clicked();
 
 public slots:
 

@@ -33,14 +33,10 @@ SOURCES += \
     fm_rds.cpp \
     file.cpp \
     globals.cpp \
-    dabdata.cpp \
     dabstrength.cpp \
     charsets.cpp \
     tools.cpp \
     mot_manager.cpp \
-    mot_image_provider.cpp \
-    pad_decoder.cpp \
-    dabplus_decoder.cpp \
     dab_mot.cpp
 
 HEADERS += \
@@ -51,15 +47,10 @@ HEADERS += \
     fm_rds.h \
     file.h \
     globals.h \
-    dabdata.h \
     dabstrength.h \
     charsets.h \
     tools.h \
     mot_manager.h \
-    mot_image_provider.h \
-    pad_decoder.h \
-    dabplus_decoder.h \
-    subchannel_sink.h \
     dab_mot.h
 
 FORMS += \

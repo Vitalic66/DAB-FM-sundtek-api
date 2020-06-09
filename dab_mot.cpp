@@ -9,12 +9,20 @@ dab_mot::dab_mot(QObject *parent) : QObject(parent),
 void dab_mot::dab_mot_start()
 {
     mStop_mot = false;
+    mot_data.clear();
+    dls_data.clear();
+    emit new_label("");
+    emit new_mot(empty_image);
     dab_read_mot();
 }
 
 void dab_mot::dab_mot_stop()
 {
     mStop_mot = true;
+    mot_data.clear();
+    dls_data.clear();
+    emit new_label("");
+    emit new_mot(empty_image);
 }
 
 void dab_mot::dab_read_mot()
@@ -140,11 +148,11 @@ void dab_mot::dab_process_mot_data()
 
 void dab_mot::dab_process_dls_data()
 {
-    if(dls_data.size()>0){
+    if(dls_data.size() > 0){
 
         std::string label = toUtf8StringUsingCharset(dls_data.data(), (CharacterSet) 0, dls_data.size());
         QString qlabel = QString::fromUtf8(label.c_str());
-        qDebug()<<qlabel;
+        //qDebug()<<qlabel;
         emit new_label(qlabel);
     }
 }

@@ -102,7 +102,6 @@ Dialog::Dialog(QWidget *parent) :
     ui->lbl_delay_value_dab->setText(mFile.delay_autoplay_dab);
 
     setup_connections_mot();
-    //setup_connections_mot_process();
     setup_connections_scan();
     setup_connections_fm_rds();
     setup_connections_dab_sig();
@@ -315,11 +314,15 @@ void Dialog::rds_stream(QString data)
 {
     ui->lbl_rds_stream->setWordWrap(true);
     ui->lbl_rds_stream->setText(data);
+
+    //ui->lbl_rds_stream_2->setWordWrap(true);
+    //ui->lbl_rds_stream_"->setText(data);
 }
 
 void Dialog::rds_prog(QString prog)
 {
     ui->lbl_rds_station_stream->setText(prog);
+    ui->lbl_rds_station_stream_2->setText(prog);
 }
 
 //void Dialog::dab_sig_stream(uint32_t dab_strength, uint32_t dab_status, uint8_t dab_rssi, uint8_t dab_fic)
@@ -352,11 +355,13 @@ void Dialog::dab_sig_stream(QString dab_strength, QString dab_status, QString da
         //ui->prog_bar_dab_fic->setStyleSheet("background: qlineargradient(x1: 0, y1: 0.5, x2: 1, y2: 0.5, stop: 0 green, stop: 1 white)");
         //ui->prog_bar_dab_fic->setStyleSheet(green);
         ui->frame_dab_strength->setStyleSheet("background-color: rgb(0,255,0); border-radius: 5px;");
+        ui->frame_dab_strength_2->setStyleSheet("background-color: rgb(0,255,0); border-radius: 5px;");
 //    } else if (dab_fic.toInt() <= 97 && dab_fic.toInt() > 80) {
 //        ui->prog_bar_dab_fic->setStyleSheet(yellow);
     } else {
         //ui->prog_bar_dab_fic->setStyleSheet(red);
         ui->frame_dab_strength->setStyleSheet("background-color: rgb(255,0,0); border-radius: 5px;");
+        ui->frame_dab_strength_2->setStyleSheet("background-color: rgb(255,0,0); border-radius: 5px;");
     }
 
     //ui->prog_bar_dab_fic->setValue(dab_fic.toInt());
@@ -379,6 +384,8 @@ void Dialog::gui_dab_hide_unhide(bool vis)
 {
     ui->frame_dab_strength->setVisible(vis);
     ui->lbl_dab_strength->setVisible(vis);
+    ui->frame_dab_strength_2->setVisible(vis);
+    ui->lbl_dab_strength_2->setVisible(vis);
 }
 
 void Dialog::dab_fill_list()
@@ -885,7 +892,7 @@ void Dialog::on_btn_tune_clicked()
 {
     emit stop_rds(); //stop rds stream
     emit stop_dab_sig();
-    //emit stop_mot();
+    emit stop_mot();
 
     if(g_tuner_mode == "FM"){
 
@@ -913,7 +920,12 @@ void Dialog::on_btn_tune_clicked()
 
     if(g_tuner_mode == "DAB"){
 
+        //emit stop_mot();
+        //emit stop_rds();
+
         emit start_dab_sig();
+
+        emit start_mot();
 
         g_last_state_mute_unmute = "muted";
         g_tuner_mode = "DAB";
@@ -937,7 +949,10 @@ void Dialog::on_btn_tune_clicked()
         //mTune.set_dab_channel(fd,frequency,sid,sid_set,comp,comp_set);
         mTune.set_dab_channel(frequency,sid);
 
+        //ui->lbl_rds_station_stream->setText("");
         ui->lbl_rds_station_stream->setText(g_dab_vec_vec[marked_row][0]);
+        ui->lbl_rds_station_stream_2->setText(g_dab_vec_vec[marked_row][0]);
+        qDebug()<<g_dab_vec_vec[marked_row][0];
         ui->lbl_rds_stream->setText("");
 
         mFile.last_played_freq = g_dab_vec_vec[marked_row][1];
@@ -957,12 +972,14 @@ void Dialog::tune_dab_wrapper(int btn_id)
 
     emit stop_rds();
     emit stop_dab_sig();
+    emit stop_mot();
 
     //if(ui->tabWidget->currentIndex() != 1){
 
         Dialog::dab_btn_changer();
     //}
     emit start_dab_sig();
+    emit start_mot();
 
     g_tuner_mode = "DAB";
     //qDebug() << "g_tuner_mode: " << g_tuner_mode;
@@ -992,8 +1009,9 @@ void Dialog::tune_dab_wrapper(int btn_id)
     //mTune.set_dab_channel(fd,frequency,sid,sid_set,comp,comp_set);
     mTune.set_dab_channel(frequency, sid);
 
-    ui->lbl_rds_station_stream->setText(g_dab_vec_vec[dab_found_favs.at(btn_id)][0]);
-    ui->lbl_rds_stream->setText("");
+    ui->lbl_rds_station_stream->setText(g_dab_vec_vec[dab_found_favs.at(btn_id)][0]); //station name
+    ui->lbl_rds_station_stream_2->setText(g_dab_vec_vec[dab_found_favs.at(btn_id)][0]); //station name
+    ui->lbl_rds_stream->setText(""); //data stream (rds from fm or dls from dab
 
     mFile.last_played_tuner_type = g_tuner_mode;
     mFile.last_played_freq = g_dab_vec_vec[dab_found_favs.at(btn_id)][1];
@@ -1348,6 +1366,9 @@ void Dialog::tune_autoplay()
     //QTimer *timer = new QTimer();
 
     if(mFile.last_played_tuner_type == "DAB"){
+
+        emit start_mot();
+        emit start_dab_sig();
         //QThread::msleep(3000);
         //usleep(3000000);
         //timer->start(3000);
@@ -1363,7 +1384,8 @@ qDebug()<<sid;
         //uint8_t sid_set = 1;
         //uint8_t comp = 1;
         //uint8_t comp_set = 1;
-
+//todo station name at autostart
+        //ui->lbl_rds_station_stream->setText(g_dab_vec_vec[dab_found_favs.at(btn_id)][0]);
         mMute.set_mute();
         //mTune.set_dab_channel(fd,frequency,sid,sid_set,comp,comp_set);
         mTune.set_dab_channel(frequency,sid);
@@ -1393,10 +1415,6 @@ qDebug()<<frequency;
 
 }
 
-
-
-
-
 void Dialog::on_ho_sl_settings_delay_autoplay_fm_valueChanged(int value)
 {
     mFile.delay_autoplay_fm = QString::number(value);
@@ -1421,9 +1439,7 @@ void Dialog::gui_mode_dab()
 
     //enable
     ui->frame_dab_strength->setVisible(true);
-
-
-
+    ui->frame_dab_strength_2->setVisible(true);
 }
 
 void Dialog::gui_mode_fm()
@@ -1447,38 +1463,8 @@ void Dialog::gui_mode_fm()
 //    mDabStrength.start_sig_reading();
 //}
 
-void Dialog::on_pushButton_clicked()
-{
-    //mDabData.receive_dab_data();
-    //mDabData.MOTProcessData();
 
-    emit start_mot();
-
-}
-
-//void Dialog::dab_show_mot(const MOT_FILE &slide)
 void Dialog::dab_show_mot(QImage motImage)
 {
-//    for(int i = 0; i < blu.size(); i++){
-//        qDebug()<<i<<blu[i];
-//    }
-    /*
-    int subtype = slide.content_sub_type;                       qDebug()<<"main subtype"<<subtype;
-    const std::vector<uint8_t>& Data = slide.data;              qDebug()<<"main data"<<slide.data;
-
-    QByteArray qdata(reinterpret_cast<const char*>(Data.data()), static_cast<int>(Data.size()));
-
-                                                                qDebug()<<"main qdata"<<qdata;
-
-    motImage.loadFromData(qdata, subtype == 0 ? "GIF" : subtype == 1 ? "JPEG" : subtype == 2 ? "BMP" : "PNG");
-
-    if (motImage.isNull()) {
-        motImage = QImage(320, 240, QImage::Format_Alpha8);
-        motImage.fill(Qt::transparent);
-    }
-    //this->motImage->setPixmap(QPixmap::fromImage(MOTImage));
-*/
     ui->lbl_dab_mot->setPixmap(QPixmap::fromImage(motImage));
-
-
 }

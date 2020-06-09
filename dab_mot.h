@@ -5,6 +5,7 @@
 #include <QDebug>
 #include <QImage>
 #include <QApplication>
+#include <QPixmap>
 
 #include </opt/include/mediaclient.h>
 #include <fcntl.h>  //for O_RDWR
@@ -53,6 +54,10 @@ private:
     QImage motImage;
 
     bool mStop_mot;
+
+    //int width = 320;
+    //int height = 240;
+    QImage empty_image = QPixmap().toImage();
 };
 
 #endif // DAB_MOT_H

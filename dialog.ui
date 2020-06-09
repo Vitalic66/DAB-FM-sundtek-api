@@ -251,8 +251,8 @@
     <widget class="QFrame" name="frame_dab_strength">
      <property name="geometry">
       <rect>
-       <x>520</x>
-       <y>40</y>
+       <x>640</x>
+       <y>10</y>
        <width>20</width>
        <height>20</height>
       </rect>
@@ -298,7 +298,7 @@ STATIONS</string>
     <widget class="QLabel" name="lbl_rds">
      <property name="geometry">
       <rect>
-       <x>30</x>
+       <x>20</x>
        <y>80</y>
        <width>101</width>
        <height>17</height>
@@ -376,19 +376,6 @@ STATIONS</string>
      </property>
      <property name="text">
       <string>Signalstrength:</string>
-     </property>
-    </widget>
-    <widget class="QPushButton" name="pushButton">
-     <property name="geometry">
-      <rect>
-       <x>710</x>
-       <y>50</y>
-       <width>89</width>
-       <height>25</height>
-      </rect>
-     </property>
-     <property name="text">
-      <string>test dabdata</string>
      </property>
     </widget>
     <widget class="QLabel" name="lbl_dab_mot">
@@ -683,6 +670,70 @@ STATION</string>
      </property>
      <property name="text">
       <string>EXIT</string>
+     </property>
+    </widget>
+    <widget class="QLabel" name="lbl_dab_strength_2">
+     <property name="geometry">
+      <rect>
+       <x>520</x>
+       <y>10</y>
+       <width>111</width>
+       <height>17</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Signalstrength:</string>
+     </property>
+    </widget>
+    <widget class="QLabel" name="lbl_rds_station_2">
+     <property name="geometry">
+      <rect>
+       <x>310</x>
+       <y>10</y>
+       <width>111</width>
+       <height>17</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>current Station:</string>
+     </property>
+    </widget>
+    <widget class="QFrame" name="frame_dab_strength_2">
+     <property name="geometry">
+      <rect>
+       <x>640</x>
+       <y>10</y>
+       <width>20</width>
+       <height>20</height>
+      </rect>
+     </property>
+     <property name="styleSheet">
+      <string notr="true">border: 1px solid black; 
+border-radius: 5px;</string>
+     </property>
+     <property name="frameShape">
+      <enum>QFrame::StyledPanel</enum>
+     </property>
+     <property name="frameShadow">
+      <enum>QFrame::Raised</enum>
+     </property>
+    </widget>
+    <widget class="QLabel" name="lbl_rds_station_stream_2">
+     <property name="geometry">
+      <rect>
+       <x>310</x>
+       <y>30</y>
+       <width>171</width>
+       <height>31</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <pointsize>15</pointsize>
+      </font>
+     </property>
+     <property name="text">
+      <string/>
      </property>
     </widget>
    </widget>

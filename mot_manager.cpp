@@ -21,7 +21,7 @@
 
 // --- MOTEntity -----------------------------------------------------------------
 void MOTEntity::AddSeg(int seg_number, bool last_seg, const uint8_t* data, size_t len) {
-                                                                qDebug()<<"MOTEntity::AddSeg start";
+                                                                //qDebug()<<"MOTEntity::AddSeg start";
 	if(last_seg)
 		last_seg_number = seg_number;
 
@@ -36,7 +36,7 @@ void MOTEntity::AddSeg(int seg_number, bool last_seg, const uint8_t* data, size_
 }
 
 bool MOTEntity::IsFinished() {
-                                                                qDebug()<<"MOTEntity::IsFinished start";
+                                                                //qDebug()<<"MOTEntity::IsFinished start";
                                                                 //qDebug()<<"last_seg_number"<<last_seg_number;
 	if(last_seg_number == -1)
 		return false;
@@ -51,7 +51,7 @@ bool MOTEntity::IsFinished() {
 }
 
 std::vector<uint8_t> MOTEntity::GetData() {
-                                                                qDebug()<<"MOTEntity::GetData start";
+                                                                //qDebug()<<"MOTEntity::GetData start";
 	std::vector<uint8_t> result(size);
     size_t offset = 0;
 
@@ -68,12 +68,12 @@ std::vector<uint8_t> MOTEntity::GetData() {
 
 // --- MOTObject -----------------------------------------------------------------
 void MOTObject::AddSeg(bool dg_type_header, int seg_number, bool last_seg, const uint8_t* data, size_t len) {
-                                                                qDebug()<<"MOTObject::AddSeg start";
+                                                                //qDebug()<<"MOTObject::AddSeg start";
 	(dg_type_header ? header : body).AddSeg(seg_number, last_seg, data, len);
 }
 
 bool MOTObject::ParseCheckHeader(MOT_FILE& target_file) {
-                                                                qDebug()<<"MOTObject::ParseCheckHeader start";
+                                                                //qDebug()<<"MOTObject::ParseCheckHeader start";
 	MOT_FILE file = target_file;
     std::vector<uint8_t> data = header.GetData();               //qDebug()<<"data in MOTObject ParseCheckHeader"<<data;
 
@@ -161,7 +161,7 @@ bool MOTObject::ParseCheckHeader(MOT_FILE& target_file) {
 				return false;
 			// TODO: not only distinguish between Now or not
 			file.trigger_time_now = !(data[offset] & 0x80);
-            fprintf(stderr, "TriggerTime: %s\n", file.trigger_time_now ? "Now" : "(not Now)");
+            //fprintf(stderr, "TriggerTime: %s\n", file.trigger_time_now ? "Now" : "(not Now)");
 			break;
 		case 0x0C:	// ContentName
 			if(data_len == 0)
@@ -169,15 +169,15 @@ bool MOTObject::ParseCheckHeader(MOT_FILE& target_file) {
 			//file.content_name = CharsetTools::ConvertTextToUTF8(&data[offset + 1], data_len - 1, data[offset] >> 4, true, &file.content_name_charset);
             file.content_name = toUtf8StringUsingCharset ( (const char *)&data[offset + 1], (CharacterSet) (data[offset] >> 4), data_len - 1);
 			new_content_name = file.content_name;
-            fprintf(stderr, "ContentName: '%s'\n", file.content_name.c_str());
+            //fprintf(stderr, "ContentName: '%s'\n", file.content_name.c_str());
 			break;
 		case 0x26:	// CategoryTitle
 			file.category_title = std::string((char*) &data[offset], data_len);	// already UTF-8
-            fprintf(stderr, "CategoryTitle: '%s'\n", file.category_title.c_str());
+            //fprintf(stderr, "CategoryTitle: '%s'\n", file.category_title.c_str());
 			break;
 		case 0x27:	// ClickThroughURL
 			file.click_through_url = std::string((char*) &data[offset], data_len);	// already UTF-8
-            fprintf(stderr, "ClickThroughURL: '%s'\n", file.click_through_url.c_str());
+            //fprintf(stderr, "ClickThroughURL: '%s'\n", file.click_through_url.c_str());
 			break;
 		}
 		offset += data_len;
@@ -193,29 +193,29 @@ bool MOTObject::ParseCheckHeader(MOT_FILE& target_file) {
 	}
 
 	target_file = file;
-                                                                qDebug()<<"all done and passed";
+                                                                //qDebug()<<"all done and passed";
 	return true;
 }
 
 bool MOTObject::IsToBeShown() {
-                                                                qDebug()<<"MOTObject::IsToBeShown start";
+                                                                //qDebug()<<"MOTObject::IsToBeShown start";
 	// abort, if already shown
 	if(shown)
 		return false;
 
 	// try to process finished header
-    if(header.IsFinished()) {                                   qDebug()<<"MOTObject::IsToBeShown() IsFinished check Header start";
+    if(header.IsFinished()) {                                   //qDebug()<<"MOTObject::IsToBeShown() IsFinished check Header start";
 		// parse/check MOT header
 		bool result = ParseCheckHeader(result_file);
 		header.Reset();	// allow for header updates
 		if(!result)
 			return false;
-    }                                                           qDebug()<<"MOTObject::IsToBeShown() IsFinished check Header passed";
+    }                                                           //qDebug()<<"MOTObject::IsToBeShown() IsFinished check Header passed";
 
 	// abort, if incomplete/not yet triggered
     if(!header_received)
 		return false;
-                                                                qDebug()<<"MOTObject::IsToBeShown() IsFinished check Body start";
+                                                                //qDebug()<<"MOTObject::IsToBeShown() IsFinished check Body start";
 	if(!body.IsFinished() || result_file.body_size != body.GetSize())
 		return false;
 	if(!result_file.trigger_time_now)
@@ -225,25 +225,25 @@ bool MOTObject::IsToBeShown() {
 	result_file.data = body.GetData();
 
 	shown = true;
-                                                                qDebug()<<"MOTObject::IsToBeShown() all passed and ready for pic";
+                                                                //qDebug()<<"MOTObject::IsToBeShown() all passed and ready for pic";
 	return true;
 }
 
 
 // --- MOTManager -----------------------------------------------------------------
 MOTManager::MOTManager() {
-                                                                qDebug()<<"MOTManager::MOTManager start";
+                                                                //qDebug()<<"MOTManager::MOTManager start";
 	Reset();
 }
 
 void MOTManager::Reset() {
-                                                                qDebug()<<"MOTManager::Reset start";
+                                                                //qDebug()<<"MOTManager::Reset start";
 	object = MOTObject();
 	current_transport_id = -1;
 }
 
 bool MOTManager::ParseCheckDataGroupHeader(const std::vector<uint8_t>& dg, size_t& offset, int& dg_type) {
-                                                                qDebug()<<"MOTManager::ParseCheckDataGroupHeader start";
+                                                                //qDebug()<<"MOTManager::ParseCheckDataGroupHeader start";
                                                                 //qDebug()<<dg;
                                                                 //qDebug()<<"offset"<<offset;
                                                                 //qDebug()<<"dg.size"<<dg.size();
@@ -272,7 +272,7 @@ bool MOTManager::ParseCheckDataGroupHeader(const std::vector<uint8_t>& dg, size_
 }
 
 bool MOTManager::ParseCheckSessionHeader(const std::vector<uint8_t>& dg, size_t& offset, bool& last_seg, int& seg_number, int& transport_id) {
-                                                                qDebug()<<"MOTManager::ParseCheckSessionHeader start";
+                                                                //qDebug()<<"MOTManager::ParseCheckSessionHeader start";
                                                                 //qDebug()<<"offset overload"<<offset;
                                                                 //qDebug()<<"dg"<<dg;
     // parse/check session header
@@ -302,7 +302,7 @@ bool MOTManager::ParseCheckSessionHeader(const std::vector<uint8_t>& dg, size_t&
 }
 
 bool MOTManager::ParseCheckSegmentationHeader(const std::vector<uint8_t>& dg, size_t& offset, size_t& seg_size) {
-                                                                qDebug()<<"MOTManager::ParseCheckSegmentationHeader start";
+                                                                //qDebug()<<"MOTManager::ParseCheckSegmentationHeader start";
                                                                 //qDebug()<<"offset overload2"<<offset;
     // parse/check segmentation header (MOT)
 	if(dg.size() < (offset + 2))
@@ -326,7 +326,7 @@ bool MOTManager::ParseCheckSegmentationHeader(const std::vector<uint8_t>& dg, si
 }
 
 bool MOTManager::HandleMOTDataGroup(const std::vector<uint8_t>& dg) {
-                                                                qDebug()<<"MOTManager::HandleMOTDataGroup start";
+                                                                //qDebug()<<"MOTManager::HandleMOTDataGroup start";
     size_t offset = 0;
 
 	// parse/check headers
@@ -351,7 +351,7 @@ bool MOTManager::HandleMOTDataGroup(const std::vector<uint8_t>& dg) {
 	if(!ParseCheckSegmentationHeader(dg, offset, seg_size))
 		return false;
 
-                                                                qDebug()<<"start after checks---------------------------------------------";
+                                                                //qDebug()<<"start after checks---------------------------------------------";
 	// add segment to MOT object (reset if necessary)
 	if(current_transport_id != transport_id) {
 		current_transport_id = transport_id;
