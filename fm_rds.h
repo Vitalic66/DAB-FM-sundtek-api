@@ -10,6 +10,7 @@
 #include </opt/include/mediaclient.h>
 #include <fcntl.h>  //for O_RDWR
 #include <unistd.h> //for usleep
+#include <charsets.h>
 
 
 class FM_rds : public QObject

@@ -14,6 +14,7 @@
 #include <unistd.h> //for usleep
 #include <tune.h>
 #include <globals.h>
+#include <charsets.h>
 
 class Scan : public QObject
 //class Scan : public QThread //new2

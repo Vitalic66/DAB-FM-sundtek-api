@@ -46,73 +46,65 @@ void dab_mot::dab_read_mot()
 
         if(mStop_mot) break;
 
+        rv = net_ioctl(radioFD_data, DAB_GET_DIGITAL_SERVICE_DATA, &data);
 
+        if (rv == 0) {
 
-    rv = net_ioctl(radioFD_data, DAB_GET_DIGITAL_SERVICE_DATA, &data);
-//    qDebug() <<"rv"<<rv;
-//    qDebug()<<"data.len"<<data.len;
-    //qDebug() <<"rv data"<<rv;
-    if (rv == 0) {
+            if (data.len > 0) {
 
-        if (data.len > 0) {
-            xdata->status = 0;
-            xdata->type = 0;
-            //xdata->type = data.type;
-            xdata->len = data.len;
-            //xdata->data = data.data;
-            xdata->bufq = data.bufq;
+                xdata->status = 0;
+                xdata->type = 0;
+                xdata->len = data.len;
+                //xdata->bufq = data.bufq;
 
-            rv = net_ioctl(radioFD_xdata, DAB_GET_DIGITAL_SERVICE_DATA, xdata);
-            //qDebug() <<"rv"<<rv;
-            //qDebug() <<"rv xdata"<<rv;
+                rv = net_ioctl(radioFD_xdata, DAB_GET_DIGITAL_SERVICE_DATA, xdata);
+
                 if (rv == 0) {
 
                     if (xdata->type == MOT) {
-                        //qDebug() << "MOT";
+
                         mot_data.clear();
 
                         for(int i = 1; i < xdata->len+1; i++){ //shift offset +1 in sundtek
 
                             mot_data.push_back(xdata->data[i]);
                         }
-                        //qDebug()<<"MOT left #####################################################################################";
+
                     } else if(xdata->type == DLS){
 
-                        //if (((!xdata->data[2]) & 0x10) && (xdata->len > 10)) {
                         if(!(xdata->data[0] & 0x10)) {
-                            if(xdata->len > 10){ //length ox data must be bigger 10
+                            if(xdata->len > 10){ //length of xdata must be bigger 10
+
                                 dls_data.clear();
-                                //qDebug()<<"0 1 2 3 4 5 6 7 8 9 10"<<xdata->data[0]<<xdata->data[1]<<xdata->data[2]<<xdata->data[3]<<xdata->data[4]<<xdata->data[5]<<xdata->data[6]<<xdata->data[7]<<xdata->data[8]<<xdata->data[9];
                                 len = xdata->len;
-                                //qDebug()<<"DLS!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"
-                                //          "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!";
-                                //qDebug()<<"xdata->len"<<xdata->len;
-                                for(int i = 3; i < xdata->len; i++){ //shift offset +1 in sundtek
+
+                                for(int i = 3; i < xdata->len; i++){ //shift offset + 3 because sundtek api decodes complete message from 4th field
 
                                     dls_data.push_back(xdata->data[i]);
-                                    charset = 0;
+                                    charset = 0; //unknown if field 2 is char indicator at sundteks api
+                                    /* if ever necessary (charsets.h)
+                                     * EbuLatin = 0x00 // Complete EBU Latin based repertoire - see annex C
+                                     * UnicodeUcs2 = 0x06
+                                     * UnicodeUtf8 = 0x0F
+                                     * calculate charset this way:
+                                     * xdata->data[2] >> 4; (move field 2 (should be char indicator) bitwise 4 times right
+                                    */
                                 }
-
-
                             }
                         }
-
                     }
                 }
             }
-            //net_close(radioFD_xdata);
         }
 
-    dab_process_mot_data();    
-    dab_process_dls_data();
+    dab_process_mot_data(); //image
+    dab_process_dls_data(); //text
 
     } //end while
-
 }
 
 void dab_mot::dab_process_mot_data()
 {
-
     if(mot_manager.HandleMOTDataGroup(mot_data)){
 
         const MOT_FILE new_slide = mot_manager.GetFile();
@@ -140,8 +132,7 @@ void dab_mot::dab_process_mot_data()
                 motImage = QImage(320, 240, QImage::Format_Alpha8);
                 motImage.fill(Qt::transparent);
             }
-
-            emit new_mot(motImage); //emit new_mot(small);
+        emit new_mot(motImage); //emit new_mot(small);
         }
     }
 }
@@ -152,7 +143,6 @@ void dab_mot::dab_process_dls_data()
 
         std::string label = toUtf8StringUsingCharset(dls_data.data(), (CharacterSet) 0, dls_data.size());
         QString qlabel = QString::fromUtf8(label.c_str());
-        //qDebug()<<qlabel;
         emit new_label(qlabel);
     }
 }

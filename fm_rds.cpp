@@ -92,12 +92,6 @@ int FM_rds::rds(){
                                     for(int i = 0; i < 9; i++){
                                     prog_chars = prog_chars.append(static_cast<char>(program[i]));
 
-//                                    if(mStop_rds){
-//                                        prog_chars.clear();
-
-//                                    }
-
-
                                     }
                                     if(prog_chars.contains('\0')){
                                         prog_chars = prog_chars.replace('\0', "");

@@ -258,7 +258,7 @@
       </rect>
      </property>
      <property name="styleSheet">
-      <string notr="true">border: 1px solid black; 
+      <string notr="true">border: 0px solid black; 
 border-radius: 5px;</string>
      </property>
      <property name="frameShape">
@@ -708,7 +708,7 @@ STATION</string>
       </rect>
      </property>
      <property name="styleSheet">
-      <string notr="true">border: 1px solid black; 
+      <string notr="true">border: 0px solid black; 
 border-radius: 5px;</string>
      </property>
      <property name="frameShape">

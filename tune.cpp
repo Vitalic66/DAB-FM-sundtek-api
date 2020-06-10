@@ -50,7 +50,6 @@ int Tune::set_dab_channel(uint32_t frequency, uint32_t sid)
 
 int Tune::set_radio_channel(uint32_t frequency)
 {
-
     emit dab_hide_unhide(false);
 
     fd = net_open(strdup("/dev/radio0"), O_RDWR);
@@ -64,5 +63,7 @@ int Tune::set_radio_channel(uint32_t frequency)
     freq.tuner = tuner;
 
     net_ioctl(fd, VIDIOC_S_FREQUENCY, &freq);
+
     return 0;
+
 }
