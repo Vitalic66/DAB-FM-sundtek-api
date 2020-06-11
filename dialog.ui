@@ -291,8 +291,16 @@ STATIONS</string>
        <height>60</height>
       </rect>
      </property>
+     <property name="styleSheet">
+      <string notr="true">border: 1px solid #ababab;
+background: qlineargradient(x1:0 y1:0, x2:0 y2:1, stop:0 #ffffff, stop:1 #61db48);</string>
+     </property>
      <property name="text">
       <string/>
+     </property>
+     <property name="icon">
+      <iconset resource="icons/images.qrc">
+       <normaloff>:/icons/mute.png</normaloff>:/icons/mute.png</iconset>
      </property>
      <property name="iconSize">
       <size>
@@ -1044,7 +1052,9 @@ STATIONS</string>
   </widget>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
- <resources/>
+ <resources>
+  <include location="icons/images.qrc"/>
+ </resources>
  <connections/>
  <buttongroups>
   <buttongroup name="buttonGroup"/>
