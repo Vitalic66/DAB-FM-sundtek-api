@@ -278,8 +278,17 @@ border-radius: 5px;</string>
       </rect>
      </property>
      <property name="text">
-      <string>ALL
-STATIONS</string>
+      <string/>
+     </property>
+     <property name="icon">
+      <iconset resource="icons/images.qrc">
+       <normaloff>:/icons/scan_black.png</normaloff>:/icons/scan_black.png</iconset>
+     </property>
+     <property name="iconSize">
+      <size>
+       <width>40</width>
+       <height>40</height>
+      </size>
      </property>
     </widget>
     <widget class="QPushButton" name="btn_main_mute">
@@ -363,7 +372,17 @@ background: qlineargradient(x1:0 y1:0, x2:0 y2:1, stop:0 #ffffff, stop:1 #61db48
       </rect>
      </property>
      <property name="text">
-      <string>SETTINGS</string>
+      <string/>
+     </property>
+     <property name="icon">
+      <iconset resource="icons/images.qrc">
+       <normaloff>:/icons/set_black.png</normaloff>:/icons/set_black.png</iconset>
+     </property>
+     <property name="iconSize">
+      <size>
+       <width>40</width>
+       <height>40</height>
+      </size>
      </property>
     </widget>
     <widget class="QPushButton" name="btn_main_exit">
@@ -375,8 +394,22 @@ background: qlineargradient(x1:0 y1:0, x2:0 y2:1, stop:0 #ffffff, stop:1 #61db48
        <height>60</height>
       </rect>
      </property>
+     <property name="styleSheet">
+      <string notr="true">border: 1px solid #ababab;
+background: qlineargradient(x1:0 y1:0, x2:0 y2:1, stop:0 #ffffff, stop:1 #e03636);</string>
+     </property>
      <property name="text">
-      <string>EXIT</string>
+      <string/>
+     </property>
+     <property name="icon">
+      <iconset resource="icons/images.qrc">
+       <normaloff>:/icons/exit_black.png</normaloff>:/icons/exit_black.png</iconset>
+     </property>
+     <property name="iconSize">
+      <size>
+       <width>40</width>
+       <height>40</height>
+      </size>
      </property>
     </widget>
     <widget class="QLabel" name="lbl_dab_strength">
@@ -512,7 +545,17 @@ FAVORITE</string>
       </rect>
      </property>
      <property name="text">
-      <string>MAIN</string>
+      <string/>
+     </property>
+     <property name="icon">
+      <iconset resource="icons/images.qrc">
+       <normaloff>:/icons/main_black.png</normaloff>:/icons/main_black.png</iconset>
+     </property>
+     <property name="iconSize">
+      <size>
+       <width>40</width>
+       <height>40</height>
+      </size>
      </property>
     </widget>
     <widget class="QPushButton" name="btn_scan_mute">
@@ -676,7 +719,17 @@ STATION</string>
       </rect>
      </property>
      <property name="text">
-      <string>SETTINGS</string>
+      <string/>
+     </property>
+     <property name="icon">
+      <iconset resource="icons/images.qrc">
+       <normaloff>:/icons/set_black.png</normaloff>:/icons/set_black.png</iconset>
+     </property>
+     <property name="iconSize">
+      <size>
+       <width>40</width>
+       <height>40</height>
+      </size>
      </property>
     </widget>
     <widget class="QPushButton" name="btn_scan_exit">
@@ -688,8 +741,22 @@ STATION</string>
        <height>60</height>
       </rect>
      </property>
+     <property name="styleSheet">
+      <string notr="true">border: 1px solid #ababab;
+background: qlineargradient(x1:0 y1:0, x2:0 y2:1, stop:0 #ffffff, stop:1 #e03636);</string>
+     </property>
      <property name="text">
-      <string>EXIT</string>
+      <string/>
+     </property>
+     <property name="icon">
+      <iconset resource="icons/images.qrc">
+       <normaloff>:/icons/exit_black.png</normaloff>:/icons/exit_black.png</iconset>
+     </property>
+     <property name="iconSize">
+      <size>
+       <width>40</width>
+       <height>40</height>
+      </size>
      </property>
     </widget>
     <widget class="QLabel" name="lbl_dab_strength_2">
@@ -781,7 +848,17 @@ border-radius: 5px;</string>
       </rect>
      </property>
      <property name="text">
-      <string>MAIN</string>
+      <string/>
+     </property>
+     <property name="icon">
+      <iconset resource="icons/images.qrc">
+       <normaloff>:/icons/main_black.png</normaloff>:/icons/main_black.png</iconset>
+     </property>
+     <property name="iconSize">
+      <size>
+       <width>40</width>
+       <height>40</height>
+      </size>
      </property>
     </widget>
     <widget class="QPushButton" name="btn_settings_to_scan">
@@ -794,8 +871,17 @@ border-radius: 5px;</string>
       </rect>
      </property>
      <property name="text">
-      <string>ALL
-STATIONS</string>
+      <string/>
+     </property>
+     <property name="icon">
+      <iconset resource="icons/images.qrc">
+       <normaloff>:/icons/scan_black.png</normaloff>:/icons/scan_black.png</iconset>
+     </property>
+     <property name="iconSize">
+      <size>
+       <width>40</width>
+       <height>40</height>
+      </size>
      </property>
     </widget>
     <widget class="QPushButton" name="btn_settings_mute">
@@ -1044,8 +1130,22 @@ STATIONS</string>
        <height>60</height>
       </rect>
      </property>
+     <property name="styleSheet">
+      <string notr="true">border: 1px solid #ababab;
+background: qlineargradient(x1:0 y1:0, x2:0 y2:1, stop:0 #ffffff, stop:1 #e03636);</string>
+     </property>
      <property name="text">
-      <string>EXIT</string>
+      <string/>
+     </property>
+     <property name="icon">
+      <iconset resource="icons/images.qrc">
+       <normaloff>:/icons/exit_black.png</normaloff>:/icons/exit_black.png</iconset>
+     </property>
+     <property name="iconSize">
+      <size>
+       <width>40</width>
+       <height>40</height>
+      </size>
      </property>
     </widget>
    </widget>

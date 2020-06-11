@@ -1,6 +1,10 @@
 <RCC>
     <qresource prefix="/icons">
-        <file>mute.png</file>
         <file>unmute.png</file>
+        <file>mute.png</file>
+        <file>set_black.png</file>
+        <file>exit_black.png</file>
+        <file>scan_black.png</file>
+        <file>main_black.png</file>
     </qresource>
 </RCC>
