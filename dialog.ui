@@ -292,7 +292,13 @@ STATIONS</string>
       </rect>
      </property>
      <property name="text">
-      <string>MUTE</string>
+      <string/>
+     </property>
+     <property name="iconSize">
+      <size>
+       <width>40</width>
+       <height>40</height>
+      </size>
      </property>
     </widget>
     <widget class="QLabel" name="lbl_rds">
@@ -511,7 +517,13 @@ FAVORITE</string>
       </rect>
      </property>
      <property name="text">
-      <string>MUTE</string>
+      <string/>
+     </property>
+     <property name="iconSize">
+      <size>
+       <width>40</width>
+       <height>40</height>
+      </size>
      </property>
     </widget>
     <widget class="QListWidget" name="list_fm">
@@ -788,7 +800,13 @@ STATIONS</string>
       </rect>
      </property>
      <property name="text">
-      <string>MUTE</string>
+      <string/>
+     </property>
+     <property name="iconSize">
+      <size>
+       <width>40</width>
+       <height>40</height>
+      </size>
      </property>
     </widget>
     <widget class="QLabel" name="lbl_set_tuner_mode">

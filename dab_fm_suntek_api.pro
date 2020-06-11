@@ -67,3 +67,6 @@ else:unix: LIBS += -L$$PWD/../../../../../../opt/lib/ -lmcsimple
 
 INCLUDEPATH += $$PWD/../../../../../../opt/include
 DEPENDPATH += $$PWD/../../../../../../opt/include
+
+RESOURCES += \
+    icons/images.qrc

@@ -14,13 +14,13 @@ Tune::Tune(QObject *parent) : QObject(parent)
 int Tune::set_dab_freq(int fd, uint32_t frequency)
 {
 
-        struct dab_frequency dabf;
-        memset(&dabf, 0x0, sizeof(struct dab_frequency));
+    struct dab_frequency dabf;
+    memset(&dabf, 0x0, sizeof(struct dab_frequency));
 
-        dabf.frequency = frequency;
+    dabf.frequency = frequency;
 
-        net_ioctl(fd, DAB_SET_FREQUENCY, &dabf);
-        return 0;
+    net_ioctl(fd, DAB_SET_FREQUENCY, &dabf);
+    return 0;
 }
 
 int Tune::set_dab_channel(uint32_t frequency, uint32_t sid)

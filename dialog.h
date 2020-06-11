@@ -291,6 +291,8 @@ private:
 
     //stylesheets
     QString btn_default_rounded = ("border: 1px solid #ababab;border-radius: 20px;background: qlineargradient(x1:0 y1:0, x2:0 y2:1, stop:0 #ffffff, stop:1 #efefef);");
+    QString btn_rect_red = ("border: 1px solid #ababab;background: qlineargradient(x1:0 y1:0, x2:0 y2:1, stop:0 #ffffff, stop:1 #e03636);");
+    QString btn_rect_green = ("border: 1px solid #ababab;background: qlineargradient(x1:0 y1:0, x2:0 y2:1, stop:0 #ffffff, stop:1 #61db48);");
 
     void btn_mute_change_text();
 

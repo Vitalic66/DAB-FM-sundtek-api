@@ -14,9 +14,10 @@ Dialog::Dialog(QWidget *parent) :
 
     //start mediaclient in case it did not...
     QProcess::execute("/opt/bin/mediaclient --shutdown");
-    QThread::msleep(600);
-    QProcess::execute("/opt/bin/mediaclient --start");
-    QThread::msleep(300);
+    QTimer::singleShot(600, [] {QProcess::execute("/opt/bin/mediaclient --start");});
+    //QThread::msleep(600);
+    //QProcess::execute("/opt/bin/mediaclient --start");
+    //QThread::msleep(300);
 
     mFile.read_settings_file();
 
@@ -952,7 +953,7 @@ void Dialog::on_btn_tune_clicked()
         //ui->lbl_rds_station_stream->setText("");
         ui->lbl_rds_station_stream->setText(g_dab_vec_vec[marked_row][0]);
         ui->lbl_rds_station_stream_2->setText(g_dab_vec_vec[marked_row][0]);
-        qDebug()<<g_dab_vec_vec[marked_row][0];
+        //qDebug()<<g_dab_vec_vec[marked_row][0];
         ui->lbl_rds_stream->setText("");
 
         mFile.last_played_freq = g_dab_vec_vec[marked_row][1];
@@ -1147,13 +1148,25 @@ void Dialog::setup_connections_btn_tuner_mode()
 void Dialog::btn_mute_change_text()
 {
     if(g_last_state_mute_unmute == "muted"){
-        ui->btn_main_mute->setText("UNMUTE");
-        ui->btn_scan_mute->setText("UNMUTE");
-        ui->btn_settings_mute->setText("UNMUTE");
+        //ui->btn_main_mute->setText("UNMUTE");
+        ui->btn_main_mute->setIcon(QIcon(":/icons/unmute.png"));
+        ui->btn_main_mute->setStyleSheet(btn_rect_red);
+        //ui->btn_scan_mute->setText("UNMUTE");
+        ui->btn_scan_mute->setIcon(QIcon(":/icons/unmute.png"));
+        ui->btn_scan_mute->setStyleSheet(btn_rect_red);
+        //ui->btn_settings_mute->setText("UNMUTE");
+        ui->btn_settings_mute->setIcon(QIcon(":/icons/unmute.png"));
+        ui->btn_settings_mute->setStyleSheet(btn_rect_red);
     } else {
-        ui->btn_main_mute->setText("MUTE");
-        ui->btn_scan_mute->setText("MUTE");
-        ui->btn_settings_mute->setText("MUTE");
+        //ui->btn_main_mute->setText("MUTE");
+        ui->btn_main_mute->setIcon(QIcon(":/icons/mute.png"));
+        ui->btn_main_mute->setStyleSheet(btn_rect_green);
+        //ui->btn_scan_mute->setText("MUTE");
+        ui->btn_scan_mute->setIcon(QIcon(":/icons/mute.png"));
+        ui->btn_scan_mute->setStyleSheet(btn_rect_green);
+        //ui->btn_settings_mute->setText("MUTE");
+        ui->btn_settings_mute->setIcon(QIcon(":/icons/mute.png"));
+        ui->btn_settings_mute->setStyleSheet(btn_rect_green);
     }
 }
 
@@ -1179,7 +1192,7 @@ void Dialog::on_btn_tuner_mode_clicked()
     }
 
     g_tuner_mode = tmp_tuner_mode;
-qDebug()<<g_tuner_mode;
+//qDebug()<<g_tuner_mode;
     //qDebug() << "g_tuner_mode: " << g_tuner_mode;
 
     //enable/disable tune button depending on station selected or not
@@ -1377,10 +1390,10 @@ void Dialog::tune_autoplay()
         //fd = net_open("/dev/dab0", O_RDWR);
 
         uint frequency = mFile.last_played_freq.toUInt();
-qDebug()<<frequency;
+//qDebug()<<frequency;
         bool ok;
         uint sid = mFile.last_played_sid.toUInt(&ok, 16);
-qDebug()<<sid;
+//qDebug()<<sid;
         //uint8_t sid_set = 1;
         //uint8_t comp = 1;
         //uint8_t comp_set = 1;
@@ -1405,7 +1418,7 @@ qDebug()<<sid;
 
 
         uint frequency = mFile.last_played_freq.toUInt();
-qDebug()<<frequency;
+//qDebug()<<frequency;
 
         mMute.set_mute();
         //mTune.set_radio_channel(fd,frequency);

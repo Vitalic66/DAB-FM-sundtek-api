@@ -1,0 +1,6 @@
+<RCC>
+    <qresource prefix="/icons">
+        <file>mute.png</file>
+        <file>unmute.png</file>
+    </qresource>
+</RCC>

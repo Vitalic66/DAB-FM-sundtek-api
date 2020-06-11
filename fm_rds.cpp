@@ -15,10 +15,12 @@ void FM_rds::start_rds_reading()
     //QMutexLocker locker(&lock);
 
    mStop_rds = false;
-   prog_chars = ""; //emit empty !!!
-   rds_chars = ""; //emit empty !!!
-   emit rds_out(rds_chars); //emit empty !!!
-   emit rds_prog_out(prog_chars); //emit empty !!!
+   //prog_chars = ""; //emit empty !!!
+   //rds_chars = ""; //emit empty !!!
+   qrds_text = "";
+   qprog_name = "";
+   emit rds_out(qrds_text); //emit empty !!!
+   emit rds_prog_out(qprog_name); //emit empty !!!
    QThread::msleep(500);
 
    rds();
@@ -40,9 +42,10 @@ int FM_rds::rds(){
     int i;
     //struct rds_data *rdsd;
     struct fm_rds_data data;
-    int rdsfd;
+
 
     if (strstr("/dev/radio0", "radio")) {
+
             rdsfd = net_open(strdup("/dev/radio0"), O_RDWR);
             if (rdsfd >= 0) {
                     uint8_t brkstat = 0;
@@ -88,17 +91,25 @@ int FM_rds::rds(){
                                 if (isprint(program[0]) && isprint(program[1])) {
                                     memcpy(print_program, program, 9);
 
-                                    prog_chars.clear();
+                                    c_prog_chars.clear();
+                                    //prog_chars.clear();
                                     for(int i = 0; i < 9; i++){
-                                    prog_chars = prog_chars.append(static_cast<char>(program[i]));
+                                    //prog_chars = prog_chars.append(static_cast<char>(program[i]));
+                                    c_prog_chars.push_back(program[i]);
 
                                     }
+                                    /*
                                     if(prog_chars.contains('\0')){
                                         prog_chars = prog_chars.replace('\0', "");
                                     }
+                                    */
                                 }
-
-                                rds_chars.clear();
+                                if(c_prog_chars.size() > 0){
+                                    std::string c_prog_name = toUtf8StringUsingCharset(c_prog_chars.data(), (CharacterSet) 15, c_prog_chars.size());
+                                    qprog_name = QString::fromUtf8(c_prog_name.c_str());
+                                }
+                                //rds_chars.clear();
+                                c_text_chars.clear();
 
                                 for (i=0;i<64;i++) {
 
@@ -111,30 +122,39 @@ int FM_rds::rds(){
                                                     break;
                                             default:
 
-                                                    char rds_single_char = 32; //init with space
-                                                    if(radiotext[i] != 127){ //remove white rectangles (ascii del)
+//                                                    char rds_single_char = 32; //init with space
+//                                                    if(radiotext[i] != 127){ //remove white rectangles (ascii del)
 
-                                                        rds_single_char = static_cast<char>(radiotext[i]);
+//                                                        rds_single_char = static_cast<char>(radiotext[i]);
 
-                                                    }
+//                                                    }
+                                                    c_text_chars.push_back(radiotext[i]);
+//                                            rds_chars.append(rds_single_char);
 
-                                            rds_chars.append(rds_single_char);
+//                                            if(rds_chars.contains('\0')){
+//                                                rds_chars = rds_chars.replace('\0', "");
+//                                            }
+                                        }
 
-                                            if(rds_chars.contains('\0')){
-                                                rds_chars = rds_chars.replace('\0', "");
-                                            }
-                                        } //end switch
+                                        if(c_text_chars.size() > 0){
+                                            std::string c_rds_text = toUtf8StringUsingCharset(c_text_chars.data(), (CharacterSet) 15, c_text_chars.size());
+                                            qrds_text = QString::fromUtf8((c_rds_text.c_str()));
+                                        }
+
+                                        //end switch
                                     } //end if
                                 } //end for
 
-                                emit rds_out(rds_chars);
-                                emit rds_prog_out(prog_chars);
+                                emit rds_out(qrds_text);
+                                emit rds_prog_out(qprog_name);
 
                                 fflush(stdout);
                             } //end if
                   } //end while
             }
-    net_close(rdsfd);
+
     }
+
+    net_close(rdsfd);
     return 0;
 }

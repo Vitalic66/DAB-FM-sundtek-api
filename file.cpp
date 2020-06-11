@@ -406,14 +406,14 @@ void File::read_settings_file(){
     delay_autoplay_dab = read_lines_from_Stream.at(4);
 
 
-qDebug()<<read_lines_from_Stream;
+//qDebug()<<read_lines_from_Stream;
 
-qDebug()<<"line 1: " << read_lines_from_Stream.at(0);
-qDebug()<<"line 2: " << read_lines_from_Stream.at(1);
-qDebug()<<"line 3: " << read_lines_from_Stream.at(2);
-qDebug()<<"tunertype: " << last_played_tuner_type;
-qDebug()<<"freq: " << last_played_freq;
-qDebug()<<"sid: " << last_played_sid;
+//qDebug()<<"line 1: " << read_lines_from_Stream.at(0);
+//qDebug()<<"line 2: " << read_lines_from_Stream.at(1);
+//qDebug()<<"line 3: " << read_lines_from_Stream.at(2);
+//qDebug()<<"tunertype: " << last_played_tuner_type;
+//qDebug()<<"freq: " << last_played_freq;
+//qDebug()<<"sid: " << last_played_sid;
     //qDebug() << "g_dab_vec_vec before fav:" << g_dab_vec_vec;
 
 

@@ -48,7 +48,7 @@ int Mute::set_mute() {
         } /*else
                 fprintf(stdout, "Wrong argument [%s] choose between on|off\n", arg);*/
 
-        //net_close(fd);
+        net_close(fd);
 
         return 0;
 }

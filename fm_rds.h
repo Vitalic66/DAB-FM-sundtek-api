@@ -21,9 +21,15 @@ class FM_rds : public QObject
 private:
 
     int fd;
+    int rdsfd;
     bool mStop_rds;
     QString prog_chars;
     QString rds_chars;
+    QString qprog_name;
+    QString qrds_text;
+
+    std::vector<uint8_t> c_prog_chars;
+    std::vector<uint8_t> c_text_chars;
 
     int rds();
 
