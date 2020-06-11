@@ -1149,23 +1149,23 @@ void Dialog::btn_mute_change_text()
 {
     if(g_last_state_mute_unmute == "muted"){
         //ui->btn_main_mute->setText("UNMUTE");
-        ui->btn_main_mute->setIcon(QIcon(":/icons/unmute.png"));
+        ui->btn_main_mute->setIcon(QIcon(":/icons/mute.png"));
         ui->btn_main_mute->setStyleSheet(btn_rect_red);
         //ui->btn_scan_mute->setText("UNMUTE");
-        ui->btn_scan_mute->setIcon(QIcon(":/icons/unmute.png"));
+        ui->btn_scan_mute->setIcon(QIcon(":/icons/mute.png"));
         ui->btn_scan_mute->setStyleSheet(btn_rect_red);
         //ui->btn_settings_mute->setText("UNMUTE");
-        ui->btn_settings_mute->setIcon(QIcon(":/icons/unmute.png"));
+        ui->btn_settings_mute->setIcon(QIcon(":/icons/mute.png"));
         ui->btn_settings_mute->setStyleSheet(btn_rect_red);
     } else {
         //ui->btn_main_mute->setText("MUTE");
-        ui->btn_main_mute->setIcon(QIcon(":/icons/mute.png"));
+        ui->btn_main_mute->setIcon(QIcon(":/icons/unmute.png"));
         ui->btn_main_mute->setStyleSheet(btn_rect_green);
         //ui->btn_scan_mute->setText("MUTE");
-        ui->btn_scan_mute->setIcon(QIcon(":/icons/mute.png"));
+        ui->btn_scan_mute->setIcon(QIcon(":/icons/unmute.png"));
         ui->btn_scan_mute->setStyleSheet(btn_rect_green);
         //ui->btn_settings_mute->setText("MUTE");
-        ui->btn_settings_mute->setIcon(QIcon(":/icons/mute.png"));
+        ui->btn_settings_mute->setIcon(QIcon(":/icons/unmute.png"));
         ui->btn_settings_mute->setStyleSheet(btn_rect_green);
     }
 }

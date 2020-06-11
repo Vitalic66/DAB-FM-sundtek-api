@@ -309,7 +309,7 @@ background: qlineargradient(x1:0 y1:0, x2:0 y2:1, stop:0 #ffffff, stop:1 #61db48
      </property>
      <property name="icon">
       <iconset resource="icons/images.qrc">
-       <normaloff>:/icons/mute.png</normaloff>:/icons/mute.png</iconset>
+       <normaloff>:/icons/unmute.png</normaloff>:/icons/unmute.png</iconset>
      </property>
      <property name="iconSize">
       <size>
@@ -443,7 +443,7 @@ background: qlineargradient(x1:0 y1:0, x2:0 y2:1, stop:0 #ffffff, stop:1 #e03636
     <widget class="QPushButton" name="btn_add_fav">
      <property name="geometry">
       <rect>
-       <x>560</x>
+       <x>680</x>
        <y>140</y>
        <width>90</width>
        <height>60</height>
@@ -487,9 +487,14 @@ background: qlineargradient(x1:0 y1:0, x2:0 y2:1, stop:0 #ffffff, stop:1 #e03636
       <rect>
        <x>270</x>
        <y>140</y>
-       <width>260</width>
+       <width>311</width>
        <height>300</height>
       </rect>
+     </property>
+     <property name="font">
+      <font>
+       <pointsize>20</pointsize>
+      </font>
      </property>
      <property name="focusPolicy">
       <enum>Qt::NoFocus</enum>
@@ -499,7 +504,7 @@ background: qlineargradient(x1:0 y1:0, x2:0 y2:1, stop:0 #ffffff, stop:1 #e03636
      <property name="geometry">
       <rect>
        <x>680</x>
-       <y>140</y>
+       <y>220</y>
        <width>90</width>
        <height>60</height>
       </rect>
@@ -542,7 +547,7 @@ background: qlineargradient(x1:0 y1:0, x2:0 y2:1, stop:0 #ffffff, stop:1 #e03636
       <rect>
        <x>270</x>
        <y>110</y>
-       <width>260</width>
+       <width>311</width>
        <height>30</height>
       </rect>
      </property>
@@ -600,9 +605,14 @@ background: qlineargradient(x1:0 y1:0, x2:0 y2:1, stop:0 #ffffff, stop:1 #e03636
       <rect>
        <x>270</x>
        <y>140</y>
-       <width>260</width>
+       <width>311</width>
        <height>300</height>
       </rect>
+     </property>
+     <property name="font">
+      <font>
+       <pointsize>20</pointsize>
+      </font>
      </property>
      <property name="focusPolicy">
       <enum>Qt::NoFocus</enum>
@@ -630,7 +640,7 @@ MODE</string>
       <rect>
        <x>270</x>
        <y>110</y>
-       <width>260</width>
+       <width>311</width>
        <height>30</height>
       </rect>
      </property>
