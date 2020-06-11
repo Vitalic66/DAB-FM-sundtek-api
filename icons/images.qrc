@@ -6,5 +6,11 @@
         <file>exit_black.png</file>
         <file>scan_black.png</file>
         <file>main_black.png</file>
+        <file>remove_black.png</file>
+        <file>rename_black.png</file>
+        <file>exit_2_black.png</file>
+        <file>sig_strength_black.png</file>
+        <file>fav_rem_black.png</file>
+        <file>fav_add_black.png</file>
     </qresource>
 </RCC>

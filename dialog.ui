@@ -313,8 +313,8 @@ background: qlineargradient(x1:0 y1:0, x2:0 y2:1, stop:0 #ffffff, stop:1 #61db48
      </property>
      <property name="iconSize">
       <size>
-       <width>40</width>
-       <height>40</height>
+       <width>50</width>
+       <height>50</height>
       </size>
      </property>
     </widget>
@@ -403,7 +403,7 @@ background: qlineargradient(x1:0 y1:0, x2:0 y2:1, stop:0 #ffffff, stop:1 #e03636
      </property>
      <property name="icon">
       <iconset resource="icons/images.qrc">
-       <normaloff>:/icons/exit_black.png</normaloff>:/icons/exit_black.png</iconset>
+       <normaloff>:/icons/exit_2_black.png</normaloff>:/icons/exit_2_black.png</iconset>
      </property>
      <property name="iconSize">
       <size>
@@ -453,8 +453,17 @@ background: qlineargradient(x1:0 y1:0, x2:0 y2:1, stop:0 #ffffff, stop:1 #e03636
       <string notr="true">border: 1px solid #ababab;border-radius: 20px;background: qlineargradient(x1:0 y1:0, x2:0 y2:1, stop:0 #ffffff, stop:1 #efefef);</string>
      </property>
      <property name="text">
-      <string>ADD
-FAVORITE</string>
+      <string/>
+     </property>
+     <property name="icon">
+      <iconset resource="icons/images.qrc">
+       <normaloff>:/icons/fav_add_black.png</normaloff>:/icons/fav_add_black.png</iconset>
+     </property>
+     <property name="iconSize">
+      <size>
+       <width>40</width>
+       <height>40</height>
+      </size>
      </property>
     </widget>
     <widget class="QPushButton" name="btn_tune">
@@ -499,8 +508,17 @@ FAVORITE</string>
       <string notr="true">border: 1px solid #ababab;border-radius: 20px;background: qlineargradient(x1:0 y1:0, x2:0 y2:1, stop:0 #ffffff, stop:1 #efefef);</string>
      </property>
      <property name="text">
-      <string>REMOVE
-FAVORITE</string>
+      <string/>
+     </property>
+     <property name="icon">
+      <iconset resource="icons/images.qrc">
+       <normaloff>:/icons/fav_rem_black.png</normaloff>:/icons/fav_rem_black.png</iconset>
+     </property>
+     <property name="iconSize">
+      <size>
+       <width>40</width>
+       <height>40</height>
+      </size>
      </property>
     </widget>
     <widget class="QPushButton" name="btn_scan">
@@ -572,8 +590,8 @@ FAVORITE</string>
      </property>
      <property name="iconSize">
       <size>
-       <width>40</width>
-       <height>40</height>
+       <width>50</width>
+       <height>50</height>
       </size>
      </property>
     </widget>
@@ -639,8 +657,17 @@ MODE</string>
       <string notr="true">border: 1px solid #ababab;border-radius: 20px;background: qlineargradient(x1:0 y1:0, x2:0 y2:1, stop:0 #ffffff, stop:1 #efefef);</string>
      </property>
      <property name="text">
-      <string>RENAME
-STATION</string>
+      <string/>
+     </property>
+     <property name="icon">
+      <iconset resource="icons/images.qrc">
+       <normaloff>:/icons/rename_black.png</normaloff>:/icons/rename_black.png</iconset>
+     </property>
+     <property name="iconSize">
+      <size>
+       <width>40</width>
+       <height>40</height>
+      </size>
      </property>
     </widget>
     <widget class="QLineEdit" name="ln_add_station">
@@ -705,8 +732,17 @@ STATION</string>
       <string notr="true">border: 1px solid #ababab;border-radius: 20px;background: qlineargradient(x1:0 y1:0, x2:0 y2:1, stop:0 #ffffff, stop:1 #efefef);</string>
      </property>
      <property name="text">
-      <string>REMOVE
-STATION</string>
+      <string/>
+     </property>
+     <property name="icon">
+      <iconset resource="icons/images.qrc">
+       <normaloff>:/icons/remove_black.png</normaloff>:/icons/remove_black.png</iconset>
+     </property>
+     <property name="iconSize">
+      <size>
+       <width>40</width>
+       <height>40</height>
+      </size>
      </property>
     </widget>
     <widget class="QPushButton" name="btn_scan_to_settings">
@@ -750,7 +786,7 @@ background: qlineargradient(x1:0 y1:0, x2:0 y2:1, stop:0 #ffffff, stop:1 #e03636
      </property>
      <property name="icon">
       <iconset resource="icons/images.qrc">
-       <normaloff>:/icons/exit_black.png</normaloff>:/icons/exit_black.png</iconset>
+       <normaloff>:/icons/exit_2_black.png</normaloff>:/icons/exit_2_black.png</iconset>
      </property>
      <property name="iconSize">
       <size>
@@ -898,8 +934,8 @@ border-radius: 5px;</string>
      </property>
      <property name="iconSize">
       <size>
-       <width>40</width>
-       <height>40</height>
+       <width>50</width>
+       <height>50</height>
       </size>
      </property>
     </widget>
@@ -1139,7 +1175,7 @@ background: qlineargradient(x1:0 y1:0, x2:0 y2:1, stop:0 #ffffff, stop:1 #e03636
      </property>
      <property name="icon">
       <iconset resource="icons/images.qrc">
-       <normaloff>:/icons/exit_black.png</normaloff>:/icons/exit_black.png</iconset>
+       <normaloff>:/icons/exit_2_black.png</normaloff>:/icons/exit_2_black.png</iconset>
      </property>
      <property name="iconSize">
       <size>
