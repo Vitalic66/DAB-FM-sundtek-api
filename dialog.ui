@@ -23,7 +23,7 @@
     </rect>
    </property>
    <property name="currentIndex">
-    <number>0</number>
+    <number>1</number>
    </property>
    <widget class="QWidget" name="page">
     <property name="minimumSize">
@@ -479,7 +479,17 @@ background: qlineargradient(x1:0 y1:0, x2:0 y2:1, stop:0 #ffffff, stop:1 #e03636
       <string notr="true">border: 1px solid #ababab;border-radius: 20px;background: qlineargradient(x1:0 y1:0, x2:0 y2:1, stop:0 #ffffff, stop:1 #efefef);</string>
      </property>
      <property name="text">
-      <string>TUNE</string>
+      <string/>
+     </property>
+     <property name="icon">
+      <iconset resource="icons/images.qrc">
+       <normaloff>:/icons/play_black.png</normaloff>:/icons/play_black.png</iconset>
+     </property>
+     <property name="iconSize">
+      <size>
+       <width>50</width>
+       <height>50</height>
+      </size>
      </property>
     </widget>
     <widget class="QListWidget" name="list_dab">
@@ -539,7 +549,17 @@ background: qlineargradient(x1:0 y1:0, x2:0 y2:1, stop:0 #ffffff, stop:1 #e03636
       <string notr="true">border: 1px solid #ababab;border-radius: 20px;background: qlineargradient(x1:0 y1:0, x2:0 y2:1, stop:0 #ffffff, stop:1 #efefef);</string>
      </property>
      <property name="text">
-      <string>SCAN</string>
+      <string/>
+     </property>
+     <property name="icon">
+      <iconset resource="icons/images.qrc">
+       <normaloff>:/icons/scan_station_black.png</normaloff>:/icons/scan_station_black.png</iconset>
+     </property>
+     <property name="iconSize">
+      <size>
+       <width>40</width>
+       <height>40</height>
+      </size>
      </property>
     </widget>
     <widget class="QProgressBar" name="prog_bar_dab">

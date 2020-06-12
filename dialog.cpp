@@ -70,6 +70,10 @@ Dialog::Dialog(QWidget *parent) :
         ui->btn_rename_station->setEnabled(false);
         ui->ln_add_station->setEnabled(false);
         ui->btn_tune->setEnabled(false);
+        ui->btn_add_fav->setEnabled(false);
+        ui->btn_rem_fav->setEnabled(false);
+        ui->btn_rename_station->setEnabled(false);
+        ui->btn_delete->setEnabled(false);
         //ui->lbl_rds->setVisible(false);
         //ui->lbl_rds_stream->setVisible(false);
         //ui->lbl_rds_station->setVisible(false);
@@ -86,6 +90,10 @@ Dialog::Dialog(QWidget *parent) :
         ui->prog_bar_fm->setTextVisible(true);
         ui->btn_tuner_mode->setText("to DAB\nMODE");
         ui->btn_tune->setEnabled(false);
+        ui->btn_add_fav->setEnabled(false);
+        ui->btn_rem_fav->setEnabled(false);
+        ui->btn_rename_station->setEnabled(false);
+        ui->btn_delete->setEnabled(false);
 //        ui->lbl_rds_station->setVisible(false);   //label dab station not implemented yet
 //        ui->lbl_rds_station_stream->setVisible(false); //label dab station stream not implemented yet
         ui->tabWidget->setCurrentIndex(1);
@@ -466,6 +474,10 @@ void Dialog::enable_disable_btn(bool btn_state){
 
     ui->btn_scan->setEnabled(btn_state);
     ui->btn_tune->setEnabled(btn_state);
+    ui->btn_add_fav->setEnabled(btn_state);
+    ui->btn_rem_fav->setEnabled(btn_state);
+    ui->btn_rename_station->setEnabled(btn_state);
+    ui->btn_delete->setEnabled(btn_state);
     ui->btn_tuner_mode->setEnabled(btn_state);
     ui->btn_add->setEnabled(btn_state);
     ui->btn_delete->setEnabled(btn_state);
@@ -1201,18 +1213,34 @@ void Dialog::on_btn_tuner_mode_clicked()
 
     if(init_fm_list == -1 && g_tuner_mode == "FM"){
         ui->btn_tune->setDisabled(true);
+        ui->btn_add_fav->setDisabled(true);
+        ui->btn_rem_fav->setDisabled(true);
+        ui->btn_rename_station->setDisabled(true);
+        ui->btn_delete->setDisabled(true);
     }
 
     if(init_fm_list != -1 && g_tuner_mode == "FM"){
         ui->btn_tune->setDisabled(false);
+        ui->btn_add_fav->setDisabled(false);
+        ui->btn_rem_fav->setDisabled(false);
+        ui->btn_rename_station->setDisabled(false);
+        ui->btn_delete->setDisabled(false);
     }
 
     if(init_dab_list == -1 && g_tuner_mode == "DAB"){
         ui->btn_tune->setDisabled(true);
+        ui->btn_add_fav->setDisabled(true);
+        ui->btn_rem_fav->setDisabled(true);
+        ui->btn_rename_station->setDisabled(true);
+        ui->btn_delete->setDisabled(true);
     }
 
     if(init_dab_list != -1 && g_tuner_mode == "DAB"){
         ui->btn_tune->setDisabled(false);
+        ui->btn_add_fav->setDisabled(false);
+        ui->btn_rem_fav->setDisabled(false);
+        ui->btn_rename_station->setDisabled(false);
+        ui->btn_delete->setDisabled(false);
     }
 
 }
@@ -1299,11 +1327,15 @@ void Dialog::on_btn_delete_clicked()
 void Dialog::on_list_fm_itemSelectionChanged()
 {
     ui->btn_tune->setEnabled(true);
+    ui->btn_add_fav->setEnabled(true);
+    ui->btn_rem_fav->setEnabled(true);
 }
 
 void Dialog::on_list_dab_itemSelectionChanged()
 {
     ui->btn_tune->setEnabled(true);
+    ui->btn_add_fav->setEnabled(true);
+    ui->btn_rem_fav->setEnabled(true);
 }
 /*
 void Dialog::onNumberChanged(int Number)

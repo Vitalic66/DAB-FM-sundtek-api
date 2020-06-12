@@ -12,5 +12,7 @@
         <file>sig_strength_black.png</file>
         <file>fav_rem_black.png</file>
         <file>fav_add_black.png</file>
+        <file>play_black.png</file>
+        <file>scan_station_black.png</file>
     </qresource>
 </RCC>
