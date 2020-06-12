@@ -23,7 +23,7 @@
     </rect>
    </property>
    <property name="currentIndex">
-    <number>1</number>
+    <number>0</number>
    </property>
    <widget class="QWidget" name="page">
     <property name="minimumSize">
@@ -745,8 +745,17 @@ MODE</string>
       <string notr="true">border: 1px solid #ababab;border-radius: 20px;background: qlineargradient(x1:0 y1:0, x2:0 y2:1, stop:0 #ffffff, stop:1 #efefef);</string>
      </property>
      <property name="text">
-      <string>ADD
-STATION</string>
+      <string/>
+     </property>
+     <property name="icon">
+      <iconset resource="icons/images.qrc">
+       <normaloff>:/icons/add_station_2_black.png</normaloff>:/icons/add_station_2_black.png</iconset>
+     </property>
+     <property name="iconSize">
+      <size>
+       <width>40</width>
+       <height>40</height>
+      </size>
      </property>
     </widget>
     <widget class="QPushButton" name="btn_delete">
@@ -766,7 +775,7 @@ STATION</string>
      </property>
      <property name="icon">
       <iconset resource="icons/images.qrc">
-       <normaloff>:/icons/remove_black.png</normaloff>:/icons/remove_black.png</iconset>
+       <normaloff>:/icons/remove_station_black.png</normaloff>:/icons/remove_station_black.png</iconset>
      </property>
      <property name="iconSize">
       <size>

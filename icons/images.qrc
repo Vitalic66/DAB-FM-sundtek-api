@@ -14,5 +14,8 @@
         <file>fav_add_black.png</file>
         <file>play_black.png</file>
         <file>scan_station_black.png</file>
+        <file>add_station_black.png</file>
+        <file>add_station_2_black.png</file>
+        <file>remove_station_black.png</file>
     </qresource>
 </RCC>
